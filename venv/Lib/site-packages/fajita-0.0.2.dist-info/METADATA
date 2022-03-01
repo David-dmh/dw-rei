@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: fajita
+Version: 0.0.2
+Summary: Quick Python wrappers for HTTP APIs
+Home-page: https://github.com/tomquirk/fajita
+Author: Tom Quirk
+Author-email: tomquirkacc@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: requests
+
+# fajita
+🌯Quick Python wrappers for HTTP APIs
+
+
