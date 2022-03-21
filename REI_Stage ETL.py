@@ -9,6 +9,7 @@ import re
 import datetime
 import pandas as pd
 import psycopg2
+import psycopg2.extras
 from psycopg2.extensions import AsIs
 
 
@@ -65,14 +66,10 @@ def format_clean_enrich(listings):
         
     return listings_fixed
 
-###################################################
-# 1, 2, 3 )
-###################################################
-
 api = RealestateComAu()
 
 # get property listings for these states
-locs = ["ACT"]
+locs = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]
 for loc in locs:
     print(f"Starting {loc} ETL ...")
     print(f"Scraping: {loc} ...")
@@ -100,75 +97,79 @@ for loc in locs:
     print("Done...")
     
     # put listings into tempListings table
-    print("Adding to db...")
     try:
         conn = psycopg2.connect(dbname="REI_Stage", 
                                 user="postgres", 
                                 password=os.environ["POSTGRES_PASSWORD"])
                              
         cur = conn.cursor()
+                
+    except (Exception, psycopg2.DatabaseError) as error:
+        # print(cur.mogrify(insert_command, (AsIs(",".join(columns)), tuple(values))))
+        print(error)
         
-        # iteratively insert newly scraped listings - fix this
-        for listing in listings:
-            columns = listing.keys()
-            values = [listing[column] for column in columns]
-            templistings_insert_command = \
-            """
-            INSERT INTO 
-            public."tempListings" (%s) 
-            VALUES 
-            %s
-            ;
-            """
-            cur.execute(templistings_insert_command, (AsIs(",".join(columns)), tuple(values)))  
-        
-        # remove NULLS for key columns
-        NB_cols = ["full_address", 
-            "suburb", 
-            "state", 
-            "postcode", 
-            "price"]
-            
-        for col in NB_cols:
-            cur.execute(
-            f"""
-            DELETE 
-            FROM 
-            public."tempListings" 
-            WHERE "{col}" IS NULL
-            ;
-            """
-            )
-    
-        # cleaning - replace -1.0 with NULL for land_size (scraper issue workaround)
-        cur.execute(
+    print("Inserting scraped records into tempListings table...")
+    print("Adding to db...")    
+    # iteratively insert newly scraped listings - fix this
+    for listing in listings:
+        columns = listing.keys()
+        values = [listing[column] for column in columns]
+        templistings_insert_command = \
         """
-        UPDATE 
-        public."tempListings"
-        SET 
-        "land_size" = NULL
-        WHERE
-        "land_size" = -1.0
+        INSERT INTO 
+        public."tempListings" (%s) 
+        VALUES 
+        %s
+        ;
+        """
+        cur.execute(templistings_insert_command, (AsIs(",".join(columns)), tuple(values))) 
+    
+    print("...Done")
+    print("Removing NULLS from key columns...")
+    
+    # remove NULLS for key columns
+    NB_cols = ["full_address", 
+        "suburb", 
+        "state", 
+        "postcode", 
+        "price"]
+        
+    for col in NB_cols:
+        cur.execute(
+        f"""
+        DELETE 
+        FROM 
+        public."tempListings" 
+        WHERE "{col}" IS NULL
         ;
         """
         )
         
-    except (Exception, psycopg2.DatabaseError) as error:
-        # print(cur.mogrify(insert_command, (AsIs(",".join(columns)), tuple(values))))
-        print(error)
-    
-    cur.close()
-    conn.commit()
     print("...Done")
+    print("Cleaning data...")
     
-    print(f"Loading {loc} records from tempListings into Stage DW...")
-    
-    # 1) udate dimProperty,
+    # cleaning - replace -1.0 with NULL for land_size (scraper issue workaround)
+    cur.execute(
+    """
+    UPDATE 
+    public."tempListings"
+    SET 
+    "land_size" = NULL
+    WHERE
+    "land_size" = -1.0
+    ;
+    """
+    )
+
+    print("...Done")
+
+    # 1) update dimProperty
     # 2) update factListings
-    # 3) delete tempListings for current loc after, then resumes for loop (next state)
-    #############################################
+    # 3) delete from tempListings
+    # 4) repeat
 
     # 1) 
+    print("Inserting into dimProperty where applicable ...")
     cur.execute(
     """
     INSERT INTO
@@ -201,8 +202,11 @@ for loc in locs:
     ;
     """
     )
-   
+
+    print("...Done")
+
     # 2)
+    print("Inserting into factListings...")
     cur.execute(
     """
     INSERT INTO
@@ -244,9 +248,12 @@ for loc in locs:
     ;
     """
     )
-   
+
+    print("...Done")
+
     # 3) 
-    # delete any existing data in tempListings - clean for next state
+    print("Deleting temp data from tempListings...")
+    # cleanup - delete existing data in tempListings
     cur.execute(
     """
     DELETE 
@@ -256,7 +263,12 @@ for loc in locs:
     """
     )
 
-    # now all items scraped should have been added to Stage DW (this single script does stage ETL)
-    # now need to perform data quality checks / validations before copying DW as is (?*) to Prod DW
-    # * supe up for high speed transactions - optimise - can nicely test performace since will have exact same
-    # data in both stage and prod but prod should be optimised for quick reads
+    print(f"...{loc} done")
+
+cur.close()
+conn.commit()
+
+# now all items scraped should have been added to Stage DW (this single script does stage ETL)
+# now need to perform data quality checks / validations before copying DW as is (?*) to Prod DW
+# * supe up for high speed transactions - optimise - can nicely test performace since will have exact same
+# data in both stage and prod but prod should be optimised for quick reads

@@ -1,22 +1,3 @@
-# to do list SAt
-# unlink 4x dims since no logical connection /
-# recrete tables then with tbl instead of dimPrefix /
-# write factListings load script (simplified now) / 
-# test run
-# tidy up ETL script
-
-
-
-
-
-
-
-
-
-
-
-
-
 import os
 import pandas as pd
 import psycopg2
