@@ -1,0 +1,85 @@
+```{r}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+# install.packages("Rcpp")  
+# install.packages("DBI")
+# install.packages("RPostgres")
+library(RPostgres);
+library(DBI);
+library(tidyverse);
+library(ggmap);
+
+```
+
+```{r}
+# ?register_google
+register_google(key=Sys.getenv("Google_Maps_Platform_API_Key"))
+```
+
+```{r}
+con <- dbConnect(RPostgres::Postgres(), 
+                 host="localhost",
+                 port="5432",
+                 dbname="REI_Stage",
+                 user="postgres",
+                 password=rstudioapi::askForPassword("Database password"))
+
+# dbExistsTable(con, "factListings")
+```
+
+```{r}
+df_factListings <- dbGetQuery(con, "
+
+SELECT 
+* 
+FROM 
+public.\"factListings\"
+;
+
+")
+
+df_dimProperty <- dbGetQuery(con, "
+
+SELECT 
+* 
+FROM 
+public.\"dimProperty\"
+;
+
+")
+```
+
+```{r}
+head(df_factListings)
+```
+
+```{r}
+head(df_dimProperty)
+```
+
+
+```{r}
+# df_dimProperty_fas_ll <- mutate_geocode(subset(df_dimProperty, select=c("full_address")), full_address)
+df_dimProperty_fas_ll <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
+
+```
+
+
+```{r}
+head(df_dimProperty_fas_ll)
+```
+
+
+```{r}
+# need to keep ref csv
+# do left outer join where left table is incoming address
+# thereby only geocode addresses which don't exist in ref
+# since these have already been geocoded
+
+# merge()
+```
+
+
+```{r}
+```
+
