@@ -1,5 +1,5 @@
-```{r}
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```{r Imports}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 
 # install.packages("Rcpp")  
 # install.packages("DBI")
@@ -8,15 +8,19 @@ library(RPostgres);
 library(DBI);
 library(tidyverse);
 library(ggmap);
+library(plyr);
+library(sqldf);
+library(useful);
+# library(retry);
 
 ```
 
-```{r}
+```{r API}
 # ?register_google
 register_google(key=Sys.getenv("Google_Maps_Platform_API_Key"))
 ```
 
-```{r}
+```{r DB connection - need to point to prod}
 con <- dbConnect(RPostgres::Postgres(), 
                  host="localhost",
                  port="5432",
@@ -27,7 +31,7 @@ con <- dbConnect(RPostgres::Postgres(),
 # dbExistsTable(con, "factListings")
 ```
 
-```{r}
+```{r Get fact and dim data}
 df_factListings <- dbGetQuery(con, "
 
 SELECT 
@@ -49,37 +53,101 @@ public.\"dimProperty\"
 ")
 ```
 
-```{r}
-head(df_factListings)
-```
-
-```{r}
-head(df_dimProperty)
-```
-
-
-```{r}
+```{r Get geocoded values}
 # df_dimProperty_fas_ll <- mutate_geocode(subset(df_dimProperty, select=c("full_address")), full_address)
 df_dimProperty_fas_ll <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
-
 ```
 
-
-```{r}
-head(df_dimProperty_fas_ll)
+```{r API could not geocode these}
+# sqldf("
+#           SELECT 
+#           * 
+#           FROM 
+#           df_dimProperty_fas_ll          
+#           WHERE 
+#           (lat IS NULL AND lon IS NULL)
+#           ;
+#           ")
 ```
 
+```{r Comp between cached and dimProp}
+# dim(df_dimProperty)[1]
+# dim(df_dimProperty_fas_ll)[1]
+```
 
 ```{r}
 # need to keep ref csv
-# do left outer join where left table is incoming address
+# do left outer join where left table is incoming addresses
 # thereby only geocode addresses which don't exist in ref
 # since these have already been geocoded
+df_non_geocoded <- sqldf("
+          SELECT 
+          dp.full_address 
+          FROM 
+          df_dimProperty dp
+          LEFT JOIN
+          df_dimProperty_fas_ll dpll
+          ON
+          dp.full_address = dpll.full_address
+          WHERE 
+          (dpll.lat IS NULL AND dpll.lon IS NULL)
+          ;
+          ")
+df_non_geocoded
+```
 
-# merge()
+
+
+```{r}
+# geocode new, nongeocoded here using mutate_geocode and reformat like cached
+r <- NULL
+attempt <- 0
+while( is.null(r) && attempt <= 3) {
+  attempt <- attempt + 1
+  try(
+    df_dimProperty_fas_ll_new <- mutate_geocode(
+      subset(df_non_geocoded, select=c("full_address")),
+      full_address
+      )
+  )
+}
+
+df_dimProperty_fas_ll_new
+```
+
+```{r}
+# merge with cached 
+df_dimProperty_fas_ll_merged <- merge(x=df_dimProperty_fas_ll, 
+                                   y=df_dimProperty_fas_ll_new, 
+                                   by="full_address", 
+                                   all=TRUE)
+df_dimProperty_fas_ll_merged
+```
+
+```{r Clean updated df}
+# shift .y's left
+for(i in which(!is.na(df_dimProperty_fas_ll_merged[, 4]))){
+  df_dimProperty_fas_ll_merged[i, 2:3] <- df_dimProperty_fas_ll_merged[i, 4:5]
+}
+df_dimProperty_fas_ll_merged
+
+# discard last right columnn
+df_dimProperty_fas_ll_merged <- subset(df_dimProperty_fas_ll_merged, select=c("full_address", "lon.x", "lat.x"))
+df_dimProperty_fas_ll_merged <- dplyr::rename(df_dimProperty_fas_ll_merged, longitude=lon.x, latitude=lat.x)
+df_dimProperty_fas_ll_merged
+```
+
+```{r Write out new}
+write.csv(df_dimProperty_fas_ll_merged,
+          "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
 ```
 
 
 ```{r}
-```
+# remember to remove NULL lat and lon from geocoded df,API doesnt find all due to 
+# e.g. 1A and 2A Church Street
 
+# this data ready for analysis, just need to exclude nulls for plot
+df <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
+df
+```
