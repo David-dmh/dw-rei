@@ -1,6 +1,4 @@
-# this script should do the following (done iteratively for states):
-# scrape for WA as an example and put into tempListings
-# for each in tempListings, load or update into dimProperty and place other attrs into factListings
+# run this script on REI_Test
 
 from realestate_com_au import RealestateComAu
 import pickle
@@ -69,11 +67,9 @@ def format_clean_enrich(listings):
 api = RealestateComAu()
 
 # get property listings for these states
-locs = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]
+locs = ["ACT", "WA"]
 for loc in locs:
-    print(f"Starting {loc} ETL ...")
-    print(f"Scraping: {loc} ...")
-    listings = api.search(locations=[loc], # locations=["seventeen seventy, qld 4677"], 
+    listings = api.search(locations=[loc],
                           channel="buy",
                           surrounding_suburbs=True,
                           exclude_no_sale_price=True,
@@ -84,33 +80,26 @@ for loc in locs:
                           max_price=-1,
                           min_bedrooms=0,
                           max_bedrooms=-1,
-                          property_types=["house", "unit apartment"],  # "house", "unit apartment", "townhouse", "villa", "land", "acreage", "retire", "unitblock",
+                          property_types=["house", "unit apartment"],
                           min_bathrooms=0,
                           min_carspaces=0,
                           min_land_size=0,
-                          construction_status=None,  # NEW, ESTABLISHED
+                          construction_status=None,
                           keywords=[],
                           exclude_keywords=[])
-    print("Number of listings found: ", len(listings) , "...")
-    print("Cleaning...")
+                          
     listings = format_clean_enrich(listings)
-    print("Done...")
-    
-    # put listings into tempListings table
+        
     try:
-        conn = psycopg2.connect(dbname="REI_Stage", 
+        conn = psycopg2.connect(dbname="REI_Test", 
                                 user="postgres", 
                                 password=os.environ["POSTGRES_PASSWORD"])
                              
         cur = conn.cursor()
                 
     except (Exception, psycopg2.DatabaseError) as error:
-        # print(cur.mogrify(insert_command, (AsIs(",".join(columns)), tuple(values))))
         print(error)
         
-    print("Inserting scraped records into tempListings table...")
-    print("Adding to db...")    
-    # iteratively (?) insert newly scraped listings
     for listing in listings:
         columns = listing.keys()
         values = [listing[column] for column in columns]
@@ -124,10 +113,6 @@ for loc in locs:
         """
         cur.execute(templistings_insert_command, (AsIs(",".join(columns)), tuple(values))) 
     
-    print("...Done")
-    print("Removing NULLS from key columns...")
-    
-    # remove NULLS for key columns
     NB_cols = ["full_address", 
         "suburb", 
         "state", 
@@ -145,9 +130,6 @@ for loc in locs:
         """
         )
         
-    print("...Done")
-    print("Cleaning data...")
-    
     # cleaning - replace -1.0 with NULL for land_size (scraper issue workaround)
     cur.execute(
     """
@@ -161,15 +143,6 @@ for loc in locs:
     """
     )
 
-    print("...Done")
-
-    # 1) update dimProperty
-    # 2) update factListings
-    # 3) delete from tempListings
-    # 4) repeat
-
-    # 1) 
-    print("Inserting into dimProperty where applicable ...")
     cur.execute(
     """
     INSERT INTO
@@ -204,10 +177,6 @@ for loc in locs:
     """
     )
 
-    print("...Done")
-
-    # 2)
-    print("Inserting into factListings...")
     cur.execute(
     """
     INSERT INTO
@@ -249,12 +218,9 @@ for loc in locs:
     ;
     """
     )
-
-    print("...Done")
-
-    # 3) 
-    print("Deleting temp data from tempListings...")
-    # cleanup - delete existing data in tempListings
+    
+    # Cleaning out tempListings
+    print("Cleaning out tempListings...")
     cur.execute(
     """
     DELETE 
@@ -263,8 +229,6 @@ for loc in locs:
     ;
     """
     )
-
-    print(f"...{loc} done")
 
 # this command will remove duplicates from factListings based on specified unique column groupings
 print("Removing factListings duplicates...")
@@ -276,7 +240,7 @@ WHERE
 ctid NOT IN 
 (
     SELECT 
-    min(ctid)
+    min(ctid) -- ctid NOT NULL by definition
     FROM
     public."factListings"
     GROUP BY 
@@ -298,8 +262,3 @@ ctid NOT IN
 
 cur.close()
 conn.commit()
-
-# now all items scraped should have been added to Stage DW (this single script does stage ETL)
-# now need to perform data quality checks / validations before copying DW as is (?*) to Prod DW
-# * supe up for high speed transactions - optimise - can nicely test performace since will have exact same
-# data in both stage and prod but prod should be optimised for quick reads

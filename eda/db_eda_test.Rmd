@@ -4,14 +4,16 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 # install.packages("Rcpp")  
 # install.packages("DBI")
 # install.packages("RPostgres")
-library(RPostgres);
-library(DBI);
-library(tidyverse);
-library(ggmap);
-library(plyr);
-library(sqldf);
-library(useful);
-# library(retry);
+library(RPostgres)
+library(DBI)
+library(tidyverse)
+library(ggmap)
+library(plyr)
+library(sqldf)
+library(useful)
+library(sf)
+library(mapview)
+# library(retry)
 
 ```
 
@@ -31,16 +33,16 @@ con <- dbConnect(RPostgres::Postgres(),
 # dbExistsTable(con, "factListings")
 ```
 
-```{r Get fact and dim data}
-df_factListings <- dbGetQuery(con, "
-
-SELECT 
-* 
-FROM 
-public.\"factListings\"
-;
-
-")
+```{r Get data}
+# df_factListings <- dbGetQuery(con, "
+# 
+# SELECT 
+# * 
+# FROM 
+# public.\"factListings\"
+# ;
+# 
+# ")
 
 df_dimProperty <- dbGetQuery(con, "
 
@@ -51,11 +53,14 @@ public.\"dimProperty\"
 ;
 
 ")
+
+df_dimProperty
 ```
 
 ```{r Get geocoded values}
 # df_dimProperty_fas_ll <- mutate_geocode(subset(df_dimProperty, select=c("full_address")), full_address)
 df_dimProperty_fas_ll <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
+df_dimProperty_fas_ll
 ```
 
 ```{r API could not geocode these}
@@ -90,7 +95,7 @@ df_non_geocoded <- sqldf("
           ON
           dp.full_address = dpll.full_address
           WHERE 
-          (dpll.lat IS NULL AND dpll.lon IS NULL)
+          (dpll.latitude IS NULL AND dpll.longitude IS NULL)
           ;
           ")
 df_non_geocoded
@@ -102,7 +107,7 @@ df_non_geocoded
 # geocode new, nongeocoded here using mutate_geocode and reformat like cached
 r <- NULL
 attempt <- 0
-while( is.null(r) && attempt <= 3) {
+while(is.null(r) && attempt <= 3) {
   attempt <- attempt + 1
   try(
     df_dimProperty_fas_ll_new <- mutate_geocode(
@@ -118,28 +123,32 @@ df_dimProperty_fas_ll_new
 ```{r}
 # merge with cached 
 df_dimProperty_fas_ll_merged <- merge(x=df_dimProperty_fas_ll, 
-                                   y=df_dimProperty_fas_ll_new, 
-                                   by="full_address", 
-                                   all=TRUE)
+                                      y=df_dimProperty_fas_ll_new, 
+                                      by="full_address", 
+                                      all=TRUE)
 df_dimProperty_fas_ll_merged
 ```
 
 ```{r Clean updated df}
-# shift .y's left
-for(i in which(!is.na(df_dimProperty_fas_ll_merged[, 4]))){
-  df_dimProperty_fas_ll_merged[i, 2:3] <- df_dimProperty_fas_ll_merged[i, 4:5]
-}
-df_dimProperty_fas_ll_merged
+skew_rows <- which(!is.na(df_dimProperty_fas_ll_merged[, 4])) 
 
-# discard last right columnn
-df_dimProperty_fas_ll_merged <- subset(df_dimProperty_fas_ll_merged, select=c("full_address", "lon.x", "lat.x"))
-df_dimProperty_fas_ll_merged <- dplyr::rename(df_dimProperty_fas_ll_merged, longitude=lon.x, latitude=lat.x)
+# shift .y's left
+if(length(skew_rows) != 0){
+  for(i in skew_rows){
+  df_dimProperty_fas_ll_merged[i, 2:3] <- df_dimProperty_fas_ll_merged[i, 4:5]
+  }
+}
+
+# discard old columnns
+df_dimProperty_fas_ll_merged <- subset(df_dimProperty_fas_ll_merged, select=c("full_address", "longitude", "latitude"))
+
 df_dimProperty_fas_ll_merged
 ```
 
 ```{r Write out new}
 write.csv(df_dimProperty_fas_ll_merged,
-          "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
+          "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
+          row.names=FALSE)
 ```
 
 
@@ -151,3 +160,31 @@ write.csv(df_dimProperty_fas_ll_merged,
 df <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
 df
 ```
+
+```{r}
+# remove nulls
+df <- sqldf("
+          SELECT 
+          * 
+          FROM 
+          df
+          WHERE 
+          (longitude IS NOT NULL OR latitude IS NOT NULL)
+          ;
+          ")
+df
+```
+
+
+```{r}
+# check that the geocoding done correctly with mapview
+locations_sf <- st_as_sf(df, 
+                         coords=c("longitude", "latitude"), 
+                         crs=4326)
+locations_sf
+```
+
+```{r}
+mapview(locations_sf)
+```
+
