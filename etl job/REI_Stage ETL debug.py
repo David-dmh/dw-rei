@@ -1,4 +1,7 @@
 # run this script on REI_Test
+# findings:
+# loads these fine: NSW, NT, ACT, SA, WA - confirm these via shuffled order 2nd load [Y]
+# issues w/: TAS, VIC, QLD - investg these
 
 from realestate_com_au import RealestateComAu
 import pickle
@@ -59,6 +62,9 @@ def format_clean_enrich(listings):
             .replace(",", "")\
             .replace(" ", "")
             l["land_size"] = float(l["land_size"])
+            
+        # make state uppercase for joins to work
+        l["state"] = l["state"].upper()
         
         listings_fixed.append(l)
         
@@ -67,8 +73,13 @@ def format_clean_enrich(listings):
 api = RealestateComAu()
 
 # get property listings for these states
-locs = ["ACT", "WA"]
+locs = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]
+# now - good records: 
+# locs = ["ACT"]
+# next - bad records:
+# locs = ["TAS"]
 for loc in locs:
+    print(loc)
     listings = api.search(locations=[loc],
                           channel="buy",
                           surrounding_suburbs=True,
@@ -89,8 +100,9 @@ for loc in locs:
                           exclude_keywords=[])
                           
     listings = format_clean_enrich(listings)
-        
+    print(len(listings))    
     try:
+        # print("Connecting to REI_Test...")
         conn = psycopg2.connect(dbname="REI_Test", 
                                 user="postgres", 
                                 password=os.environ["POSTGRES_PASSWORD"])
@@ -99,7 +111,7 @@ for loc in locs:
                 
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-        
+
     for listing in listings:
         columns = listing.keys()
         values = [listing[column] for column in columns]
@@ -230,35 +242,35 @@ for loc in locs:
     """
     )
 
-# this command will remove duplicates from factListings based on specified unique column groupings
-print("Removing factListings duplicates...")
-cur.execute(
-"""
-DELETE FROM 
-public."factListings"
-WHERE 
-ctid NOT IN 
-(
-    SELECT 
-    min(ctid) -- ctid NOT NULL by definition
-    FROM
+    #this command will remove duplicates from factListings based on specified unique column groupings
+    print("Removing factListings duplicates...")
+    cur.execute(
+    """
+    DELETE FROM 
     public."factListings"
-    GROUP BY 
-    property_id
-    ,price
-    ,bedrooms
-    ,bathrooms
-    ,parking_spaces
-    ,building_size
-    ,building_size_unit
-    ,land_size
-    ,land_size_unit
-    ,sold_date
-    ,listing_company_name
-)
-; 
-"""
-)
+    WHERE 
+    ctid NOT IN 
+    (
+        SELECT 
+        min(ctid) -- ctid NOT NULL by definition
+        FROM
+        public."factListings"
+        GROUP BY 
+        property_id
+        ,price
+        ,bedrooms
+        ,bathrooms
+        ,parking_spaces
+        ,building_size
+        ,building_size_unit
+        ,land_size
+        ,land_size_unit
+        ,sold_date
+        ,listing_company_name
+    )
+    ; 
+    """
+    )
 
-cur.close()
-conn.commit()
+    cur.close()
+    conn.commit()

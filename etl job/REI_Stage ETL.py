@@ -61,6 +61,9 @@ def format_clean_enrich(listings):
             .replace(",", "")\
             .replace(" ", "")
             l["land_size"] = float(l["land_size"])
+            
+        # make state uppercase for joins to work
+        l["state"] = l["state"].upper()
         
         listings_fixed.append(l)
         
@@ -71,8 +74,7 @@ api = RealestateComAu()
 # get property listings for these states
 locs = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]
 for loc in locs:
-    print(f"Starting {loc} ETL ...")
-    print(f"Scraping: {loc} ...")
+    print(loc)
     listings = api.search(locations=[loc], # locations=["seventeen seventy, qld 4677"], 
                           channel="buy",
                           surrounding_suburbs=True,
@@ -91,13 +93,13 @@ for loc in locs:
                           construction_status=None,  # NEW, ESTABLISHED
                           keywords=[],
                           exclude_keywords=[])
-    print("Number of listings found: ", len(listings) , "...")
+    print("Listings found:", len(listings) , "...")
     print("Cleaning...")
     listings = format_clean_enrich(listings)
-    print("Done...")
     
     # put listings into tempListings table
     try:
+        print("Connecting to REI_Stage...")
         conn = psycopg2.connect(dbname="REI_Stage", 
                                 user="postgres", 
                                 password=os.environ["POSTGRES_PASSWORD"])
@@ -110,7 +112,6 @@ for loc in locs:
         
     print("Inserting scraped records into tempListings table...")
     print("Adding to db...")    
-    # iteratively (?) insert newly scraped listings
     for listing in listings:
         columns = listing.keys()
         values = [listing[column] for column in columns]
@@ -124,9 +125,7 @@ for loc in locs:
         """
         cur.execute(templistings_insert_command, (AsIs(",".join(columns)), tuple(values))) 
     
-    print("...Done")
     print("Removing NULLS from key columns...")
-    
     # remove NULLS for key columns
     NB_cols = ["full_address", 
         "suburb", 
@@ -145,9 +144,7 @@ for loc in locs:
         """
         )
         
-    print("...Done")
     print("Cleaning data...")
-    
     # cleaning - replace -1.0 with NULL for land_size (scraper issue workaround)
     cur.execute(
     """
@@ -160,8 +157,6 @@ for loc in locs:
     ;
     """
     )
-
-    print("...Done")
 
     # 1) update dimProperty
     # 2) update factListings
@@ -203,8 +198,6 @@ for loc in locs:
     ;
     """
     )
-
-    print("...Done")
 
     # 2)
     print("Inserting into factListings...")
@@ -250,8 +243,6 @@ for loc in locs:
     """
     )
 
-    print("...Done")
-
     # 3) 
     print("Deleting temp data from tempListings...")
     # cleanup - delete existing data in tempListings
@@ -264,42 +255,35 @@ for loc in locs:
     """
     )
 
-    print(f"...{loc} done")
-
-# this command will remove duplicates from factListings based on specified unique column groupings
-print("Removing factListings duplicates...")
-cur.execute(
-"""
-DELETE FROM 
-public."factListings"
-WHERE 
-ctid NOT IN 
-(
-    SELECT 
-    min(ctid)
-    FROM
+    # this command will remove duplicates from factListings based on specified unique column groupings
+    print("Removing factListings duplicates...")
+    cur.execute(
+    """
+    DELETE FROM 
     public."factListings"
-    GROUP BY 
-    property_id
-    ,price
-    ,bedrooms
-    ,bathrooms
-    ,parking_spaces
-    ,building_size
-    ,building_size_unit
-    ,land_size
-    ,land_size_unit
-    ,sold_date
-    ,listing_company_name
-)
-; 
-"""
-)
+    WHERE 
+    ctid NOT IN 
+    (
+        SELECT 
+        min(ctid)
+        FROM
+        public."factListings"
+        GROUP BY 
+        property_id
+        ,price
+        ,bedrooms
+        ,bathrooms
+        ,parking_spaces
+        ,building_size
+        ,building_size_unit
+        ,land_size
+        ,land_size_unit
+        ,sold_date
+        ,listing_company_name
+    )
+    ; 
+    """
+    )
 
-cur.close()
-conn.commit()
-
-# now all items scraped should have been added to Stage DW (this single script does stage ETL)
-# now need to perform data quality checks / validations before copying DW as is (?*) to Prod DW
-# * supe up for high speed transactions - optimise - can nicely test performace since will have exact same
-# data in both stage and prod but prod should be optimised for quick reads
+    cur.close()
+    conn.commit()

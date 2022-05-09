@@ -4,11 +4,11 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 # install.packages("Rcpp")  
 # install.packages("DBI")
 # install.packages("RPostgres")
+library(plyr)
 library(RPostgres)
 library(DBI)
 library(tidyverse)
 library(ggmap)
-library(plyr)
 library(sqldf)
 library(useful)
 library(sf)
@@ -58,26 +58,49 @@ df_dimProperty
 ```
 
 ```{r Get geocoded values}
+# # RUN THIS IF NO CACHE FILE:
 # df_dimProperty_fas_ll <- mutate_geocode(subset(df_dimProperty, select=c("full_address")), full_address)
-df_dimProperty_fas_ll <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
+# colnames(df_dimProperty_fas_ll) <- c("full_address", "longitude", "latitude")
+
+# or 
+# read existing from cache:
+# df_dimProperty_fas_ll <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
 df_dimProperty_fas_ll
 ```
-
-```{r API could not geocode these}
-# sqldf("
+```{r}
+# # RUN THIS IF NO CACHE FILE
+# df_no_missing <- sqldf("
 #           SELECT 
 #           * 
 #           FROM 
-#           df_dimProperty_fas_ll          
+#           df_dimProperty_fas_ll
 #           WHERE 
-#           (lat IS NULL AND lon IS NULL)
+#           (longitude IS NOT NULL AND latitude IS NOT NULL)
+#           ;
+#           ")
+# # df_no_missing
+# 
+# write.csv(df_no_missing,
+#           "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
+#           row.names=FALSE)
+```
+
+
+```{r API could not geocode these}
+# sqldf("
+#           SELECT
+#           *
+#           FROM
+#           df_dimProperty_fas_ll
+#           WHERE
+#           (longitude IS NULL AND latitude IS NULL)
 #           ;
 #           ")
 ```
 
 ```{r Comp between cached and dimProp}
-# dim(df_dimProperty)[1]
-# dim(df_dimProperty_fas_ll)[1]
+dim(df_dimProperty)[1]
+dim(df_dimProperty_fas_ll)[1]
 ```
 
 ```{r}
