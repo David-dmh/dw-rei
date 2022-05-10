@@ -1,7 +1,9 @@
-```{r Imports}
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
+```{r Set WDir}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
 
-# install.packages("Rcpp")  
+```{r Imports}
+# install.packages("Rcpp")
 # install.packages("DBI")
 # install.packages("RPostgres")
 library(plyr)
@@ -10,11 +12,8 @@ library(DBI)
 library(tidyverse)
 library(ggmap)
 library(sqldf)
-library(useful)
 library(sf)
 library(mapview)
-# library(retry)
-
 ```
 
 ```{r API}
@@ -44,7 +43,7 @@ con <- dbConnect(RPostgres::Postgres(),
 # 
 # ")
 
-df_dimProperty <- dbGetQuery(con, "
+dimProperty <- dbGetQuery(con, "
 
 SELECT 
 * 
@@ -54,150 +53,137 @@ public.\"dimProperty\"
 
 ")
 
-df_dimProperty
+dimProperty
 ```
 
-```{r Get geocoded values}
-# # RUN THIS IF NO CACHE FILE:
-# df_dimProperty_fas_ll <- mutate_geocode(subset(df_dimProperty, select=c("full_address")), full_address)
-# colnames(df_dimProperty_fas_ll) <- c("full_address", "longitude", "latitude")
-
-# or 
-# read existing from cache:
-# df_dimProperty_fas_ll <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
-df_dimProperty_fas_ll
+```{r Get existing geocoded values from cache}
+dimProperty_fll <- read.csv("geocoded_loc_ref.csv")
+dimProperty_fll
 ```
-```{r}
-# # RUN THIS IF NO CACHE FILE
-# df_no_missing <- sqldf("
-#           SELECT 
-#           * 
-#           FROM 
-#           df_dimProperty_fas_ll
-#           WHERE 
-#           (longitude IS NOT NULL AND latitude IS NOT NULL)
-#           ;
-#           ")
-# # df_no_missing
+
+```{r RUN THIS IF NO CACHE FILE}
+# dimProperty_fll <- mutate_geocode(subset(dimProperty, select=c("full_address")), full_address)
+# colnames(dimProperty_fll) <- c("full_address", "longitude", "latitude")
 # 
-# write.csv(df_no_missing,
-#           "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
-#           row.names=FALSE)
-```
-
-
-```{r API could not geocode these}
+## geocode failed:
 # sqldf("
 #           SELECT
 #           *
 #           FROM
-#           df_dimProperty_fas_ll
+#           dimProperty_fll
 #           WHERE
 #           (longitude IS NULL AND latitude IS NULL)
 #           ;
 #           ")
+# 
+# # save scrape
+# write.csv(dimProperty_fll,
+# "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
+# row.names=FALSE)
 ```
 
 ```{r Comp between cached and dimProp}
-dim(df_dimProperty)[1]
-dim(df_dimProperty_fas_ll)[1]
+dim(dimProperty)[1]
+dim(dimProperty_fll)[1]
 ```
 
-```{r}
-# need to keep ref csv
-# do left outer join where left table is incoming addresses
-# thereby only geocode addresses which don't exist in ref
-# since these have already been geocoded
-df_non_geocoded <- sqldf("
-          SELECT 
-          dp.full_address 
-          FROM 
-          df_dimProperty dp
-          LEFT JOIN
-          df_dimProperty_fas_ll dpll
-          ON
-          dp.full_address = dpll.full_address
-          WHERE 
-          (dpll.latitude IS NULL AND dpll.longitude IS NULL)
+```{r View addresses not in cache to geocode}
+# to geocode includes:
+# - previously failed-to-geocode records (not written to cache file)
+# - new properties recently added to dimProperty
+
+# may need to add failures to cache if always fail to geocode as this may 
+# cause slow processing times as the dimension grows
+
+to_geocode <- sqldf("
+          SELECT
+          full_address
+          FROM
+          dimProperty
+          
+          EXCEPT
+          
+          SELECT
+          full_address
+          FROM
+          dimProperty_fll
           ;
           ")
-df_non_geocoded
+to_geocode
 ```
 
-
-
 ```{r}
-# geocode new, nongeocoded here using mutate_geocode and reformat like cached
+# attempt to geocode failed_geocode and reformat like cache
+# 3 attempts to avoid API connectivity issues
 r <- NULL
 attempt <- 0
 while(is.null(r) && attempt <= 3) {
   attempt <- attempt + 1
   try(
     df_dimProperty_fas_ll_new <- mutate_geocode(
-      subset(df_non_geocoded, select=c("full_address")),
+      subset(to_geocode, select=c("full_address")),
       full_address
       )
   )
 }
-
-df_dimProperty_fas_ll_new
+try(
+  df_dimProperty_fll_new
+)
 ```
 
 ```{r}
-# merge with cached 
-df_dimProperty_fas_ll_merged <- merge(x=df_dimProperty_fas_ll, 
-                                      y=df_dimProperty_fas_ll_new, 
-                                      by="full_address", 
-                                      all=TRUE)
-df_dimProperty_fas_ll_merged
-```
+if(exists("df_dimProperty_fll_new")){
+  # non-empty = write
+  # merge with cached if above results are non-empty 
+dimProperty_fll_merged <- merge(x=dimProperty_fll, 
+                                y=df_dimProperty_fll_new, 
+                                by="full_address", 
+                                all=TRUE)
 
-```{r Clean updated df}
-skew_rows <- which(!is.na(df_dimProperty_fas_ll_merged[, 4])) 
+# reformat
+skew_rows <- which(!is.na(dimProperty_fll_merged[, 4])) 
 
 # shift .y's left
 if(length(skew_rows) != 0){
   for(i in skew_rows){
-  df_dimProperty_fas_ll_merged[i, 2:3] <- df_dimProperty_fas_ll_merged[i, 4:5]
+  dimProperty_fll_merged[i, 2:3] <- dimProperty_fll_merged[i, 4:5]
   }
 }
 
 # discard old columnns
-df_dimProperty_fas_ll_merged <- subset(df_dimProperty_fas_ll_merged, select=c("full_address", "longitude", "latitude"))
+dimProperty_fll_merged <- subset(dimProperty_fll_merged, select=c("full_address", "longitude", "latitude"))
 
-df_dimProperty_fas_ll_merged
-```
-
-```{r Write out new}
-write.csv(df_dimProperty_fas_ll_merged,
+# update cache
+write.csv(dimProperty_fll_merged,
           "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
           row.names=FALSE)
+
+# view new
+dimProperty_fll_merged
+} else {
+  print("No new geocoded data, not updating cache")
+}
 ```
 
-
 ```{r}
-# remember to remove NULL lat and lon from geocoded df,API doesnt find all due to 
-# e.g. 1A and 2A Church Street
-
 # this data ready for analysis, just need to exclude nulls for plot
-df <- read.csv("C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv")
+df <- read.csv("geocoded_loc_ref.csv")
 df
 ```
 
 ```{r}
-# remove nulls
-df <- sqldf("
-          SELECT 
-          * 
-          FROM 
-          df
-          WHERE 
-          (longitude IS NOT NULL OR latitude IS NOT NULL)
-          ;
-          ")
-df
+# # remove nulls (if applicable - if add failed geocode to cache)
+# df <- sqldf("
+#           SELECT 
+#           * 
+#           FROM 
+#           df
+#           WHERE 
+#           (longitude IS NOT NULL OR latitude IS NOT NULL)
+#           ;
+#           ")
+# df
 ```
-
 
 ```{r}
 # check that the geocoding done correctly with mapview
@@ -208,6 +194,6 @@ locations_sf
 ```
 
 ```{r}
+# POC map
 mapview(locations_sf)
 ```
-
