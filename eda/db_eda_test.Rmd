@@ -111,24 +111,43 @@ to_geocode <- sqldf("
           ")
 to_geocode
 ```
+```{r}
+dft <- data.frame(
+  address = c("1600 Pennsylvania Avenue, Washington DC", "", "houston texas"),
+  stringsAsFactors = FALSE
+)
+
+mutate_geocode(dft, address)
+
+dft %>% mutate_geocode(address)
+dft
+```
 
 ```{r}
-# attempt to geocode failed_geocode and reformat like cache
-# 3 attempts to avoid API connectivity issues
-r <- NULL
-attempt <- 0
-while(is.null(r) && attempt <= 3) {
-  attempt <- attempt + 1
-  try(
-    df_dimProperty_fas_ll_new <- mutate_geocode(
+# attempt to geocode to_geocode and reformat like cache
+# 3 attempts to avoid API connectivity issues (needed?)
+# r <- NULL
+# attempt <- 0
+# while(is.null(r) && attempt <= 3) {
+#   attempt <- attempt + 1
+#   try(
+#     df_dimProperty_fas_ll_new <- mutate_geocode(
+#       subset(to_geocode, select=c("full_address")),
+#       full_address
+#       )
+#   )
+# }
+# try(
+#   df_dimProperty_fll_new
+# )
+
+# single run - need to get this working
+# 1 - try run without try()
+# 2 - try run just 10 records of to_geocode 
+df_dimProperty_fas_ll_new <- mutate_geocode(
       subset(to_geocode, select=c("full_address")),
-      full_address
-      )
-  )
-}
-try(
-  df_dimProperty_fll_new
-)
+      full_address)
+df_dimProperty_fll_new
 ```
 
 ```{r}
@@ -166,7 +185,7 @@ dimProperty_fll_merged
 ```
 
 ```{r}
-# this data ready for analysis, just need to exclude nulls for plot
+# this data ready for analysis, just need to exclude nulls (if applicable) for plot
 df <- read.csv("geocoded_loc_ref.csv")
 df
 ```
@@ -197,3 +216,7 @@ locations_sf
 # POC map
 mapview(locations_sf)
 ```
+```{r}
+
+```
+
