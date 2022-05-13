@@ -111,19 +111,53 @@ to_geocode <- sqldf("
           ")
 to_geocode
 ```
-```{r}
+```{r test}
 dft <- data.frame(
-  address = c("1600 Pennsylvania Avenue, Washington DC", "", "houston texas"),
+  address = c("1600 Pennsylvania Avenue, Washington DC", "", "houston texas", "nonexistent addr"),
   stringsAsFactors = FALSE
 )
 
-mutate_geocode(dft, address)
-
-dft %>% mutate_geocode(address)
+dft <- mutate_geocode(dft, address)
 dft
 ```
+```{r test2}
+# geocode random 3 from dimProperty - issue is format of to_geocode
+# dft2 <- mutate_geocode(
+#   subset(to_geocode[sample(nrow(to_geocode), 3), ], select=c("full_address"))
+#   ,full_address)
+# colnames(dft2) <- c("full_address", "longitude", "latitude")
+# dft2 <- to_geocode[sample(nrow(to_geocode), 3), ]
+# dft2
+# mutate_geocode(dft2, full_address)
+```
 
-```{r}
+```{r test3}
+# subset(dimProperty[sample(nrow(dimProperty), 3), ], select=c("full_address"))
+# dimProperty
+```
+
+```{r test4}
+# dftest <- data.frame(to_geocode[sample(nrow(to_geocode), 3), ])
+# colnames(dftest) <- c("full_address")
+# dftest
+# to_geocode
+```
+
+```{r test5}
+# # geocode a subset
+# # dftest <- data.frame(to_geocode[sample(nrow(to_geocode), 100), ], stringsAsFactors=FALSE)
+# 
+# # or geocode all
+# dftest <- data.frame(to_geocode, stringsAsFactors=FALSE)
+# 
+# colnames(dftest) <- c("full_address")
+# # dftest
+# 
+# dftestres <- mutate_geocode(dftest, full_address)
+# dftestres
+```
+
+```{r to geocode}
 # attempt to geocode to_geocode and reformat like cache
 # 3 attempts to avoid API connectivity issues (needed?)
 # r <- NULL
@@ -131,7 +165,7 @@ dft
 # while(is.null(r) && attempt <= 3) {
 #   attempt <- attempt + 1
 #   try(
-#     df_dimProperty_fas_ll_new <- mutate_geocode(
+#     v <- mutate_geocode(
 #       subset(to_geocode, select=c("full_address")),
 #       full_address
 #       )
@@ -141,67 +175,68 @@ dft
 #   df_dimProperty_fll_new
 # )
 
-# single run - need to get this working
-# 1 - try run without try()
-# 2 - try run just 10 records of to_geocode 
-df_dimProperty_fas_ll_new <- mutate_geocode(
-      subset(to_geocode, select=c("full_address")),
-      full_address)
+# single run - working
+df_dimProperty_fll_new <- data.frame(to_geocode, stringsAsFactors=FALSE)
+colnames(df_dimProperty_fll_new) <- c("full_address")
+df_dimProperty_fll_new <- mutate_geocode(df_dimProperty_fll_new, full_address)
+colnames(df_dimProperty_fll_new) <- c("full_address", "longitude", "latitude")
 df_dimProperty_fll_new
 ```
 
-```{r}
+```{r update cache accordingly }
 if(exists("df_dimProperty_fll_new")){
   # non-empty = write
   # merge with cached if above results are non-empty 
-dimProperty_fll_merged <- merge(x=dimProperty_fll, 
-                                y=df_dimProperty_fll_new, 
-                                by="full_address", 
+  dimProperty_fll_merged <- merge(x=dimProperty_fll,
+                                y=df_dimProperty_fll_new,
+                                by="full_address",
                                 all=TRUE)
 
-# reformat
-skew_rows <- which(!is.na(dimProperty_fll_merged[, 4])) 
-
-# shift .y's left
-if(length(skew_rows) != 0){
-  for(i in skew_rows){
-  dimProperty_fll_merged[i, 2:3] <- dimProperty_fll_merged[i, 4:5]
+  # reformat
+  skew_rows <- which(!is.na(dimProperty_fll_merged[, 4]))
+  
+  # shift .y's left
+  if(length(skew_rows) != 0){
+    for(i in skew_rows){
+    dimProperty_fll_merged[i, 2:3] <- dimProperty_fll_merged[i, 4:5]
+    }
   }
-}
-
-# discard old columnns
-dimProperty_fll_merged <- subset(dimProperty_fll_merged, select=c("full_address", "longitude", "latitude"))
-
-# update cache
-write.csv(dimProperty_fll_merged,
-          "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
-          row.names=FALSE)
-
-# view new
-dimProperty_fll_merged
+  
+  colnames(dimProperty_fll_merged)[2:3] <- c("longitude", "latitude")
+  # discard old columnns
+  dimProperty_fll_merged <- subset(dimProperty_fll_merged, 
+                                   select=c("full_address", "longitude", "latitude"))
+  
+  # # update cache
+  write.csv(
+    dimProperty_fll_merged,"C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
+    row.names=FALSE)
+  
+  # view new
+  dimProperty_fll_merged
 } else {
   print("No new geocoded data, not updating cache")
 }
 ```
 
-```{r}
+```{r read updated cache}
 # this data ready for analysis, just need to exclude nulls (if applicable) for plot
 df <- read.csv("geocoded_loc_ref.csv")
 df
 ```
 
-```{r}
-# # remove nulls (if applicable - if add failed geocode to cache)
-# df <- sqldf("
-#           SELECT 
-#           * 
-#           FROM 
-#           df
-#           WHERE 
-#           (longitude IS NOT NULL OR latitude IS NOT NULL)
-#           ;
-#           ")
-# df
+```{r create and view sf}
+# remove nulls (if blanks in cache)
+df <- sqldf("
+          SELECT
+          *
+          FROM
+          df
+          WHERE
+          (longitude IS NOT NULL OR latitude IS NOT NULL)
+          ;
+          ")
+df
 ```
 
 ```{r}
@@ -212,11 +247,13 @@ locations_sf <- st_as_sf(df,
 locations_sf
 ```
 
-```{r}
-# POC map
+```{r POC map}
 mapview(locations_sf)
 ```
-```{r}
-
+```{r test next}
+map <- get_googlemap(center = c(144, -30), zoom = 6)
+ggmap(map)
+# ggmap(map) +
+# geom_point(data = locations, aes(x = lon, y = lat))
 ```
 
