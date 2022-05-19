@@ -3,9 +3,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
 ```{r Imports}
-# install.packages("Rcpp")
-# install.packages("DBI")
-# install.packages("RPostgres")
+library(Rcpp)
 library(plyr)
 library(RPostgres)
 library(DBI)
@@ -25,7 +23,7 @@ register_google(key=Sys.getenv("Google_Maps_Platform_API_Key"))
 con <- dbConnect(RPostgres::Postgres(), 
                  host="localhost",
                  port="5432",
-                 dbname="REI_Stage",
+                 dbname="REI_Prod",
                  user="postgres",
                  password=rstudioapi::askForPassword("Database password"))
 
@@ -61,25 +59,30 @@ dimProperty_fll <- read.csv("geocoded_loc_ref.csv")
 dimProperty_fll
 ```
 
-```{r RUN THIS IF NO CACHE FILE}
-# dimProperty_fll <- mutate_geocode(subset(dimProperty, select=c("full_address")), full_address)
-# colnames(dimProperty_fll) <- c("full_address", "longitude", "latitude")
-# 
-## geocode failed:
-# sqldf("
-#           SELECT
-#           *
-#           FROM
-#           dimProperty_fll
-#           WHERE
-#           (longitude IS NULL AND latitude IS NULL)
-#           ;
-#           ")
-# 
-# # save scrape
-# write.csv(dimProperty_fll,
-# "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
-# row.names=FALSE)
+```{r}
+if(!file.exists("geocoded_loc_ref.csv")){
+  # no cache - gen new cache
+  dimProperty_fll <- mutate_geocode(subset(dimProperty, select=c("full_address")), full_address)
+  colnames(dimProperty_fll) <- c("full_address", "longitude", "latitude")
+
+  # geocode failed:
+  sqldf("
+            SELECT
+            *
+            FROM
+            dimProperty_fll
+            WHERE
+            (longitude IS NULL AND latitude IS NULL)
+            ;
+            ")
+
+  # save scrape
+  write.csv(dimProperty_fll,
+  "C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
+  row.names=FALSE)
+}else{
+  print("Cache exists, skipped step...")
+}
 ```
 
 ```{r Comp between cached and dimProp}
@@ -111,76 +114,16 @@ to_geocode <- sqldf("
           ")
 to_geocode
 ```
-```{r test}
-dft <- data.frame(
-  address = c("1600 Pennsylvania Avenue, Washington DC", "", "houston texas", "nonexistent addr"),
-  stringsAsFactors = FALSE
-)
-
-dft <- mutate_geocode(dft, address)
-dft
-```
-```{r test2}
-# geocode random 3 from dimProperty - issue is format of to_geocode
-# dft2 <- mutate_geocode(
-#   subset(to_geocode[sample(nrow(to_geocode), 3), ], select=c("full_address"))
-#   ,full_address)
-# colnames(dft2) <- c("full_address", "longitude", "latitude")
-# dft2 <- to_geocode[sample(nrow(to_geocode), 3), ]
-# dft2
-# mutate_geocode(dft2, full_address)
-```
-
-```{r test3}
-# subset(dimProperty[sample(nrow(dimProperty), 3), ], select=c("full_address"))
-# dimProperty
-```
-
-```{r test4}
-# dftest <- data.frame(to_geocode[sample(nrow(to_geocode), 3), ])
-# colnames(dftest) <- c("full_address")
-# dftest
-# to_geocode
-```
-
-```{r test5}
-# # geocode a subset
-# # dftest <- data.frame(to_geocode[sample(nrow(to_geocode), 100), ], stringsAsFactors=FALSE)
-# 
-# # or geocode all
-# dftest <- data.frame(to_geocode, stringsAsFactors=FALSE)
-# 
-# colnames(dftest) <- c("full_address")
-# # dftest
-# 
-# dftestres <- mutate_geocode(dftest, full_address)
-# dftestres
-```
 
 ```{r to geocode}
-# attempt to geocode to_geocode and reformat like cache
-# 3 attempts to avoid API connectivity issues (needed?)
-# r <- NULL
-# attempt <- 0
-# while(is.null(r) && attempt <= 3) {
-#   attempt <- attempt + 1
-#   try(
-#     v <- mutate_geocode(
-#       subset(to_geocode, select=c("full_address")),
-#       full_address
-#       )
-#   )
-# }
-# try(
-#   df_dimProperty_fll_new
-# )
-
-# single run - working
-df_dimProperty_fll_new <- data.frame(to_geocode, stringsAsFactors=FALSE)
-colnames(df_dimProperty_fll_new) <- c("full_address")
-df_dimProperty_fll_new <- mutate_geocode(df_dimProperty_fll_new, full_address)
-colnames(df_dimProperty_fll_new) <- c("full_address", "longitude", "latitude")
-df_dimProperty_fll_new
+if(dim(to_geocode)[1] != 0){
+  # single run - working
+  df_dimProperty_fll_temp <- data.frame(to_geocode, stringsAsFactors=FALSE)
+  colnames(df_dimProperty_fll_temp) <- c("full_address")
+  df_dimProperty_fll_new <- mutate_geocode(df_dimProperty_fll_temp, full_address)
+  colnames(df_dimProperty_fll_new) <- c("full_address", "longitude", "latitude")
+  df_dimProperty_fll_new
+}
 ```
 
 ```{r update cache accordingly }
@@ -234,9 +177,24 @@ df <- sqldf("
           df
           WHERE
           (longitude IS NOT NULL OR latitude IS NOT NULL)
+          AND
+          (latitude < -10.360438)
+          AND
+          (latitude < -10.360438)
+          AND
+          (latitude > -45.599262)
+          AND
+          (longitude > 111.861226)
+          AND
+          (longitude < 155.542866)
           ;
           ")
 df
+
+# AU
+# UB and LB = -10.360438 <-> -45.599262 (latitude range)
+# LB and RB = 111.861226 <-> 155.542866 (longitude range)
+ 
 ```
 
 ```{r}
@@ -250,10 +208,3 @@ locations_sf
 ```{r POC map}
 mapview(locations_sf)
 ```
-```{r test next}
-map <- get_googlemap(center = c(144, -30), zoom = 6)
-ggmap(map)
-# ggmap(map) +
-# geom_point(data = locations, aes(x = lon, y = lat))
-```
-
