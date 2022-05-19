@@ -91,14 +91,83 @@ to_geocode <- sqldf("
           dimProperty_fll
           ;
           ")
-to_geocode
+# to_geocode
 
+if(dim(to_geocode)[1] != 0){
+  # single run - working
+  df_dimProperty_fll_temp <- data.frame(to_geocode, stringsAsFactors=FALSE)
+  colnames(df_dimProperty_fll_temp) <- c("full_address")
+  df_dimProperty_fll_new <- mutate_geocode(df_dimProperty_fll_temp, full_address)
+  colnames(df_dimProperty_fll_new) <- c("full_address", "longitude", "latitude")
+  # df_dimProperty_fll_new
+}
 
+if(exists("df_dimProperty_fll_new")){
+  # non-empty = write
+  # merge with cached if above results are non-empty 
+  dimProperty_fll_merged <- merge(x=dimProperty_fll,
+                                  y=df_dimProperty_fll_new,
+                                  by="full_address",
+                                  all=TRUE)
+  
+  # reformat
+  skew_rows <- which(!is.na(dimProperty_fll_merged[, 4]))
+  
+  # shift .y's left
+  if(length(skew_rows) != 0){
+    for(i in skew_rows){
+      dimProperty_fll_merged[i, 2:3] <- dimProperty_fll_merged[i, 4:5]
+    }
+  }
+  
+  colnames(dimProperty_fll_merged)[2:3] <- c("longitude", "latitude")
+  # discard old columnns
+  dimProperty_fll_merged <- subset(dimProperty_fll_merged, 
+                                   select=c("full_address", "longitude", "latitude"))
+  # # update cache
+  write.csv(
+    dimProperty_fll_merged,"C:/Users/User/Documents/FINANCES_CAREER/ONLINE_BUSINESS/Backend_API_v2/eda/geocoded_loc_ref.csv",
+    row.names=FALSE)
+  # view new
+  # dimProperty_fll_merged
+}
 
+# this data ready for analysis, just need to exclude nulls (if applicable) for plot
+# df <- read.csv("geocoded_loc_ref.csv")
+# # df
+# 
+# # remove nulls (if blanks in cache)
+# df <- sqldf("
+#           SELECT
+#           *
+#           FROM
+#           df
+#           WHERE
+#           (longitude IS NOT NULL OR latitude IS NOT NULL)
+#           AND
+#           (latitude < -10.360438)
+#           AND
+#           (latitude < -10.360438)
+#           AND
+#           (latitude > -45.599262)
+#           AND
+#           (longitude > 111.861226)
+#           AND
+#           (longitude < 155.542866)
+#           ;
+#           ")
+# df
+# AU
+# UB and LB = -10.360438 <-> -45.599262 (latitude range)
+# LB and RB = 111.861226 <-> 155.542866 (longitude range)
 
+# check that the geocoding done correctly with mapview
+# locations_sf <- st_as_sf(df, 
+#                          coords=c("longitude", "latitude"), 
+#                          crs=4326)
+# locations_sf
 
-
-
+# mapview(locations_sf)
 
 
 
