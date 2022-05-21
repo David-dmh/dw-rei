@@ -2,7 +2,7 @@ cd "%Backend_API_v2%"
 
 :: REI_Stage load
 ::call %Backend_API_v2%\venv\Scripts\activate.bat
-::python "%Backend_API_v2%\etl job\REI_Stage ETL.py"
+::python "%Backend_API_v2%\jobs\REI_Stage ETL.py"
 
 :: backup
 C:\"Program Files"\PostgreSQL\13\bin\pg_dump.exe -U postgres -h localhost -p 5432 -d REI_Stage --format=c --data-only > "jobs\REI_Stage backups\REI_Stage_backup.backup"
@@ -14,4 +14,4 @@ C:\"Program Files"\PostgreSQL\13\bin\pg_dump.exe -U postgres -h localhost -p 543
 C:\"Program Files"\PostgreSQL\13\bin\pg_restore.exe -U postgres -h localhost -p 5432 -d REI_Prod < "jobs\REI_Stage backups\REI_Stage_backup.backup"
 
 :: R load
-Rscript.exe eda\test.R
+Rscript.exe "jobs\dimProperty geocode.R"
