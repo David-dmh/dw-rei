@@ -168,17 +168,3 @@ if(exists("df_dimProperty_fll_new")){
 # locations_sf
 
 # mapview(locations_sf)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
