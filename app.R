@@ -1,3 +1,5 @@
+setwd(Sys.getenv("Backend_API_v2"))
+
 renv::activate()
 
 library(shiny)
@@ -6,7 +8,9 @@ library(mapview)
 library(shinythemes)
 library(dashboardthemes)
 library(RPostgres)
-
+library(leaflet)
+library(sqldf)
+library(sf)
 
 ui <- dashboardPage(
   dashboardHeader(title = "REI Data Warehouse"),

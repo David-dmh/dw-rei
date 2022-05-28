@@ -1,3 +1,5 @@
+setwd(Sys.getenv("Backend_API_v2"))
+
 renv::activate()
 
 library(Rcpp)
@@ -9,8 +11,6 @@ library(ggmap)
 library(sqldf)
 library(sf)
 library(mapview)
-
-setwd(Sys.getenv("Backend_API_v2"))
 
 # ?register_google
 register_google(key=Sys.getenv("Google_Maps_Platform_API_Key"))
