@@ -5,6 +5,8 @@ library(shinydashboard)
 library(mapview)
 library(shinythemes)
 library(dashboardthemes)
+library(RPostgres)
+
 
 ui <- dashboardPage(
   dashboardHeader(title = "REI Data Warehouse"),
@@ -43,7 +45,46 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output) {
-  # plot 3
+  
+  ##########################################
+  # tab 1 - Australia housing outlook - slice by state
+  ##########################################
+  # - median house price
+  # - bar graph with no. bedrooms, bath, parking
+  # - median house/land size
+  # - 'hottest' suburbs 
+  # - slicer to slice above by state
+  
+  ##########################################
+  con <- dbConnect(RPostgres::Postgres(),
+                   host="localhost",
+                   port="5432",
+                   dbname="REI_Prod",
+                   user="postgres",
+                   password=Sys.getenv("REI_Prod_password"))
+  
+  factListings <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"factListings\"
+  ;
+  ")
+  
+  # put a card of number of listings - slice by states - 1 query modifying where clause
+  factListings[1]
+ 
+  dimProperty <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"dimProperty\"
+  ;
+  ")
+
+  ##########################################
+  # tab 2 - map only - change to FL
+  ##########################################
   ref_df <-
     read.csv(paste0(
       Sys.getenv("Backend_API_v2"),
@@ -87,4 +128,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
-
