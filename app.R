@@ -42,7 +42,7 @@ ui <- dashboardPage(
         ),
         fluidRow(
           column(
-            width = 4,
+            width = 8,
             
             box(
               title = "Number of listings",
@@ -50,41 +50,41 @@ ui <- dashboardPage(
               solidHeader = TRUE,
               plotOutput("graph1")
             ),
-            box(
-              title = "Title",
-              width = NULL,
-              solidHeader = TRUE,
-              "Box content"
-            ),
-            box(
-              title = "Title",
-              width = NULL,
-              solidHeader = TRUE,
-              "Box content"
-            )
+            # box(
+            #   title = "Title",
+            #   width = NULL,
+            #   solidHeader = TRUE,
+            #   "Box content"
+            # ),
+            # box(
+            #   title = "Title",
+            #   width = NULL,
+            #   solidHeader = TRUE,
+            #   "Box content"
+            # )
           ),
           
-          column(
-            width = 4,
-            box(
-              title = "Median price",
-              width = NULL,
-              solidHeader = TRUE,
-              "Box content"
-            ),
-            box(
-              title = "Title",
-              width = NULL,
-              solidHeader = TRUE,
-              "Box content"
-            ),
-            box(
-              title = "Title",
-              width = NULL,
-              solidHeader = TRUE,
-              "Box content"
-            )
-          ),
+          # column(
+          #   width = 4,
+          #   box(
+          #     title = "Median price",
+          #     width = NULL,
+          #     solidHeader = TRUE,
+          #     "Box content"
+          #   ),
+          #   box(
+          #     title = "Title",
+          #     width = NULL,
+          #     solidHeader = TRUE,
+          #     "Box content"
+          #   ),
+          #   box(
+          #     title = "Title",
+          #     width = NULL,
+          #     solidHeader = TRUE,
+          #     "Box content"
+          #   )
+          # ),
           
           column(
             width = 4,
@@ -184,13 +184,10 @@ server <- function(input, output) {
     )
   })
   
-  
+  usa <- dplyr::filter(gapminder, continent=="Americas", country=="United States")
+
   output$graph1 <- renderPlot({
-  
-    usa <- gapminder %>%
-      filter(continent == "Americas", country == "United States")
-    
-    ggplot(usa, aes(x = year, y = pop)) +
+      ggplot(usa, aes(x = year, y = pop)) +
       geom_line()
     
   })
