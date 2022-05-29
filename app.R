@@ -127,6 +127,43 @@ server <- function(input, output) {
   ;
   ")
   
+  df_price_graph <- sqldf(
+    "
+    SELECT 
+    listing_download_date
+    ,median(price) AS median_p
+    FROM 
+    factListings 
+    GROUP BY 
+    listing_download_date
+    ;
+    "
+  )
+  
+  df_median_price <- sqldf(
+    "
+    SELECT 
+    median(price)
+    FROM 
+    factListings
+    ;
+    "
+  )
+  
+  
+  df_median_land_size <- sqldf(
+    "
+    SELECT 
+    median(land_size)
+    FROM 
+    factListings
+    WHERE
+    land_size_unit = 'm²'
+    ;
+    "
+  )
+  
+  
   #####################
   
   # put a card of number of listings - slice by states - 1 query modifying where clause
@@ -141,7 +178,7 @@ server <- function(input, output) {
   
   output$listingMedianPriceBox <- renderValueBox({
     valueBox(
-      0.5,
+      df_median_price[1, 1],
       "Median price",
       icon = icon("dollar-sign"),
       color = "yellow"
@@ -150,25 +187,13 @@ server <- function(input, output) {
   
   output$listingMedianLandSizeBox <- renderValueBox({
     valueBox(
-      paste0(500, " m2"),
+      paste0(df_median_land_size[1, 1], " m2"),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
       color = "red"
     )
   })
-  
-  df_price_graph <- sqldf(
-    "
-    SELECT 
-    listing_download_date
-    ,median(price) AS median_p
-    FROM 
-    factListings 
-    GROUP BY 
-    listing_download_date
-    ;
-    "
-    )
+
   
   output$PriceGraph <- renderPlot({
       ggplot(df_price_graph, aes(x = listing_download_date, 
@@ -176,10 +201,6 @@ server <- function(input, output) {
                                  group=1))  +
       geom_line() +
       geom_point()
-    
-    # ggplot(data=df, aes(x=dose, y=len, group=1)) +
-    #   geom_line()+
-    #   geom_point()
     
   })
   
