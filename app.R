@@ -11,7 +11,7 @@ library(RPostgres)
 library(leaflet)
 library(sqldf)
 library(sf)
-library(gapminder)
+# library(gapminder)
 library(ggplot2)
 
 ui <- dashboardPage(
@@ -40,43 +40,46 @@ ui <- dashboardPage(
           
           valueBoxOutput("listingMedianLandSizeBox")
         ),
-        fluidRow(
-          column(
-            width = 8,
-            
-            box(
-              title = "Median prices",
-              width = NULL,
-              solidHeader = TRUE,
-              plotOutput("PriceGraph")
-            ),
-
-          ),
-        
+        fluidRow(column(
+          width = 8,
           
-          column(
-            width = 4,
-            box(
-              title = "Slicer",
-              width = NULL,
-              solidHeader = TRUE,
-              status = "primary",
-              # background = "light-blue",
-              
-              radioButtons("dist", "Region:",
-                           c("Australia" = "Australia",
-                             "Australian Capital Territory" = "Australian Capital Territory",
-                             "New South Wales" = "New South Wales",
-                             "Northern Territory" = "Northern Territory",
-                             "Queensland" = "Queensland",
-                             "South Australia" = "South Australia",
-                             "Tasmania" = "Tasmania",
-                             "Victoria" = "Victoria",
-                             "Western Australia" = "Western Australia"))
-            )
+          box(
+            title = "Median prices",
+            width = NULL,
+            solidHeader = TRUE,
+            plotOutput("PriceGraph")
+          ),
+          
+        ),
+        
+        
+        column(
+          width = 4,
+          box(
+            title = "Slicer",
+            width = NULL,
+            solidHeader = TRUE,
+            status = "primary",
+            # background = "light-blue",
             
+            radioButtons(
+              "dist",
+              "Region:",
+              c(
+                "Australia" = "Australia",
+                "Australian Capital Territory" = "Australian Capital Territory",
+                "New South Wales" = "New South Wales",
+                "Northern Territory" = "Northern Territory",
+                "Queensland" = "Queensland",
+                "South Australia" = "South Australia",
+                "Tasmania" = "Tasmania",
+                "Victoria" = "Victoria",
+                "Western Australia" = "Western Australia"
+              )
+            )
           )
-        )
+          
+        ))
       ),
       
       # second tab content
@@ -129,51 +132,45 @@ server <- function(input, output) {
   
   df_price_graph <- sqldf(
     "
-    SELECT 
+    SELECT
     listing_download_date
     ,median(price) AS median_p
-    FROM 
-    factListings 
-    GROUP BY 
+    FROM
+    factListings
+    GROUP BY
     listing_download_date
     ;
     "
   )
   
-  df_median_price <- sqldf(
-    "
-    SELECT 
+  df_median_price <- sqldf("
+    SELECT
     median(price)
-    FROM 
+    FROM
     factListings
     ;
-    "
-  )
+    ")
   
   
-  df_median_land_size <- sqldf(
-    "
-    SELECT 
+  df_median_land_size <- sqldf("
+    SELECT
     median(land_size)
-    FROM 
+    FROM
     factListings
     WHERE
     land_size_unit = 'm²'
     ;
-    "
-  )
+    ")
   
   
   #####################
   
   # put a card of number of listings - slice by states - 1 query modifying where clause
   output$listingNumberBox <- renderValueBox({
-    valueBox(
-      dim(factListings)[1],
-      "Listings",
-      icon = icon("home"),
-      color = "green"
-    )
+    valueBox(dim(factListings)[1],
+             "Listings",
+             icon = icon("home"),
+             color = "green")
   })
   
   output$listingMedianPriceBox <- renderValueBox({
@@ -187,18 +184,19 @@ server <- function(input, output) {
   
   output$listingMedianLandSizeBox <- renderValueBox({
     valueBox(
-      paste0(df_median_land_size[1, 1], " m2"),
+      paste0(df_median_land_size[1, 1], " m²"),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
-      color = "red"
+      color = "purple"
     )
   })
-
+  
   
   output$PriceGraph <- renderPlot({
-      ggplot(df_price_graph, aes(x = listing_download_date, 
-                                 y = median_p, 
-                                 group=1))  +
+    ggplot(df_price_graph,
+           aes(x = listing_download_date,
+               y = median_p,
+               group = 1))  +
       geom_line() +
       geom_point()
     
