@@ -45,46 +45,14 @@ ui <- dashboardPage(
             width = 8,
             
             box(
-              title = "Number of listings",
+              title = "Median prices",
               width = NULL,
               solidHeader = TRUE,
-              plotOutput("graph1")
+              plotOutput("PriceGraph")
             ),
-            # box(
-            #   title = "Title",
-            #   width = NULL,
-            #   solidHeader = TRUE,
-            #   "Box content"
-            # ),
-            # box(
-            #   title = "Title",
-            #   width = NULL,
-            #   solidHeader = TRUE,
-            #   "Box content"
-            # )
+
           ),
-          
-          # column(
-          #   width = 4,
-          #   box(
-          #     title = "Median price",
-          #     width = NULL,
-          #     solidHeader = TRUE,
-          #     "Box content"
-          #   ),
-          #   box(
-          #     title = "Title",
-          #     width = NULL,
-          #     solidHeader = TRUE,
-          #     "Box content"
-          #   ),
-          #   box(
-          #     title = "Title",
-          #     width = NULL,
-          #     solidHeader = TRUE,
-          #     "Box content"
-          #   )
-          # ),
+        
           
           column(
             width = 4,
@@ -131,6 +99,9 @@ server <- function(input, output) {
   # - slicer to slice above by state
   # - slice by time period (download date)
   
+  ################
+  # GET DATA
+  ##################
   con <- dbConnect(
     RPostgres::Postgres(),
     host = "localhost",
@@ -156,10 +127,12 @@ server <- function(input, output) {
   ;
   ")
   
+  #####################
+  
   # put a card of number of listings - slice by states - 1 query modifying where clause
   output$listingNumberBox <- renderValueBox({
     valueBox(
-      10000,
+      dim(factListings)[1],
       "Listings",
       icon = icon("home"),
       color = "green"
@@ -184,11 +157,29 @@ server <- function(input, output) {
     )
   })
   
-  usa <- dplyr::filter(gapminder, continent=="Americas", country=="United States")
-
-  output$graph1 <- renderPlot({
-      ggplot(usa, aes(x = year, y = pop)) +
-      geom_line()
+  df_price_graph <- sqldf(
+    "
+    SELECT 
+    listing_download_date
+    ,median(price) AS median_p
+    FROM 
+    factListings 
+    GROUP BY 
+    listing_download_date
+    ;
+    "
+    )
+  
+  output$PriceGraph <- renderPlot({
+      ggplot(df_price_graph, aes(x = listing_download_date, 
+                                 y = median_p, 
+                                 group=1))  +
+      geom_line() +
+      geom_point()
+    
+    # ggplot(data=df, aes(x=dose, y=len, group=1)) +
+    #   geom_line()+
+    #   geom_point()
     
   })
   
@@ -259,5 +250,8 @@ server <- function(input, output) {
             alpha.regions = 0.2)@map
   })
 }
+
+
+################
 
 shinyApp(ui, server)
