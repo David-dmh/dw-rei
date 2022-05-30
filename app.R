@@ -11,12 +11,13 @@ library(RPostgres)
 library(leaflet)
 library(sqldf)
 library(sf)
-# library(gapminder)
+library(ggthemes)
 library(ggplot2)
+library(formattable)
 
 ui <- dashboardPage(
   # theme = shinytheme("united"),
-  dashboardHeader(title = "AU Properties"),
+  dashboardHeader(title = "REI AU"),
   dashboardSidebar(sidebarMenu(
     menuItem(
       "Dashboard",
@@ -133,8 +134,8 @@ server <- function(input, output) {
   df_price_graph <- sqldf(
     "
     SELECT
-    listing_download_date
-    ,median(price) AS median_p
+    listing_download_date AS Listing_Date
+    ,median(price) AS Median_Price
     FROM
     factListings
     GROUP BY
@@ -167,7 +168,7 @@ server <- function(input, output) {
   
   # put a card of number of listings - slice by states - 1 query modifying where clause
   output$listingNumberBox <- renderValueBox({
-    valueBox(dim(factListings)[1],
+    valueBox(currency(dim(factListings)[1], big.mark=" ", digits=0L, symbol=""),
              "Listings",
              icon = icon("home"),
              color = "green")
@@ -175,16 +176,21 @@ server <- function(input, output) {
   
   output$listingMedianPriceBox <- renderValueBox({
     valueBox(
-      df_median_price[1, 1],
+      currency(df_median_price[1, 1], 
+               digits=0L,
+               symbol=""),
       "Median price",
       icon = icon("dollar-sign"),
-      color = "yellow"
+      color = "orange"
     )
   })
   
   output$listingMedianLandSizeBox <- renderValueBox({
     valueBox(
-      paste0(df_median_land_size[1, 1], " m²"),
+      paste0(currency(
+        df_median_land_size[1, 1], big.mark=" ", digits=0L, symbol=""
+        ), " m²"
+        ),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
       color = "purple"
@@ -194,12 +200,21 @@ server <- function(input, output) {
   
   output$PriceGraph <- renderPlot({
     ggplot(df_price_graph,
-           aes(x = listing_download_date,
-               y = median_p,
+           aes(x = Listing_Date,
+               y = Median_Price,
                group = 1))  +
       geom_line() +
-      geom_point()
-    
+      geom_point() +
+      # theme_calc
+      # theme_economist_white
+      # theme_excel
+      # theme_excel_new
+      # 
+      # 
+      ggthemes::theme_few() +
+    theme(axis.text.x = element_text(angle = -270,
+                                     hjust = 0,
+                                     vjust=-0.1))
   })
   
   ##########################################
