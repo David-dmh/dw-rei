@@ -45,7 +45,7 @@ ui <- dashboardPage(
           width = 8,
           
           box(
-            title = "Median prices",
+            # title = "",
             width = NULL,
             solidHeader = TRUE,
             plotOutput("PriceGraph")
@@ -177,7 +177,7 @@ server <- function(input, output) {
       ),
       "Listings",
       icon = icon("home"),
-      color = "green"
+      color = "blue"
     )
   })
   
@@ -188,7 +188,7 @@ server <- function(input, output) {
                symbol = ""),
       "Median price",
       icon = icon("dollar-sign"),
-      color = "orange"
+      color = "blue"
     )
   })
   
@@ -205,10 +205,9 @@ server <- function(input, output) {
       ),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
-      color = "purple"
+      color = "blue"
     )
   })
-  
   
   output$PriceGraph <- renderPlot({
     ggplot(df_price_graph,
@@ -217,13 +216,7 @@ server <- function(input, output) {
                group = 1))  +
       geom_line() +
       geom_point() +
-      # theme_calc
-      # theme_economist_white
-      # theme_excel
-      # theme_excel_new
-      #
-      #
-      ggthemes::theme_few() +
+      ggthemes::theme_fivethirtyeight() +
       theme(axis.text.x = element_text(
         angle = -270,
         hjust = 0,
