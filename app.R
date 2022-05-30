@@ -168,17 +168,24 @@ server <- function(input, output) {
   
   # put a card of number of listings - slice by states - 1 query modifying where clause
   output$listingNumberBox <- renderValueBox({
-    valueBox(currency(dim(factListings)[1], big.mark=" ", digits=0L, symbol=""),
-             "Listings",
-             icon = icon("home"),
-             color = "green")
+    valueBox(
+      currency(
+        dim(factListings)[1],
+        big.mark = " ",
+        digits = 0L,
+        symbol = ""
+      ),
+      "Listings",
+      icon = icon("home"),
+      color = "green"
+    )
   })
   
   output$listingMedianPriceBox <- renderValueBox({
     valueBox(
-      currency(df_median_price[1, 1], 
-               digits=0L,
-               symbol=""),
+      currency(df_median_price[1, 1],
+               digits = 0L,
+               symbol = ""),
       "Median price",
       icon = icon("dollar-sign"),
       color = "orange"
@@ -187,10 +194,15 @@ server <- function(input, output) {
   
   output$listingMedianLandSizeBox <- renderValueBox({
     valueBox(
-      paste0(currency(
-        df_median_land_size[1, 1], big.mark=" ", digits=0L, symbol=""
-        ), " m²"
+      paste0(
+        currency(
+          df_median_land_size[1, 1],
+          big.mark = " ",
+          digits = 0L,
+          symbol = ""
         ),
+        " m²"
+      ),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
       color = "purple"
@@ -209,12 +221,14 @@ server <- function(input, output) {
       # theme_economist_white
       # theme_excel
       # theme_excel_new
-      # 
-      # 
+      #
+      #
       ggthemes::theme_few() +
-    theme(axis.text.x = element_text(angle = -270,
-                                     hjust = 0,
-                                     vjust=-0.1))
+      theme(axis.text.x = element_text(
+        angle = -270,
+        hjust = 0,
+        vjust = -0.1
+      ))
   })
   
   ##########################################
