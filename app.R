@@ -64,21 +64,21 @@ ui <- dashboardPage(
             # background = "light-blue",
             
             radioButtons(
-              "dist",
+              "region",
               "Region:",
               c(
-                "Australia" = "Australia",
-                "Australian Capital Territory" = "Australian Capital Territory",
-                "New South Wales" = "New South Wales",
-                "Northern Territory" = "Northern Territory",
-                "Queensland" = "Queensland",
-                "South Australia" = "South Australia",
-                "Tasmania" = "Tasmania",
-                "Victoria" = "Victoria",
-                "Western Australia" = "Western Australia"
+                "Australia" = "",
+                "Australian Capital Territory" = 0,
+                "New South Wales" = 1,
+                "Northern Territory" = 2,
+                "Queensland" = 3,
+                "South Australia" = 4,
+                "Tasmania" = 5,
+                "Victoria" = 6,
+                "Western Australia" = 7
               )
             )
-          )
+          ),
           
         ))
       ),
@@ -167,20 +167,50 @@ server <- function(input, output) {
   #####################
   
   # put a card of number of listings - slice by states - 1 query modifying where clause
+
+  # OLD #########################################
+    # output$listingNumberBox <- renderValueBox({
+  #   valueBox(
+  #     currency(
+  #       dim(factListings)[1],
+  #       big.mark = " ",
+  #       digits = 0L,
+  #       symbol = ""
+  #     ),
+  #     "Listings",
+  #     icon = icon("home"),
+  #     color = "blue"
+  #   )
+  # })
+  
+  # NEW #########################################
+  query_fact_count <- paste0("
+  SELECT
+  count(*)
+  FROM
+  public.\"factListings\"
+  ;
+  "
+  , 
+  "variable")
+  fact_count <- dbGetQuery(con, "
+  SELECT
+  count(*)
+  FROM
+  public.\"factListings\"
+  ;
+  "
+  )
+  
   output$listingNumberBox <- renderValueBox({
     valueBox(
-      currency(
         dim(factListings)[1],
-        big.mark = " ",
-        digits = 0L,
-        symbol = ""
-      ),
       "Listings",
       icon = icon("home"),
       color = "blue"
     )
   })
-  
+  ##############################################
   output$listingMedianPriceBox <- renderValueBox({
     valueBox(
       currency(df_median_price[1, 1],
