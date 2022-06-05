@@ -1,4 +1,4 @@
-setwd(Sys.getenv("Backend_API_v2"))
+setwd(Sys.getenv("dw-rei"))
 
 renv::activate()
 
@@ -49,7 +49,9 @@ dimProperty_fll <- read.csv("data/geocoded_loc_ref.csv")
 # if no cache at all in data/ dir
 if(!file.exists("data/geocoded_loc_ref.csv")){
   # no cache - gen new cache
-  dimProperty_fll <- mutate_geocode(subset(dimProperty, select=c("full_address")), full_address)
+  dimProperty_fll <- mutate_geocode(subset(dimProperty, 
+                                           select=c("full_address")), 
+                                    full_address)
   colnames(dimProperty_fll) <- c("full_address", "longitude", "latitude")
 
   # geocode failed:
@@ -98,7 +100,8 @@ if(dim(to_geocode)[1] != 0){
   # single run - working
   df_dimProperty_fll_temp <- data.frame(to_geocode, stringsAsFactors=FALSE)
   colnames(df_dimProperty_fll_temp) <- c("full_address")
-  df_dimProperty_fll_new <- mutate_geocode(df_dimProperty_fll_temp, full_address)
+  df_dimProperty_fll_new <- mutate_geocode(df_dimProperty_fll_temp, 
+                                           full_address)
   colnames(df_dimProperty_fll_new) <- c("full_address", "longitude", "latitude")
   # df_dimProperty_fll_new
 }
@@ -124,7 +127,9 @@ if(exists("df_dimProperty_fll_new")){
   colnames(dimProperty_fll_merged)[2:3] <- c("longitude", "latitude")
   # discard old columnns
   dimProperty_fll_merged <- subset(dimProperty_fll_merged,
-                                   select=c("full_address", "longitude", "latitude"))
+                                   select=c("full_address", 
+                                            "longitude", 
+                                            "latitude"))
   # # update cache
   write.csv(
     dimProperty_fll_merged,"data/geocoded_loc_ref.csv",

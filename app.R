@@ -27,7 +27,8 @@ ui <- dashboardPage(
              tabName = "3Map",
              icon = icon("map-pin"))
   )),
-  dashboardBody(# shinyDashboardThemes(theme = "grey_dark"),
+  dashboardBody(
+    # shinyDashboardThemes(theme = "grey_dark"),
     tabItems(
       # First tab content
       tabItem(
