@@ -1,0 +1,14 @@
+certifi==2022.5.18.1
+charset-normalizer==2.0.12
+fajita==0.0.2
+idna==3.3
+numpy==1.22.4
+pandas==1.4.2
+psycopg2==2.9.3
+python-dateutil==2.8.2
+pytz==2022.1
+-e git+https://github.com/tomquirk/realestate-com-au-api.git@a0052a6aaa01eb7c46838aa64067bd2071338435#egg=realestate_com_au_api
+requests==2.27.1
+six==1.16.0
+tzdata==2022.1
+urllib3==1.26.9
