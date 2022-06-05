@@ -16,7 +16,6 @@ library(ggplot2)
 library(formattable)
 
 ui <- dashboardPage(
-  # theme = shinytheme("united"),
   dashboardHeader(title = "REI AU"),
   dashboardSidebar(sidebarMenu(
     menuItem(

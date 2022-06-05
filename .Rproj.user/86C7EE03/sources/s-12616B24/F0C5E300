@@ -3,24 +3,24 @@
     "path": "~/Projects/dw-rei/app.R",
     "project_path": "app.R",
     "type": "r_source",
-    "hash": "1265189280",
+    "hash": "651869891",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1654286584828.0,
     "source_on_save": false,
     "relative_order": 1,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "3,0",
-        "scrollLine": "0"
+        "cursorPosition": "18,0",
+        "scrollLine": "13"
     },
     "folds": "",
-    "lastKnownWriteTime": 1654292252,
+    "lastKnownWriteTime": 1654443580,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1654367209504,
+    "last_content_update": 1654443580881,
     "read_only": false,
     "read_only_alternatives": []
 }
