@@ -27,8 +27,7 @@ ui <- dashboardPage(
              tabName = "3Map",
              icon = icon("map-pin"))
   )),
-  dashboardBody(
-    # shinyDashboardThemes(theme = "grey_dark"),
+  dashboardBody(# shinyDashboardThemes(theme = "grey_dark"),
     tabItems(
       # First tab content
       tabItem(
@@ -66,18 +65,19 @@ ui <- dashboardPage(
             radioButtons(
               "region",
               "Region:",
-              c(
-                "Australia" = "",
-                "Australian Capital Territory" = 0,
-                "New South Wales" = 1,
-                "Northern Territory" = 2,
-                "Queensland" = 3,
-                "South Australia" = 4,
-                "Tasmania" = 5,
-                "Victoria" = 6,
-                "Western Australia" = 7
+              c( # can change these mapping done in server below
+                "Australia" = "Australia",
+                "Australian Capital Territory" = "ACT",
+                "New South Wales" = "NSW",
+                "Northern Territory" = "NT",
+                "Queensland" = "QLD",
+                "South Australia" = "SA",
+                "Tasmania" = "TAS",
+                "Victoria" = "VIC",
+                "Western Australia" = "WA"
               )
             )
+            
           ),
           
         ))
@@ -167,9 +167,9 @@ server <- function(input, output) {
   #####################
   
   # put a card of number of listings - slice by states - 1 query modifying where clause
-
+  
   # OLD #########################################
-    # output$listingNumberBox <- renderValueBox({
+  # output$listingNumberBox <- renderValueBox({
   #   valueBox(
   #     currency(
   #       dim(factListings)[1],
@@ -184,32 +184,45 @@ server <- function(input, output) {
   # })
   
   # NEW #########################################
-  query_fact_count <- paste0("
-  SELECT
-  count(*)
-  FROM
-  public.\"factListings\"
-  ;
-  "
-  , 
-  "variable")
+  fact_count_var <- switch(input$region,
+                           ACT = "(0)",
+                           NSW = "(1)",
+                           NT = "(2)",
+                           QLD = "(3)",
+                           SA = "(4)",
+                           TAS = "(5)",
+                           VIC = "(6)",
+                           WA = "(7)",
+                           "(0, 1, 2, 3, 4, 5, 6, 7)"
+                           )  
+  
+  dyn_query_fact_count <- sprintf("SELECT count(*) FROM public.\"factListings\" WHERE \"state_id\" IN %s;",
+                                  fact_count_var
+  )
+  
+  dyn_query_fact_count_res <- dbGetQuery(con, dyn_query_fact_count)
+  
   fact_count <- dbGetQuery(con, "
   SELECT
   count(*)
   FROM
   public.\"factListings\"
   ;
-  "
-  )
-  
+  ")
+
   output$listingNumberBox <- renderValueBox({
-    valueBox(
-        dim(factListings)[1],
-      "Listings",
-      icon = icon("home"),
-      color = "blue"
-    )
+    valueBox(dyn_query_fact_count_res,
+             "Listings",
+             icon = icon("home"),
+             color = "blue")
   })
+  
+  # output$listingNumberBox <- renderValueBox({
+  #   valueBox(dim(factListings)[1],
+  #            "Listings",
+  #            icon = icon("home"),
+  #            color = "blue")
+  # })
   ##############################################
   output$listingMedianPriceBox <- renderValueBox({
     valueBox(
@@ -246,22 +259,23 @@ server <- function(input, output) {
                group = 1))  +
       geom_line() +
       geom_point() +
+      xlab("Listing Date") + 
+      ylab("Median Price") +
       ggthemes::theme_fivethirtyeight() +
       theme(axis.text.x = element_text(
         angle = -270,
         hjust = 0,
         vjust = -0.1
-      ))
+      ),
+      axis.title = element_text())
   })
   
   ##########################################
   # tab 2 - Map
   ##########################################
   
-  dimProperty_coords <- read.csv(paste0(
-    Sys.getenv("dw-rei"),
-    "/data/geocoded_loc_ref.csv"
-  ))
+  dimProperty_coords <- read.csv(paste0(Sys.getenv("dw-rei"),
+                                        "/data/geocoded_loc_ref.csv"))
   
   # remove nulls (if blanks in cache)
   dimProperty_coords <- sqldf(
