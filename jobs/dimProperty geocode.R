@@ -1,5 +1,7 @@
 setwd(Sys.getenv("dw-rei"))
 
+renv::load(Sys.getenv("dw-rei"))
+
 renv::activate()
 
 library(Rcpp)

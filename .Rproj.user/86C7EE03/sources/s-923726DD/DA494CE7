@@ -1,0 +1,26 @@
+{
+    "id": "DA494CE7",
+    "path": "~/Projects/dw-rei/jobs/dimProperty geocode.R",
+    "project_path": "jobs/dimProperty geocode.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1654546613852.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "9,12",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1654588423,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1654588423045,
+    "read_only": false,
+    "read_only_alternatives": []
+}
