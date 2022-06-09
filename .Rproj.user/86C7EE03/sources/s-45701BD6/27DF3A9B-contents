@@ -1,15 +1,88 @@
-var_aus <- "(0, 1, 2, 3, 4, 5, 6, 7)"
-var_ACT <- "(0)"
-var_NSW <- "(1)"
-var_NT <- "(2)"
-var_QLD <- "(3)"
-var_SA <- "(4)"
-var_TAS <- "(5)"
-var_VIC <- "(6)"
-var_WA <- "(7)"
+library(shiny)
+library(shinydashboard)
+library(RPostgres)
 
-dyn_query_fact_count <- sprintf("SELECT count(*) FROM public.\"factListings\" WHERE state_id IN %s;",
-                                var_ACT
+con <- dbConnect(
+  RPostgres::Postgres(),
+  host = "localhost",
+  port = "5432",
+  dbname = "REI_Prod",
+  user = "postgres",
+  password = "690151"
 )
 
-dyn_query_fact_count
+ui <- fluidPage(
+  radioButtons(
+    "region",
+    "Region:",
+    c( # can change these mapping done in server below
+      "Australia" = "Australia",
+      "Australian Capital Territory" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('0');"
+          )[1, 1]
+        ),
+      "New South Wales" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('1');"
+        )[1, 1]
+      ),
+      "Northern Territory" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('2');"
+        )[1, 1]
+      ),
+      "Queensland" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('3');"
+        )[1, 1]
+      ),
+      "South Australia" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('4');"
+        )[1, 1]
+      ),
+      "Tasmania" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('5');"
+        )[1, 1]
+      ),
+      "Victoria" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('6');"
+        )[1, 1]
+      ),
+      "Western Australia" = toString(
+        RPostgres::dbGetQuery(
+          con, 
+          "SELECT count(*) FROM public.\"factListings\" fl LEFT OUTER JOIN public.\"dimProperty\" dp ON fl.\"property_id\" = dp.\"property_id\" WHERE dp.\"state_id\" IN ('7');"
+        )[1, 1]
+      )
+    )
+  ),
+  valueBoxOutput("card1")
+  
+)
+
+server <- function(input, output) {
+  # output$card1 <- renderText({
+  #   input$region
+  # })
+  output$card1 <- renderValueBox({
+    valueBox(input$region,
+      "region",
+      icon = icon("home"),
+      color = "blue"
+    )
+  })
+  
+}
+
+shinyApp(ui, server)

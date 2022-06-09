@@ -1,0 +1,33 @@
+library(shiny)
+
+if (interactive()) {
+  
+  
+  
+  ui <- fluidPage(
+    radioButtons(
+      "region",
+      "Choose one:",
+      choiceNames = list(
+        icon("calendar"),
+        HTML("<p style='color:red;'>Red Text</p>"),
+        "Normal text"
+      ),
+      choiceValues = list("icon", "html", "text")
+    ),
+    textOutput("txt")
+  )
+  
+  
+  
+  server <- function(input, output) {
+    output$txt <- renderText({
+      paste("You chose", input$region)
+    })
+  }
+  
+  
+  
+  shinyApp(ui, server)
+  
+}

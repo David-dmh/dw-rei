@@ -15,6 +15,13 @@ library(ggthemes)
 library(ggplot2)
 library(formattable)
 
+########################
+# functions
+fact_query_count <- function(){}
+
+
+########################
+
 ui <- dashboardPage(
   dashboardHeader(title = "REI AU"),
   dashboardSidebar(sidebarMenu(
@@ -184,7 +191,7 @@ server <- function(input, output) {
   # })
   
   # NEW #########################################
-  fact_count_var <- switch(input$region,
+  fact_count_var <- reactive(switch(input$region,
                            ACT = "(0)",
                            NSW = "(1)",
                            NT = "(2)",
@@ -194,11 +201,12 @@ server <- function(input, output) {
                            VIC = "(6)",
                            WA = "(7)",
                            "(0, 1, 2, 3, 4, 5, 6, 7)"
-                           )  
+                           ) 
+  )
+  
   
   dyn_query_fact_count <- sprintf("SELECT count(*) FROM public.\"factListings\" WHERE \"state_id\" IN %s;",
-                                  fact_count_var
-  )
+                                  fact_count_var)
   
   dyn_query_fact_count_res <- dbGetQuery(con, dyn_query_fact_count)
   
