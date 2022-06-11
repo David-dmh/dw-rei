@@ -192,16 +192,16 @@ server <- function(input, output) {
   
   # NEW #########################################
   fact_count_var <- reactive(switch(input$region,
-                           ACT = "(0)",
-                           NSW = "(1)",
-                           NT = "(2)",
-                           QLD = "(3)",
-                           SA = "(4)",
-                           TAS = "(5)",
-                           VIC = "(6)",
-                           WA = "(7)",
-                           "(0, 1, 2, 3, 4, 5, 6, 7)"
-                           ) 
+                                    ACT = "(0)",
+                                    NSW = "(1)",
+                                    NT = "(2)",
+                                    QLD = "(3)",
+                                    SA = "(4)",
+                                    TAS = "(5)",
+                                    VIC = "(6)",
+                                    WA = "(7)",
+                                    "(0, 1, 2, 3, 4, 5, 6, 7)"
+  ) 
   )
   
   
@@ -217,7 +217,7 @@ server <- function(input, output) {
   public.\"factListings\"
   ;
   ")
-
+  
   output$listingNumberBox <- renderValueBox({
     valueBox(dyn_query_fact_count_res,
              "Listings",

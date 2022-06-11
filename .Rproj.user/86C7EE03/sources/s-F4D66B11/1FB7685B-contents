@@ -1,0 +1,200 @@
+library(shiny)
+library(shinydashboard)
+library(mapview)
+library(dashboardthemes)
+library(RPostgres)
+library(sqldf)
+library(ggthemes)
+library(ggplot2)
+library(formattable)
+
+dynamic_query <- function(con, state){
+  state_id <- base::switch(
+    state,
+    "Australia" = "(0, 1 ,2 ,3, 4, 5, 6, 7)",
+    "ACT" = "(0)",
+    "NSW" = "(1)",
+    "NT" = "(2)",
+    "QLD" = "(3)",
+    "SA" = "(4)",
+    "TAS" = "(5)",
+    "VIC" = "(6)",
+    "WA" = "(7)"
+    
+  )
+  query_results <- c(
+    toString(dbGetQuery(con, sprintf(
+      paste0("SELECT ", 
+             "count(*) ",
+             "FROM ",
+             "public.\"factListings\" fl ",
+             "LEFT OUTER JOIN ",
+             "public.\"dimProperty\" dp ",
+             "ON ",
+             "fl.\"property_id\" = dp.\"property_id\" ",
+             "WHERE ",
+             "dp.\"state_id\" IN %s",
+             ";"),
+      state_id))[1, 1])
+    ,
+    toString(dbGetQuery(con, sprintf(
+      paste0("WITH ",
+             "fl_price AS ",
+             "( ",
+             "SELECT ",
+             "1 ",
+             "UNION ALL ",
+             "SELECT ",
+             "2 ",
+             "UNION ALL ",
+             "SELECT ", 
+             "100 ",
+             ") ",
+             "SELECT ",
+             "percentile_cont(0.5) WITHIN GROUP ", 
+             "( ",
+             "ORDER BY fl.\"price\" ",
+             ") ",
+             "FROM ",
+             "PUBLIC.\"factListings\" fl ",
+             "LEFT OUTER JOIN ",
+             "PUBLIC.\"dimProperty\" dp ",
+             "ON ",
+             "fl.\"property_id\" = dp.\"property_id\" ", 
+             "WHERE dp.\"state_id\" IN %s ",
+             ";"),
+      state_id))[1, 1])
+    ,
+    toString(dbGetQuery(con, sprintf(
+      paste0("WITH ",
+             "fl_land_size AS ",
+             "( ",
+             "SELECT ",
+             "1 ",
+             "UNION ALL ",
+             "SELECT ",
+             "2 ",
+             "UNION ALL ",
+             "SELECT ", 
+             "100 ",
+             ") ",
+             "SELECT ",
+             "percentile_cont(0.5) WITHIN GROUP ", 
+             "( ",
+             "ORDER BY fl.\"land_size\" ",
+             ") ",
+             "FROM ",
+             "PUBLIC.\"factListings\" fl ",
+             "LEFT OUTER JOIN ",
+             "PUBLIC.\"dimProperty\" dp ",
+             "ON ",
+             "fl.\"property_id\" = dp.\"property_id\" ", 
+             "WHERE dp.\"state_id\" IN %s ",
+             ";"),
+      state_id))[1, 1])
+  )
+  
+  return(query_results) 
+}
+
+
+dynamic_query <- function(con, state){
+  state_id <- base::switch(
+    state,
+    "Australia" = "(0, 1 ,2 ,3, 4, 5, 6, 7)",
+    "ACT" = "(0)",
+    "NSW" = "(1)",
+    "NT" = "(2)",
+    "QLD" = "(3)",
+    "SA" = "(4)",
+    "TAS" = "(5)",
+    "VIC" = "(6)",
+    "WA" = "(7)"
+    
+  )
+  query_results <- c(
+    toString(dbGetQuery(con, sprintf(
+      paste0("SELECT ", 
+             "count(*) ",
+             "FROM ",
+             "public.\"factListings\" fl ",
+             "LEFT OUTER JOIN ",
+             "public.\"dimProperty\" dp ",
+             "ON ",
+             "fl.\"property_id\" = dp.\"property_id\" ",
+             "WHERE ",
+             "dp.\"state_id\" IN %s",
+             ";"),
+      state_id))[1, 1])
+    ,
+    toString(dbGetQuery(con, sprintf(
+      paste0("WITH ",
+              "fl_price AS ",
+              "( ",
+              "SELECT ",
+              "1 ",
+              "UNION ALL ",
+              "SELECT ",
+              "2 ",
+              "UNION ALL ",
+              "SELECT ", 
+              "100 ",
+              ") ",
+              "SELECT ",
+              "percentile_cont(0.5) WITHIN GROUP ", 
+              "( ",
+              "ORDER BY fl.\"price\" ",
+              ") ",
+              "FROM ",
+              "PUBLIC.\"factListings\" fl ",
+              "LEFT OUTER JOIN ",
+              "PUBLIC.\"dimProperty\" dp ",
+              "ON ",
+              "fl.\"property_id\" = dp.\"property_id\" ", 
+              "WHERE dp.\"state_id\" IN %s ",
+              ";"),
+      state_id))[1, 1])
+    ,
+    toString(dbGetQuery(con, sprintf(
+      paste0("WITH ",
+             "fl_land_size AS ",
+             "( ",
+             "SELECT ",
+             "1 ",
+             "UNION ALL ",
+             "SELECT ",
+             "2 ",
+             "UNION ALL ",
+             "SELECT ", 
+             "100 ",
+             ") ",
+             "SELECT ",
+             "percentile_cont(0.5) WITHIN GROUP ", 
+             "( ",
+             "ORDER BY fl.\"land_size\" ",
+             ") ",
+             "FROM ",
+             "PUBLIC.\"factListings\" fl ",
+             "LEFT OUTER JOIN ",
+             "PUBLIC.\"dimProperty\" dp ",
+             "ON ",
+             "fl.\"property_id\" = dp.\"property_id\" ", 
+             "WHERE dp.\"state_id\" IN %s ",
+             ";"),
+      state_id))[1, 1])
+  )
+  
+  return(query_results) 
+}
+
+con <- dbConnect(
+  RPostgres::Postgres(),
+  host = "localhost",
+  port = "5432",
+  dbname = "REI_Prod",
+  user = "postgres",
+  password = "690151")
+
+test <- dynamic_query(con, "Australia")
+
+test
