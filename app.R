@@ -111,6 +111,23 @@ con <- dbConnect(
   password = Sys.getenv("REI_Prod_password")
 )
 
+
+factListings <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"factListings\"
+  ;
+  ")
+
+dimProperty <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"dimProperty\"
+  ;
+  ")
+
 ui <- dashboardPage(
   dashboardHeader(title = "REI AU"),
   dashboardSidebar(sidebarMenu(
@@ -123,31 +140,26 @@ ui <- dashboardPage(
              tabName = "3Map",
              icon = icon("map-pin"))
   )),
-  dashboardBody(# shinyDashboardThemes(theme = "grey_dark"),
+  dashboardBody(
     tabItems(
-      # First tab content
+      # tab 1 content
       tabItem(
         tabName = "1Dashboard",
         fluidRow(
-          # Dynamic valueBoxes
+          # dynamic valueBoxes
           valueBoxOutput("listingNumberBox"),
-          
           valueBoxOutput("listingMedianPriceBox"),
-          
           valueBoxOutput("listingMedianLandSizeBox")
         ),
         fluidRow(column(
           width = 8,
-          
           box(
-            # title = "",
             width = NULL,
             solidHeader = TRUE,
             plotOutput("PriceGraph")
           ),
           
         ),
-        
         
         column(
           width = 4,
@@ -156,12 +168,10 @@ ui <- dashboardPage(
             width = NULL,
             solidHeader = TRUE,
             status = "primary",
-            # background = "light-blue",
-            
             radioButtons(
               "region",
               "Region:",
-              c( # can change these mapping done in server below
+              c(
                 "Australia" = "Australia",
                 "Australian Capital Territory" = "ACT",
                 "New South Wales" = "NSW",
@@ -173,40 +183,20 @@ ui <- dashboardPage(
                 "Western Australia" = "WA"
               )
             )
-            
           ),
-          
         ))
       ),
       
-      # second tab content
+      # tab 2 content
       tabItem(tabName = "3Map",
-              
               leafletOutput("map"))
     ))
 )
 
 server <- function(input, output) {
   ###################
-  # tab 1 - Dashboard
+  # tab 1 - dashboard
   ###################
-  
-  factListings <- dbGetQuery(con, "
-  SELECT
-  *
-  FROM
-  public.\"factListings\"
-  ;
-  ")
-  
-  dimProperty <- dbGetQuery(con, "
-  SELECT
-  *
-  FROM
-  public.\"dimProperty\"
-  ;
-  ")
-  
   df_price_graph <- sqldf(
     "
     SELECT
@@ -281,9 +271,9 @@ server <- function(input, output) {
       axis.title = element_text())
   })
   
-  ##############
-  # tab 2 - Map
-  ##############
+  #############
+  # tab 2 - map
+  #############
   
   dimProperty_coords <- read.csv(
     paste0(Sys.getenv("dw-rei"),
@@ -313,12 +303,12 @@ server <- function(input, output) {
   ;
   "
   )
+  
   # AU coordinate boundaries
   # UB and LB = -10.360438 <-> -45.599262 
   # (latitude range)
   # LB and RB = 111.861226 <-> 155.542866 
   # (longitude range)
-  
   listed <- sqldf(
     "
     SELECT
