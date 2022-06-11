@@ -14,6 +14,8 @@ library(ggthemes)
 library(ggplot2)
 library(formattable)
 
+options(scipen = 999)
+
 dynamic_query <- function(con, state){
   state_id <- base::switch(
     state,
@@ -28,7 +30,7 @@ dynamic_query <- function(con, state){
     "WA" = "(7)"
     
   )
-  query_results <- c(
+  query_results <- list(
     toString(dbGetQuery(con, sprintf(
       paste0("SELECT ", 
              "count(*) ",
@@ -98,6 +100,34 @@ dynamic_query <- function(con, state){
              "WHERE dp.\"state_id\" IN %s ",
              ";"),
       state_id))[1, 1])
+    ,
+    dbGetQuery(con, sprintf(
+      paste0("WITH ",
+             "fl_price AS ", 
+             "( ",
+             "SELECT ", 
+             "1 ",   
+             "UNION ALL ",
+             "SELECT ", 
+             "2 ",
+             "UNION ALL ",
+             "SELECT ", 
+             "100 ",
+             ") ",
+             "SELECT ",
+             "listing_download_date AS Listing_Date ",
+             ",percentile_cont(0.5) WITHIN GROUP (ORDER BY fl.price) AS Median_Price ",
+             "FROM ",
+             "public.\"factListings\" fl ", 
+             "LEFT OUTER JOIN ", 
+             "public.\"dimProperty\" dp ", 
+             "ON ", 
+             "fl.\"property_id\" = dp.\"property_id\" ", 
+             "WHERE dp.\"state_id\" IN %s ",
+             "GROUP BY ",
+             "fl.listing_download_date ",
+             ";"),
+      state_id))
   )
   return(query_results) 
 }
@@ -142,7 +172,7 @@ ui <- dashboardPage(
   )),
   dashboardBody(
     shinyDashboardThemes(
-      theme = "poor_mans_flatly"
+      theme = "grey_light"
     ),
     tabItems(
       # tab 1 content
@@ -167,10 +197,8 @@ ui <- dashboardPage(
         column(
           width = 4,
           box(
-            title = "Slicer",
             width = NULL,
             solidHeader = TRUE,
-            status = "primary",
             radioButtons(
               "region",
               "Region:",
@@ -192,7 +220,7 @@ ui <- dashboardPage(
       
       # tab 2 content
       tabItem(tabName = "3Map",
-              leafletOutput("map"))
+              leafletOutput("map", height = "89vh"))
     ))
 )
 
@@ -200,50 +228,38 @@ server <- function(input, output) {
   ###################
   # tab 1 - dashboard
   ###################
-  df_price_graph <- sqldf(
-    "
-    SELECT
-    listing_download_date AS Listing_Date
-    ,median(price) AS Median_Price
-    FROM
-    factListings
-    GROUP BY
-    listing_download_date
-    ;
-    "
-  )
-  
   output$listingNumberBox <- renderValueBox({
     valueBox(
       currency(
-        dynamic_query(con, input$region)[1],
+        dynamic_query(con, input$region)[[1]],
         big.mark = " ",
         digits = 0L,
         symbol = ""
       ),
       "Listings",
       icon = icon("home"),
-      color = "green"
+      color = "blue"
     )
   })
   
   output$listingMedianPriceBox <- renderValueBox({
     valueBox(
       currency(
-        dynamic_query(con, input$region)[2],
+        dynamic_query(con, input$region)[[2]],
         digits = 0L,
-        symbol = ""),
+        symbol = "",
+      ),
       "Median price",
       icon = icon("dollar-sign"),
-      color = "green"
+      color = "olive"
     )
   })
-  
+
   output$listingMedianLandSizeBox <- renderValueBox({
     valueBox(
       paste0(
         currency(
-          dynamic_query(con, input$region)[3],
+          dynamic_query(con, input$region)[[3]],
           big.mark = " ",
           digits = 0L,
           symbol = ""
@@ -252,14 +268,14 @@ server <- function(input, output) {
       ),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
-      color = "green"
+      color = "orange"
     )
   })
   
   output$PriceGraph <- renderPlot({
-    ggplot(df_price_graph,
-           aes(x = Listing_Date,
-               y = Median_Price,
+    ggplot(dynamic_query(con, input$region)[[4]],
+           aes(x = listing_date,
+               y = median_price,
                group = 1))  +
       geom_line() +
       geom_point() +
@@ -277,12 +293,11 @@ server <- function(input, output) {
   #############
   # tab 2 - map
   #############
-  
   dimProperty_coords <- read.csv(
     paste0(Sys.getenv("dw-rei"),
            "/data/geocoded_loc_ref.csv"
-           )
     )
+  )
   
   # remove nulls if nulls in cache
   dimProperty_coords <- sqldf(
