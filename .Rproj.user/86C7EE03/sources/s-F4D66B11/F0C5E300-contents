@@ -129,7 +129,7 @@ dimProperty <- dbGetQuery(con, "
   ")
 
 ui <- dashboardPage(
-  dashboardHeader(title = "REI AU"),
+  dashboardHeader(title = "AU Property Overview"),
   dashboardSidebar(sidebarMenu(
     menuItem(
       "Dashboard",
@@ -141,6 +141,9 @@ ui <- dashboardPage(
              icon = icon("map-pin"))
   )),
   dashboardBody(
+    shinyDashboardThemes(
+      theme = "poor_mans_flatly"
+    ),
     tabItems(
       # tab 1 content
       tabItem(
@@ -220,7 +223,7 @@ server <- function(input, output) {
       ),
       "Listings",
       icon = icon("home"),
-      color = "blue"
+      color = "green"
     )
   })
   
@@ -232,7 +235,7 @@ server <- function(input, output) {
         symbol = ""),
       "Median price",
       icon = icon("dollar-sign"),
-      color = "blue"
+      color = "green"
     )
   })
   
@@ -249,7 +252,7 @@ server <- function(input, output) {
       ),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
-      color = "blue"
+      color = "green"
     )
   })
   

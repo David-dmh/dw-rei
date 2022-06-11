@@ -142,7 +142,7 @@ ui <- dashboardPage(
   )),
   dashboardBody(
     shinyDashboardThemes(
-      theme = "poor_mans_flatly"
+      theme = "grey_light"
     ),
     tabItems(
       # tab 1 content
@@ -167,10 +167,8 @@ ui <- dashboardPage(
         column(
           width = 4,
           box(
-            title = "Slicer",
             width = NULL,
             solidHeader = TRUE,
-            status = "primary",
             radioButtons(
               "region",
               "Region:",
@@ -223,7 +221,7 @@ server <- function(input, output) {
       ),
       "Listings",
       icon = icon("home"),
-      color = "green"
+      color = "blue"
     )
   })
   
@@ -235,7 +233,7 @@ server <- function(input, output) {
         symbol = ""),
       "Median price",
       icon = icon("dollar-sign"),
-      color = "green"
+      color = "olive"
     )
   })
   
@@ -252,7 +250,7 @@ server <- function(input, output) {
       ),
       "Median land size",
       icon = icon("resize-full", lib = "glyphicon"),
-      color = "green"
+      color = "orange"
     )
   })
   
@@ -281,8 +279,8 @@ server <- function(input, output) {
   dimProperty_coords <- read.csv(
     paste0(Sys.getenv("dw-rei"),
            "/data/geocoded_loc_ref.csv"
-           )
     )
+  )
   
   # remove nulls if nulls in cache
   dimProperty_coords <- sqldf(
