@@ -16,5 +16,15 @@ namespace REI_Leads
         {
             InitializeComponent();
         }
+
+        private void btnClickThis_Click(object sender, EventArgs e)
+        {
+            lblHelloWorld.Text = "HelloWorld";
+        }
+
+        private void lblHelloWorld_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
