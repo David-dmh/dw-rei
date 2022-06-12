@@ -3,9 +3,10 @@ C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\bin\Debug\REI_Leads.exe
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\bin\Debug\REI_Leads.pdb
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.csproj.AssemblyReference.cache
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.csproj.SuggestedBindingRedirects.cache
-C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.Form1.resources
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.Properties.Resources.resources
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.csproj.GenerateResource.cache
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.csproj.CoreCompileInputs.cache
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.exe
 C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.pdb
+C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.appLanding.resources
+C:\Users\dvdma\Documents\Projects\dw-rei\REI_Leads\obj\Debug\REI_Leads.appMain.resources

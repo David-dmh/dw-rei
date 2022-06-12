@@ -10,16 +10,18 @@ using System.Windows.Forms;
 
 namespace REI_Leads
 {
-    public partial class Form1 : Form
+    public partial class appLanding : Form
     {
-        public Form1()
+        public appLanding()
         {
             InitializeComponent();
         }
 
-        private void btnClickThis_Click(object sender, EventArgs e)
+        private void btnGo_Click(object sender, EventArgs e)
         {
-            lblHelloWorld.Text = "HelloWorld";
+            this.Visible = false;     // this = is the current form
+            appMain main = new appMain();  //appMain is the name of  my other form
+            main.Visible = true;
         }
 
         private void lblHelloWorld_Click(object sender, EventArgs e)

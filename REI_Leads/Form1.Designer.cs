@@ -1,6 +1,6 @@
 ﻿namespace REI_Leads
 {
-    partial class Form1
+    partial class appLanding
     {
         /// <summary>
         /// Required designer variable.
@@ -28,39 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnClickThis = new System.Windows.Forms.Button();
-            this.lblHelloWorld = new System.Windows.Forms.Label();
+            this.btnGo = new System.Windows.Forms.Button();
+            this.appTitleLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // btnClickThis
+            // btnGo
             // 
-            this.btnClickThis.Location = new System.Drawing.Point(352, 172);
-            this.btnClickThis.Name = "btnClickThis";
-            this.btnClickThis.Size = new System.Drawing.Size(93, 35);
-            this.btnClickThis.TabIndex = 0;
-            this.btnClickThis.Text = "Click this";
-            this.btnClickThis.UseVisualStyleBackColor = true;
-            this.btnClickThis.Click += new System.EventHandler(this.btnClickThis_Click);
+            this.btnGo.Location = new System.Drawing.Point(341, 181);
+            this.btnGo.Name = "btnGo";
+            this.btnGo.Size = new System.Drawing.Size(108, 47);
+            this.btnGo.TabIndex = 0;
+            this.btnGo.Text = "Go";
+            this.btnGo.UseVisualStyleBackColor = true;
+            this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
             // 
-            // lblHelloWorld
+            // appTitleLabel
             // 
-            this.lblHelloWorld.AutoSize = true;
-            this.lblHelloWorld.Location = new System.Drawing.Point(367, 231);
-            this.lblHelloWorld.Name = "lblHelloWorld";
-            this.lblHelloWorld.Size = new System.Drawing.Size(78, 20);
-            this.lblHelloWorld.TabIndex = 1;
-            this.lblHelloWorld.Text = "some text";
-            this.lblHelloWorld.Click += new System.EventHandler(this.lblHelloWorld_Click);
+            this.appTitleLabel.AutoSize = true;
+            this.appTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.appTitleLabel.Location = new System.Drawing.Point(238, 106);
+            this.appTitleLabel.Name = "appTitleLabel";
+            this.appTitleLabel.Size = new System.Drawing.Size(314, 20);
+            this.appTitleLabel.TabIndex = 2;
+            this.appTitleLabel.Text = "Real Estate Investing Lead Generator";
             // 
-            // Form1
+            // appLanding
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.lblHelloWorld);
-            this.Controls.Add(this.btnClickThis);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Controls.Add(this.appTitleLabel);
+            this.Controls.Add(this.btnGo);
+            this.Name = "appLanding";
+            this.Text = "REI Leads";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -68,8 +68,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnClickThis;
-        private System.Windows.Forms.Label lblHelloWorld;
+        private System.Windows.Forms.Button btnGo;
+        private System.Windows.Forms.Label appTitleLabel;
     }
 }
 
