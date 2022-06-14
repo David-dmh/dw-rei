@@ -159,7 +159,7 @@ dimProperty <- dbGetQuery(con, "
   ")
 
 ui <- dashboardPage(
-  dashboardHeader(title = "AU Property Overview"),
+  dashboardHeader(title = "AU REI App"),
   dashboardSidebar(sidebarMenu(
     menuItem(
       "Dashboard",
@@ -167,8 +167,20 @@ ui <- dashboardPage(
       icon = icon("dashboard", verify_fa = FALSE)
     ),
     menuItem("Map",
-             tabName = "3Map",
+             tabName = "2Map",
              icon = icon("map-pin"))
+    ,
+    menuItem("Criteria",
+             tabName = "3Criteria",
+             icon = icon("filter", lib = "glyphicon"))
+    ,
+    menuItem("Leads",
+             tabName = "4Leads",
+             icon = icon("eye-open", lib = "glyphicon"))
+    ,
+    menuItem("Calculator",
+             tabName = "5Calculator",
+             icon = icon("calculator"))
   )),
   dashboardBody(
     shinyDashboardThemes(
@@ -219,8 +231,20 @@ ui <- dashboardPage(
       ),
       
       # tab 2 content
-      tabItem(tabName = "3Map",
+      tabItem(tabName = "2Map",
               leafletOutput("map", height = "89vh"))
+      ,
+      # tab 3 content
+      tabItem(tabName = "3Criteria",
+              )
+      ,
+      # tab 4 content
+      tabItem(tabName = "4Leads",
+      )
+      ,
+      # tab 5 content
+      tabItem(tabName = "5Calculator",
+      )
     ))
 )
 
