@@ -240,27 +240,82 @@ ui <- dashboardPage(
       ,
       # tab 4 content
       tabItem(tabName = "4Leads",
+              sidebarLayout(position = "right",
+                            sidebarPanel(h3("Filters")),
+                            mainPanel(
+                              h3("Investment Leads"),
+                              HTML("<br>"),
+                              dataTableOutput("leadsdf_test")
+                            ))
       )
       ,
       # tab 5 content
       tabItem(tabName = "5Calculator",
               sidebarLayout(position = "right",
                             sidebarPanel(h3("Output")),
-                            mainPanel(h3("Rental Property Investment"),
-                                      fluidRow(HTML("<br>"),
-                                               column(width=3,
-                                                      numericInput("test1", "TestL", 0, min = 0, step = 100, width="70%"),
-                                                      numericInput("test4", "TestL", 0, min = 0, step = 100, width="70%")),
-                                               column(width=3,
-                                                      numericInput("test2", "TestM", 0, min = 0, step = 100, width="70%"),
-                                                      numericInput("test5", "TestM", 0, min = 0, step = 100, width="70%")),
-                                               column(width=3,
-                                                      numericInput("test3", "TestR", 0, min = 0, step = 100, width="70%"),
-                                                      numericInput("test6", "TestR", 0, min = 0, step = 100, width="70%")))
-                                      ),
-                            )
-              
-      )
+                            mainPanel(
+                              h3("Rental Property Investment"),
+                              fluidRow(
+                                HTML("<br>"),
+                                column(
+                                  width = 3,
+                                  numericInput(
+                                    "test1",
+                                    "TestL",
+                                    0,
+                                    min = 0,
+                                    step = 100,
+                                    width = "70%"
+                                  ),
+                                  numericInput(
+                                    "test4",
+                                    "TestL",
+                                    0,
+                                    min = 0,
+                                    step = 100,
+                                    width = "70%"
+                                  )
+                                ),
+                                column(
+                                  width = 3,
+                                  numericInput(
+                                    "test2",
+                                    "TestM",
+                                    0,
+                                    min = 0,
+                                    step = 100,
+                                    width = "70%"
+                                  ),
+                                  numericInput(
+                                    "test5",
+                                    "TestM",
+                                    0,
+                                    min = 0,
+                                    step = 100,
+                                    width = "70%"
+                                  )
+                                ),
+                                column(
+                                  width = 3,
+                                  numericInput(
+                                    "test3",
+                                    "TestR",
+                                    0,
+                                    min = 0,
+                                    step = 100,
+                                    width = "70%"
+                                  ),
+                                  numericInput(
+                                    "test6",
+                                    "TestR",
+                                    0,
+                                    min = 0,
+                                    step = 100,
+                                    width = "70%"
+                                  )
+                                )
+                              )
+                            ),))
     ))
 )
 
@@ -398,6 +453,25 @@ server <- function(input, output) {
             legend = NULL,
             alpha.regions = 0.2)@map
   })
+  
+  ##################
+  # tab 3 - criteria
+  ##################
+  
+  
+  ###############
+  # tab 4 - leads
+  ###############
+  output$leadsdf_test <- renderDataTable(iris)
+  
+  ####################
+  # tab 5 - calculator
+  ####################
+  
+  
 }
+
+
+
 
 shinyApp(ui, server)
