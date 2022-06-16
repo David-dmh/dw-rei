@@ -278,17 +278,6 @@ ui <- dashboardPage(
                               "Purchase Terms",
                               width="120%")
                 )
-                # column(
-                #   width=10,
-                #   actionButton("goToAcceptanceCriteria",
-                #                "Acceptance Criteria"),
-                #   actionButton("goToExpensePercentages",
-                #                "Expense Percentages"),
-                #   actionButton("goToLoanTerms",
-                #                "Loan Terms"),
-                #   actionButton("goToPurchaseTerms",
-                #                "Purchase Terms") 
-                # )
                 
                 # # need to link to 4x pages like below via buttons
                 # fluidRow(div(h4(
@@ -355,67 +344,82 @@ ui <- dashboardPage(
         sidebarLayout(position = "right",
                       sidebarPanel(h4("Output")),
                       mainPanel(
-                        h3("Rental Property Analysis"),
-                        fluidRow(
-                          HTML("<br>"),
-                          column(
-                            width = 3,
-                            numericInput(
-                              "test1",
-                              "TestL",
-                              0,
-                              min = 0,
-                              step = 100,
-                              width = "70%"
-                            ),
-                            numericInput(
-                              "test4",
-                              "TestL",
-                              0,
-                              min = 0,
-                              step = 100,
-                              width = "70%"
-                            )
-                          ),
-                          column(
-                            width = 3,
-                            numericInput(
-                              "test2",
-                              "TestM",
-                              0,
-                              min = 0,
-                              step = 100,
-                              width = "70%"
-                            ),
-                            numericInput(
-                              "test5",
-                              "TestM",
-                              0,
-                              min = 0,
-                              step = 100,
-                              width = "70%"
-                            )
-                          ),
-                          column(
-                            width = 3,
-                            numericInput(
-                              "test3",
-                              "TestR",
-                              0,
-                              min = 0,
-                              step = 100,
-                              width = "70%"
-                            ),
-                            numericInput(
-                              "test6",
-                              "TestR",
-                              0,
-                              min = 0,
-                              step = 100,
-                              width = "70%"
-                            )
-                          )
-                        )
+                        h3("Deal Analysis"),
+                        HTML("<br>"),
+                        tabsetPanel(type = "tabs",
+                                    tabPanel("General",
+                                             HTML("<br>"),
+                                             fluidRow(
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test1",
+                                                   "TestL",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "TestL",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test2",
+                                                   "TestM",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test5",
+                                                   "TestM",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test3",
+                                                   "TestR",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test6",
+                                                   "TestR",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               )
+                                             )),
+                                    tabPanel("Income", 
+                                             verbatimTextOutput("summary")),
+                                    tabPanel("Expenses", 
+                                             tableOutput("table")),
+                                    tabPanel("Loan", 
+                                             h1("test"))
+                        ),
+                        HTML("<br>"),
+                        actionButton("goCalculate",
+                                     "Go",
+                                     width="15.5%")
+                        
                       ), )
       )
     )
