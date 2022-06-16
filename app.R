@@ -159,7 +159,7 @@ dimProperty <- dbGetQuery(con, "
   ")
 
 ui <- dashboardPage(
-  dashboardHeader(title = "AU REI App"),
+  dashboardHeader(title = "AU Property App"),
   dashboardSidebar(sidebarMenu(
     menuItem(
       "Dashboard",
@@ -244,34 +244,22 @@ ui <- dashboardPage(
       ,
       # tab 5 content
       tabItem(tabName = "5Calculator",
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000),
-              numericInput("test", "Test", 200000, min = 0, step = 1000)
+              sidebarLayout(position = "right",
+                            sidebarPanel(h3("Output")),
+                            mainPanel(h3("Rental Property Investment"),
+                                      fluidRow(HTML("<br>"),
+                                               column(width=3,
+                                                      numericInput("test1", "TestL", 0, min = 0, step = 100, width="70%"),
+                                                      numericInput("test4", "TestL", 0, min = 0, step = 100, width="70%")),
+                                               column(width=3,
+                                                      numericInput("test2", "TestM", 0, min = 0, step = 100, width="70%"),
+                                                      numericInput("test5", "TestM", 0, min = 0, step = 100, width="70%")),
+                                               column(width=3,
+                                                      numericInput("test3", "TestR", 0, min = 0, step = 100, width="70%"),
+                                                      numericInput("test6", "TestR", 0, min = 0, step = 100, width="70%")))
+                                      ),
+                            )
+              
       )
     ))
 )
