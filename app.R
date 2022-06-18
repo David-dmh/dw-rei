@@ -153,7 +153,6 @@ con <- dbConnect(
   password = Sys.getenv("REI_Prod_password")
 )
 
-
 factListings <- dbGetQuery(con, "
   SELECT
   *
@@ -255,7 +254,7 @@ ui <- dashboardPage(
       # tab 3 content
       tabItem(tabName = "3Criteria",
               mainPanel(
-                fluidRow(h3("View & Edit")),
+                fluidRow(h2("View & Edit")),
                 HTML("<br>"),
                 column(
                   width = 3,
@@ -324,14 +323,14 @@ ui <- dashboardPage(
         sidebarLayout(
           position = "right",
           sidebarPanel(
-            h4("Options"),
+            h3("Options"),
             checkboxInput("enableML",
                           "Enable market value predictions",
                           FALSE,
                           width = "100%")
           ),
           mainPanel(
-            h3("Investment Leads"),
+            h2("Investment Leads"),
             HTML("<br>"),
             dataTableOutput("leadsdf_test")
           )
@@ -342,12 +341,269 @@ ui <- dashboardPage(
       tabItem(
         tabName = "5Calculator",
         sidebarLayout(position = "right",
-                      sidebarPanel(h4("Output")),
+                      sidebarPanel(h2("Results"),
+                                   HTML("<br>"),
+                                   textInput("calcRes1",
+                                              "Monthly Income ($)"),
+                                   textInput("calcRes2",
+                                             "Monthly Expense ($)"),
+                                   textInput("calcRes3",
+                                             "Loan ($)"),
+                                   textInput("calcRes4",
+                                             "Monthly Cashflow ($)"),
+                                   textInput("calcRes5",
+                                             "Yearly Cashflow ($)"),
+                                   textInput("calcRes6",
+                                             "ROI (%)"),
+                                   textInput("calcRes7",
+                                             "Action")
+                                   
+                                   ),
                       mainPanel(
-                        h3("Deal Analysis"),
+                        h2("Deal Analysis"),
                         HTML("<br>"),
                         tabsetPanel(type = "tabs",
                                     tabPanel("General",
+                                             HTML("<br>"),
+                                             fluidRow(
+                                               column(
+                                                 width = 3,
+                                                 textInput(
+                                                   "inputId", 
+                                                   "Address", 
+                                                   value = "", 
+                                                   width = "70%", 
+                                                   placeholder = "Full address"),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test2",
+                                                   "Bedrooms",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test5",
+                                                   "TestM",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test3",
+                                                   "Bathrooms",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test6",
+                                                   "TestR",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Building size (m²)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               )
+                                             )),
+                                    tabPanel("Income", 
+                                             HTML("<br>"),
+                                             fluidRow(
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test1",
+                                                   "Units",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test2",
+                                                   "Monthly unit cost",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test3",
+                                                   "Weekly total",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test3",
+                                                   "Yearly total",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               )
+                                             )),
+                                    tabPanel("Expenses", 
+                                             HTML("<br>"),
+                                             fluidRow(
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test1",
+                                                   "Water & sewer",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "TestL",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "TestL",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "TestL",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "TestL",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test2",
+                                                   "TestM",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test5",
+                                                   "TestM",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               ),
+                                               column(
+                                                 width = 3,
+                                                 numericInput(
+                                                   "test3",
+                                                   "TestR",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test6",
+                                                   "TestR",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 )
+                                               )
+                                             )),
+                                    tabPanel("Loan", 
                                              HTML("<br>"),
                                              fluidRow(
                                                column(
@@ -407,13 +663,7 @@ ui <- dashboardPage(
                                                    width = "70%"
                                                  )
                                                )
-                                             )),
-                                    tabPanel("Income", 
-                                             verbatimTextOutput("summary")),
-                                    tabPanel("Expenses", 
-                                             tableOutput("table")),
-                                    tabPanel("Loan", 
-                                             h1("test"))
+                                             ))
                         ),
                         HTML("<br>"),
                         actionButton("goCalculate",
