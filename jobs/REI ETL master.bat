@@ -14,4 +14,4 @@ C:\"Program Files"\PostgreSQL\14\bin\pg_dump.exe -U postgres -h localhost -p 543
 C:\"Program Files"\PostgreSQL\14\bin\pg_restore.exe -U postgres -h localhost -p 5432 -d REI_Prod < "jobs\REI_Stage backups\REI_Stage_backup.backup"
 
 :: R load
-Rscript.exe "jobs\dimProperty geocode.R"
+:: Rscript.exe "jobs\dimProperty geocode.R" - disabled 18-06-2022
