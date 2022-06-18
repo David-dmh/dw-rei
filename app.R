@@ -256,27 +256,55 @@ ui <- dashboardPage(
               mainPanel(
                 fluidRow(h2("View & Edit")),
                 HTML("<br>"),
-                column(
-                  width = 3,
-                  actionButton("goToAcceptanceCriteria",
-                              "Acceptance Criteria",
-                              width="120%"),
-                  HTML("<br>"),
-                  HTML("<br>"),
-                  actionButton("goToExpensePercentages",
-                              "Expense Percentages",
-                              width="120%"),
-                  HTML("<br>"),
-                  HTML("<br>"),
-                  actionButton("goToLoanTerms",
-                              "Loan Terms",
-                              width="120%"),
-                  HTML("<br>"),
-                  HTML("<br>"),
-                  actionButton("goToPurchaseTerms",
-                              "Purchase Terms",
-                              width="120%")
+                
+                tabsetPanel(type = "tabs",
+                            tabPanel("Acceptance Criteria",
+                                     HTML("<br>"),
+                                     actionButton(
+                                       "goUpdate",
+                                       "Update",
+                                       width="20.7%")),
+                            tabPanel("Expense Percentages", 
+                                     HTML("<br>"),
+                                     actionButton(
+                                       "goUpdate",
+                                       "Update",
+                                       width="20.7%")),
+                            tabPanel("Loan Terms", 
+                                     HTML("<br>"),
+                                     actionButton(
+                                       "goUpdate",
+                                       "Update",
+                                       width="20.7%")),
+                            tabPanel("Purchase Terms", 
+                                     HTML("<br>"),
+                                     actionButton(
+                                       "goUpdate",
+                                       "Update",
+                                       width="20.7%"))
                 )
+                
+                # column(
+                #   width = 3,
+                #   actionButton("goToAcceptanceCriteria",
+                #               "Acceptance Criteria",
+                #               width="120%"),
+                #   HTML("<br>"),
+                #   HTML("<br>"),
+                #   actionButton("goToExpensePercentages",
+                #               "Expense Percentages",
+                #               width="120%"),
+                #   HTML("<br>"),
+                #   HTML("<br>"),
+                #   actionButton("goToLoanTerms",
+                #               "Loan Terms",
+                #               width="120%"),
+                #   HTML("<br>"),
+                #   HTML("<br>"),
+                #   actionButton("goToPurchaseTerms",
+                #               "Purchase Terms",
+                #               width="120%")
+                # )
                 
                 # # need to link to 4x pages like below via buttons
                 # fluidRow(div(h4(
@@ -344,13 +372,13 @@ ui <- dashboardPage(
                       sidebarPanel(h2("Results"),
                                    HTML("<br>"),
                                    textInput("calcRes1",
-                                              "Monthly Income ($)"),
+                                              "Weekly Income ($)"),
                                    textInput("calcRes2",
-                                             "Monthly Expense ($)"),
+                                             "Weekly Expense ($)"),
                                    textInput("calcRes3",
                                              "Loan ($)"),
                                    textInput("calcRes4",
-                                             "Monthly Cashflow ($)"),
+                                             "Weekly Cashflow ($)"),
                                    textInput("calcRes5",
                                              "Yearly Cashflow ($)"),
                                    textInput("calcRes6",
@@ -371,29 +399,27 @@ ui <- dashboardPage(
                                                  textInput(
                                                    "inputId", 
                                                    "Address", 
-                                                   value = "", 
-                                                   width = "70%", 
-                                                   placeholder = "Full address"),
+                                                   width = "70%"),
                                                  numericInput(
                                                    "test4",
-                                                   "Building size (m²)",
+                                                   "Bedrooms",
+                                                   100000,
+                                                   min = 0.5,
+                                                   step = 0.5,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Bathrooms",
                                                    0,
-                                                   min = 0,
+                                                   min = 0.5,
                                                    step = 100,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "Building size (m²)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Building size (m²)",
-                                                   0,
+                                                   "Build. size (m²)",
+                                                   0.5,
                                                    min = 0,
                                                    step = 100,
                                                    width = "70%"
@@ -403,15 +429,15 @@ ui <- dashboardPage(
                                                  width = 3,
                                                  numericInput(
                                                    "test2",
-                                                   "Bedrooms",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
+                                                   "Pch. price ($)",
+                                                   1,
+                                                   min = 0.5,
+                                                   step = 0.5,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
                                                    "test5",
-                                                   "TestM",
+                                                   "Closing costs ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -419,15 +445,7 @@ ui <- dashboardPage(
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "Building size (m²)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Building size (m²)",
+                                                   "Total cost ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -438,15 +456,15 @@ ui <- dashboardPage(
                                                  width = 3,
                                                  numericInput(
                                                    "test3",
-                                                   "Bathrooms",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
+                                                   "Down pmt. ($)",
+                                                   1,
+                                                   min = 0.5,
+                                                   step = 0.5,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
                                                    "test6",
-                                                   "TestR",
+                                                   "Total invest. ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -454,15 +472,7 @@ ui <- dashboardPage(
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "Building size (m²)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Building size (m²)",
+                                                   "Amt borrowed ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -470,7 +480,7 @@ ui <- dashboardPage(
                                                  )
                                                )
                                              )),
-                                    tabPanel("Income", 
+                                    tabPanel("Income (weekly)", 
                                              HTML("<br>"),
                                              fluidRow(
                                                column(
@@ -478,54 +488,45 @@ ui <- dashboardPage(
                                                  numericInput(
                                                    "test1",
                                                    "Units",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
+                                                   1,
+                                                   min = 1,
+                                                   step = 0.5,
                                                    width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
+                                                 ),
                                                  numericInput(
                                                    "test2",
-                                                   "Monthly unit cost",
+                                                   "Unit cost p.w ($)",
                                                    0,
                                                    min = 0,
-                                                   step = 100,
+                                                   step = 1,
                                                    width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
+                                                 ),
                                                  numericInput(
                                                    "test3",
-                                                   "Weekly total",
+                                                   "Weekly total ($)",
                                                    0,
                                                    min = 0,
-                                                   step = 100,
+                                                   step = 1,
                                                    width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
+                                                 ),
                                                  numericInput(
                                                    "test3",
-                                                   "Yearly total",
+                                                   "Yearly total ($)",
                                                    0,
                                                    min = 0,
-                                                   step = 100,
+                                                   step = 1,
                                                    width = "70%"
                                                  )
                                                )
                                              )),
-                                    tabPanel("Expenses", 
+                                    tabPanel("Expenses (weekly)", 
                                              HTML("<br>"),
                                              fluidRow(
                                                column(
                                                  width = 3,
                                                  numericInput(
                                                    "test1",
-                                                   "Water & sewer",
+                                                   "Water/sewer ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -533,7 +534,7 @@ ui <- dashboardPage(
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "TestL",
+                                                   "Vacancy ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -541,7 +542,7 @@ ui <- dashboardPage(
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "TestL",
+                                                   "Taxes ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -549,15 +550,7 @@ ui <- dashboardPage(
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "TestL",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "TestL",
+                                                   "Insurance ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -568,7 +561,7 @@ ui <- dashboardPage(
                                                  width = 3,
                                                  numericInput(
                                                    "test2",
-                                                   "TestM",
+                                                   "Electricity ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -576,26 +569,23 @@ ui <- dashboardPage(
                                                  ),
                                                  numericInput(
                                                    "test5",
-                                                   "TestM",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test3",
-                                                   "TestR",
+                                                   "Management ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
-                                                   "test6",
-                                                   "TestR",
+                                                   "test4",
+                                                   "Maintainance ($)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 100,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test4",
+                                                   "Capex ($)",
                                                    0,
                                                    min = 0,
                                                    step = 100,
@@ -610,56 +600,42 @@ ui <- dashboardPage(
                                                  width = 3,
                                                  numericInput(
                                                    "test1",
-                                                   "TestL",
+                                                   "Total invest. ($)",
                                                    0,
                                                    min = 0,
-                                                   step = 100,
+                                                   step = 1,
+                                                   width = "70%"
+                                                 ),
+                                                 numericInput(
+                                                   "test2",
+                                                   "Loan amt ($)",
+                                                   0,
+                                                   min = 0,
+                                                   step = 1,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
                                                    "test4",
-                                                   "TestL",
-                                                   0,
+                                                   "Loan (%)",
+                                                   5,
                                                    min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test2",
-                                                   "TestM",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
+                                                   step = 0.5,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
                                                    "test5",
-                                                   "TestM",
-                                                   0,
+                                                   "Duration (years)",
+                                                   30,
                                                    min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test3",
-                                                   "TestR",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
+                                                   step = 1,
                                                    width = "70%"
                                                  ),
                                                  numericInput(
-                                                   "test6",
-                                                   "TestR",
+                                                   "test3",
+                                                   "Weekly pay. ($)",
                                                    0,
                                                    min = 0,
-                                                   step = 100,
+                                                   step = 1,
                                                    width = "70%"
                                                  )
                                                )
