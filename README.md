@@ -1,2 +1,2 @@
 # dw-rei
-Expanded API dimensional.
+Real estate investing lead generator.
