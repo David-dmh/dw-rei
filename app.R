@@ -13,6 +13,7 @@ library(sf)
 library(ggthemes)
 library(ggplot2)
 library(formattable)
+library(shinyBS)
 
 options(scipen = 999)
 
@@ -257,87 +258,28 @@ ui <- dashboardPage(
                 fluidRow(h2("View & Edit")),
                 HTML("<br>"),
                 
-                tabsetPanel(type = "tabs",
-                            tabPanel("Acceptance Criteria",
-                                     HTML("<br>"),
-                                     actionButton(
-                                       "goUpdate",
-                                       "Update",
-                                       width="20.7%")),
-                            tabPanel("Expense Percentages", 
-                                     HTML("<br>"),
-                                     actionButton(
-                                       "goUpdate",
-                                       "Update",
-                                       width="20.7%")),
-                            tabPanel("Loan Terms", 
-                                     HTML("<br>"),
-                                     actionButton(
-                                       "goUpdate",
-                                       "Update",
-                                       width="20.7%")),
-                            tabPanel("Purchase Terms", 
-                                     HTML("<br>"),
-                                     actionButton(
-                                       "goUpdate",
-                                       "Update",
-                                       width="20.7%"))
-                )
-                
-                # column(
-                #   width = 3,
-                #   actionButton("goToAcceptanceCriteria",
-                #               "Acceptance Criteria",
-                #               width="120%"),
-                #   HTML("<br>"),
-                #   HTML("<br>"),
-                #   actionButton("goToExpensePercentages",
-                #               "Expense Percentages",
-                #               width="120%"),
-                #   HTML("<br>"),
-                #   HTML("<br>"),
-                #   actionButton("goToLoanTerms",
-                #               "Loan Terms",
-                #               width="120%"),
-                #   HTML("<br>"),
-                #   HTML("<br>"),
-                #   actionButton("goToPurchaseTerms",
-                #               "Purchase Terms",
-                #               width="120%")
-                # )
-                
-                # # need to link to 4x pages like below via buttons
-                # fluidRow(div(h4(
-                #   "Acceptance Criteria"
-                # ),
-                # HTML("<br>"))),
-                # fluidRow(
-                #   numericInput(
-                #     "test1",
-                #     "Test1",
-                #     0,
-                #     min = 0,
-                #     step = 100,
-                #     width = "30%"
-                #   ),
-                #   numericInput(
-                #     "test2",
-                #     "Test2",
-                #     0,
-                #     min = 0,
-                #     step = 100,
-                #     width = "30%"
-                #   ),
-                #   numericInput(
-                #     "test3",
-                #     "Test3",
-                #     0,
-                #     min = 0,
-                #     step = 100,
-                #     width = "30%"
-                #   ),
-                #   
-                # )
+                tabsetPanel(
+                  type = "tabs",
+                  tabPanel(
+                    "Acceptance Criteria",
+                    HTML("<br>")
+                  ),
+                  tabPanel(
+                    "Expense Percentages",
+                    HTML("<br>")
+                  ),
+                  tabPanel(
+                    "Loan Terms",
+                    HTML("<br>")
+                  ),
+                  tabPanel(
+                    "Purchase Terms",
+                    HTML("<br>")
+                  )
+                ),
+                actionButton("goUpdate",
+                             "Update",
+                             width = "20.7%")
                 
                 
                 
@@ -368,285 +310,289 @@ ui <- dashboardPage(
       # tab 5 content
       tabItem(
         tabName = "5Calculator",
-        sidebarLayout(position = "right",
-                      sidebarPanel(h2("Results"),
-                                   HTML("<br>"),
-                                   textInput("calcRes1",
-                                              "Weekly Income ($)"),
-                                   textInput("calcRes2",
-                                             "Weekly Expense ($)"),
-                                   textInput("calcRes3",
-                                             "Loan ($)"),
-                                   textInput("calcRes4",
-                                             "Weekly Cashflow ($)"),
-                                   textInput("calcRes5",
-                                             "Yearly Cashflow ($)"),
-                                   textInput("calcRes6",
-                                             "ROI (%)"),
-                                   textInput("calcRes7",
-                                             "Action")
-                                   
-                                   ),
-                      mainPanel(
-                        h2("Deal Analysis"),
-                        HTML("<br>"),
-                        tabsetPanel(type = "tabs",
-                                    tabPanel("General",
-                                             HTML("<br>"),
-                                             fluidRow(
-                                               column(
-                                                 width = 3,
-                                                 textInput(
-                                                   "inputId", 
-                                                   "Address", 
-                                                   width = "70%"),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Bedrooms",
-                                                   100000,
-                                                   min = 0.5,
-                                                   step = 0.5,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Bathrooms",
-                                                   0,
-                                                   min = 0.5,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Build. size (m²)",
-                                                   0.5,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test2",
-                                                   "Pch. price ($)",
-                                                   1,
-                                                   min = 0.5,
-                                                   step = 0.5,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test5",
-                                                   "Closing costs ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Total cost ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test3",
-                                                   "Down pmt. ($)",
-                                                   1,
-                                                   min = 0.5,
-                                                   step = 0.5,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test6",
-                                                   "Total invest. ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Amt borrowed ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               )
-                                             )),
-                                    tabPanel("Income (weekly)", 
-                                             HTML("<br>"),
-                                             fluidRow(
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test1",
-                                                   "Units",
-                                                   1,
-                                                   min = 1,
-                                                   step = 0.5,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test2",
-                                                   "Unit cost p.w ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test3",
-                                                   "Weekly total ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test3",
-                                                   "Yearly total ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 )
-                                               )
-                                             )),
-                                    tabPanel("Expenses (weekly)", 
-                                             HTML("<br>"),
-                                             fluidRow(
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test1",
-                                                   "Water/sewer ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Vacancy ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Taxes ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Insurance ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               ),
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test2",
-                                                   "Electricity ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test5",
-                                                   "Management ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Maintainance ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Capex ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 100,
-                                                   width = "70%"
-                                                 )
-                                               )
-                                             )),
-                                    tabPanel("Loan", 
-                                             HTML("<br>"),
-                                             fluidRow(
-                                               column(
-                                                 width = 3,
-                                                 numericInput(
-                                                   "test1",
-                                                   "Total invest. ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test2",
-                                                   "Loan amt ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test4",
-                                                   "Loan (%)",
-                                                   5,
-                                                   min = 0,
-                                                   step = 0.5,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test5",
-                                                   "Duration (years)",
-                                                   30,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 ),
-                                                 numericInput(
-                                                   "test3",
-                                                   "Weekly pay. ($)",
-                                                   0,
-                                                   min = 0,
-                                                   step = 1,
-                                                   width = "70%"
-                                                 )
-                                               )
-                                             ))
-                        ),
-                        HTML("<br>"),
-                        actionButton("goCalculate",
-                                     "Go",
-                                     width="15.5%")
-                        
-                      ), )
+        sidebarLayout(
+          position = "right",
+          sidebarPanel(
+            h3("Results"),
+            HTML("<br>"),
+            textInput("calcRes1",
+                      "Weekly Income ($)"),
+            textInput("calcRes2",
+                      "Weekly Expense ($)"),
+            textInput("calcRes3",
+                      "Loan ($)"),
+            textInput("calcRes4",
+                      "Weekly Cashflow ($)"),
+            textInput("calcRes5",
+                      "Yearly Cashflow ($)"),
+            textInput("calcRes6",
+                      "ROI (%)"),
+            textInput("calcRes7",
+                      "Action")
+            
+          ),
+          mainPanel(
+            h2("Deal Analysis"),
+            HTML("<br>"),
+            tabsetPanel(
+              type = "tabs",
+              tabPanel("General",
+                       HTML("<br>"),
+                       fluidRow(
+                         column(
+                           width = 3,
+                           textInput("inputId",
+                                     "Address",
+                                     width = "70%"),
+                           numericInput(
+                             "test4",
+                             "Bedrooms",
+                             1,
+                             min = 0.5,
+                             step = 0.5,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Bathrooms",
+                             1,
+                             min = 0.5,
+                             step = 100,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Build. size (m²)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           )
+                         ),
+                         column(
+                           width = 3,
+                           numericInput(
+                             "test2",
+                             "Pch. price ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test5",
+                             "Closing costs ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Total cost ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           )
+                         ),
+                         column(
+                           width = 3,
+                           numericInput(
+                             "test3",
+                             "Down pmt. ($)",
+                             0,
+                             min = 0.5,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test6",
+                             "Total invest. ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Amt borrowed ($)",
+                             0,
+                             min = 0,
+                             step = 100,
+                             width = "70%"
+                           )
+                         )
+                       )),
+              tabPanel("Income (weekly)",
+                       HTML("<br>"),
+                       fluidRow(
+                         column(
+                           width = 3,
+                           numericInput(
+                             "test1",
+                             "Units",
+                             1,
+                             min = 1,
+                             step = 0.5,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test2",
+                             "Unit cost p.w ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test3",
+                             "Weekly total ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test3",
+                             "Yearly total ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           )
+                         )
+                       )),
+              tabPanel("Expenses (weekly)",
+                       HTML("<br>"),
+                       fluidRow(
+                         column(
+                           width = 3,
+                           numericInput(
+                             "test1",
+                             "Water/sewer ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Vacancy ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Taxes ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Insurance ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           )
+                         ),
+                         column(
+                           width = 3,
+                           numericInput(
+                             "test2",
+                             "Electricity ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test5",
+                             "Management ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Maintainance ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Capex ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           )
+                         )
+                       )),
+              tabPanel("Loan",
+                       HTML("<br>"),
+                       fluidRow(
+                         column(
+                           width = 3,
+                           numericInput(
+                             "test1",
+                             "Total invest. ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test2",
+                             "Loan amt ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test4",
+                             "Loan (%)",
+                             0,
+                             min = 1,
+                             step = 0,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test5",
+                             "Duration (years)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           ),
+                           numericInput(
+                             "test3",
+                             "Weekly pay. ($)",
+                             0,
+                             min = 0,
+                             step = 1,
+                             width = "70%"
+                           )
+                         )
+                       ))
+            ),
+            HTML("<br>"),
+            actionButton("goCalculate",
+                         "Go",
+                         width = "15.5%")
+            
+          ),
+          
+        )
       )
     )
   )
@@ -800,6 +746,7 @@ server <- function(input, output) {
   ####################
   # tab 5 - calculator
   ####################
+
   
   
 }
