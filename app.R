@@ -330,6 +330,9 @@ ui <- dashboardPage(
             textInput("calcRes7",
                       "Action")
             
+            ,bsTooltip(id = "calcRes1", title = "TEST", 
+                       placement = "left", trigger = "hover")
+            
           ),
           mainPanel(
             h2("Deal Analysis"),
@@ -598,7 +601,10 @@ ui <- dashboardPage(
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+  # addTooltip(session, id = "calcRes1", title = "This is an input.",
+  #            placement = "left", trigger = "hover")
+  
   ###################
   # tab 1 - dashboard
   ###################
@@ -746,7 +752,6 @@ server <- function(input, output) {
   ####################
   # tab 5 - calculator
   ####################
-
   
   
 }
