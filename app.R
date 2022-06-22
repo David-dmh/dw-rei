@@ -2,6 +2,8 @@ setwd(Sys.getenv("dw-rei"))
 
 renv::activate()
 
+####LIBS####
+
 library(shiny)
 library(shinydashboard)
 library(mapview)
@@ -145,6 +147,8 @@ dynamic_query <- function(con, state) {
   return(query_results)
 }
 
+####GET DATA####
+
 con <- dbConnect(
   RPostgres::Postgres(),
   host = "localhost",
@@ -170,6 +174,7 @@ dimProperty <- dbGetQuery(con, "
   ;
   ")
 
+####UI####
 ui <- dashboardPage(
   dashboardHeader(title = "AU Property App"),
   dashboardSidebar(
@@ -205,7 +210,7 @@ ui <- dashboardPage(
   dashboardBody(
     shinyDashboardThemes(theme = "grey_light"),
     tabItems(
-      # tab 1 content
+      ####Tab 1 - Dashboard####
       tabItem(
         tabName = "1Dashboard",
         fluidRow(
@@ -248,11 +253,11 @@ ui <- dashboardPage(
         ))
       ),
       
-      # tab 2 content
+      ####Tab 2 - Map####
       tabItem(tabName = "2Map",
               leafletOutput("map", height = "89vh"))
       ,
-      # tab 3 content
+      ####Tab 3 - Criteria####
       tabItem(tabName = "3Criteria",
               mainPanel(
                 fluidRow(h2("View & Edit")),
@@ -287,7 +292,7 @@ ui <- dashboardPage(
                 ,
               ))
       ,
-      # tab 4 content
+      ####Tab 4 - Leads####
       tabItem(
         tabName = "4Leads",
         sidebarLayout(
@@ -307,7 +312,7 @@ ui <- dashboardPage(
         )
       )
       ,
-      # tab 5 content
+      ####Tab 5 - Calculator####
       tabItem(
         tabName = "5Calculator",
         sidebarLayout(
@@ -330,14 +335,7 @@ ui <- dashboardPage(
             textInput("calcRes7",
                       "Action")
             
-            # ,bsTooltip(id = "calcRes1", 
-            #            title = "TEST", 
-            #            placement = "left", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes2", 
-            #            title = "TEST", 
-            #            placement = "left", 
-            #            trigger = "hover")
+            ####Tooltips - Results####
             ,bsTooltip(id = "calcRes3", 
                        title = "Amount borrowed to fund deal", 
                        placement = "left", 
@@ -366,16 +364,17 @@ ui <- dashboardPage(
             HTML("<br>"),
             tabsetPanel(
               type = "tabs",
+              ####General####
               tabPanel("General",
                        HTML("<br>"),
                        fluidRow(
                          column(
                            width = 3,
-                           textInput("inputId",
+                           textInput("calcInputGeneralAddress",
                                      "Address",
                                      width = "70%"),
                            numericInput(
-                             "test4",
+                             "calcInputGeneralBed",
                              "Bedrooms",
                              1,
                              min = 0.5,
@@ -383,7 +382,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputGeneralBath",
                              "Bathrooms",
                              1,
                              min = 0.5,
@@ -391,7 +390,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputGeneralBuild",
                              "Build. size (m²)",
                              0,
                              min = 0,
@@ -402,7 +401,7 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            numericInput(
-                             "test2",
+                             "calcInputGeneralPurchase",
                              "Pch. price ($)",
                              0,
                              min = 0,
@@ -410,7 +409,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test5",
+                             "calcInputGeneralClosing",
                              "Closing costs ($)",
                              0,
                              min = 0,
@@ -418,7 +417,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputGeneralTotal",
                              "Total cost ($)",
                              0,
                              min = 0,
@@ -429,7 +428,7 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            numericInput(
-                             "test3",
+                             "calcInputGeneralDown",
                              "Down pmt. ($)",
                              0,
                              min = 0.5,
@@ -437,7 +436,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test6",
+                             "calcInputGeneralTotInvest",
                              "Total invest. ($)",
                              0,
                              min = 0,
@@ -445,7 +444,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputGeneralBorrowed",
                              "Amt borrowed ($)",
                              0,
                              min = 0,
@@ -454,6 +453,7 @@ ui <- dashboardPage(
                            )
                          )
                        )),
+              ####Income (weekly)####
               tabPanel("Income (weekly)",
                        HTML("<br>"),
                        fluidRow(
@@ -493,6 +493,7 @@ ui <- dashboardPage(
                            )
                          )
                        )),
+              ####Expenses (weekly)####
               tabPanel("Expenses (weekly)",
                        HTML("<br>"),
                        fluidRow(
@@ -567,6 +568,7 @@ ui <- dashboardPage(
                            )
                          )
                        )),
+              ####Loan####
               tabPanel("Loan",
                        HTML("<br>"),
                        fluidRow(
@@ -620,121 +622,120 @@ ui <- dashboardPage(
                          "Go",
                          width = "15.5%")
             
-            # tooltips for all non-result calc fields
-            # General
-            # ,bsTooltip(id = "calcRes3", 
-            #             title = "Amount borrowed to fund deal", 
-            #             placement = "right", 
-            #             trigger = "hover")
-            # ,bsTooltip(id = "calcRes4", 
-            #            title = "Weekly net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes5", 
-            #            title = "Annual net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes6", 
-            #            title = "Return on investment", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
-            #            placement = "right", 
-            #            trigger = "hover")
+            ####Tooltips - General####
+            ,bsTooltip(id = "calcInputGeneralAddress",
+                        title = "Address (not used in calculation)",
+                        placement = "right",
+                        trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralBed",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralBath",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralBuild",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralPurchase",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralClosing",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralTotal",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralDown",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralTotInvest",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputGeneralBorrowed",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
             
-            # tooltips for all non-result calc fields
-            # Income (weekly)
-            # ,bsTooltip(id = "calcRes3", 
+            ####Tooltips - Income (weekly)####
+            # ,bsTooltip(id = "calcInputIncomeWeekUnits", 
             #             title = "Amount borrowed to fund deal", 
             #             placement = "right", 
             #             trigger = "hover")
-            # ,bsTooltip(id = "calcRes4", 
+            # ,bsTooltip(id = "calcInputIncomeWeekUnitCostPW", 
             #            title = "Weekly net profit/loss", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes5", 
+            # ,bsTooltip(id = "calcInputIncomeWeekWeekTotal", 
             #            title = "Annual net profit/loss", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes6", 
+            # ,bsTooltip(id = "calcInputIncomeWeekYearTotal", 
             #            title = "Return on investment", 
             #            placement = "right", 
             #            trigger = "hover")
             
-            # Expenses (weekly)
-            # ,bsTooltip(id = "calcRes3", 
+            ####Tooltips - Expenses (weekly)####
+            # ,bsTooltip(id = "calcInputExpensesWeekWaterSewer", 
             #             title = "Amount borrowed to fund deal", 
             #             placement = "right", 
             #             trigger = "hover")
-            # ,bsTooltip(id = "calcRes4", 
+            # ,bsTooltip(id = "calcInputExpensesWeekVacancy", 
             #            title = "Weekly net profit/loss", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes5", 
+            # ,bsTooltip(id = "calcInputExpensesWeekTaxes", 
             #            title = "Annual net profit/loss", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes6", 
+            # ,bsTooltip(id = "calcInputExpensesWeekInsurance", 
             #            title = "Return on investment", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
+            # ,bsTooltip(id = "calcInputExpensesWeekElectricity", 
+            #            title = "", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
+            # ,bsTooltip(id = "calcInputExpensesWeekManagement", 
+            #            title = "", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
+            # ,bsTooltip(id = "calcInputExpensesWeekMaintainance", 
+            #            title = "", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
+            # ,bsTooltip(id = "calcInputExpensesWeekCapex", 
+            #            title = "", 
             #            placement = "right", 
             #            trigger = "hover")
             
+            ####Tooltips - Loan####
             # Loan
-            # ,bsTooltip(id = "calcRes3", 
+            # ,bsTooltip(id = "calcInputLoanTotalInvest", 
             #             title = "Amount borrowed to fund deal", 
             #             placement = "right", 
             #             trigger = "hover")
-            # ,bsTooltip(id = "calcRes4", 
+            # ,bsTooltip(id = "calcInputLoanLoanAmount", 
             #            title = "Weekly net profit/loss", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes5", 
+            # ,bsTooltip(id = "calcInputLoanLoanPercent", 
             #            title = "Annual net profit/loss", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes6", 
+            # ,bsTooltip(id = "calcInputLoanDurationYrs", 
             #            title = "Return on investment", 
             #            placement = "right", 
             #            trigger = "hover")
-            # ,bsTooltip(id = "calcRes7", 
-            #            title = "Best course of action based on your criteria", 
+            # ,bsTooltip(id = "calcInputLoanWeeklyPayment", 
+            #            title = "", 
             #            placement = "right", 
             #            trigger = "hover")
             
@@ -746,11 +747,10 @@ ui <- dashboardPage(
   )
 )
 
+####SERVER####
 server <- function(input, output, session) {
   
-  ###################
-  # tab 1 - dashboard
-  ###################
+  ####Tab 1 - Dashboard####
   output$listingNumberBox <- renderValueBox({
     valueBox(
       currency(
@@ -817,9 +817,7 @@ server <- function(input, output, session) {
       )
   })
   
-  #############
-  # tab 2 - map
-  #############
+  ####Tab 2 - Map####
   dimProperty_coords <- read.csv(paste0(Sys.getenv("dw-rei"),
                                         "/data/geocoded_loc_ref.csv"))
   
@@ -882,19 +880,13 @@ server <- function(input, output, session) {
             alpha.regions = 0.2)@map
   })
   
-  ##################
-  # tab 3 - criteria
-  ##################
+  ####Tab 3 - Criteria####
   
   
-  ###############
-  # tab 4 - leads
-  ###############
+  ####Tab 4 - Leads####
   output$leadsdf_test <- renderDataTable(iris)
   
-  ####################
-  # tab 5 - calculator
-  ####################
+  ####Tab 5 - Calculator####
   
   
 }
