@@ -330,8 +330,35 @@ ui <- dashboardPage(
             textInput("calcRes7",
                       "Action")
             
-            ,bsTooltip(id = "calcRes1", title = "TEST", 
-                       placement = "left", trigger = "hover")
+            # ,bsTooltip(id = "calcRes1", 
+            #            title = "TEST", 
+            #            placement = "left", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes2", 
+            #            title = "TEST", 
+            #            placement = "left", 
+            #            trigger = "hover")
+            ,bsTooltip(id = "calcRes3", 
+                       title = "Amount borrowed to fund deal", 
+                       placement = "left", 
+                       trigger = "hover")
+            ,bsTooltip(id = "calcRes4", 
+                       title = "Weekly net profit/loss", 
+                       placement = "left", 
+                       trigger = "hover")
+            ,bsTooltip(id = "calcRes5", 
+                       title = "Annual net profit/loss", 
+                       placement = "left", 
+                       trigger = "hover")
+            ,bsTooltip(id = "calcRes6", 
+                       title = "Return on investment", 
+                       placement = "left", 
+                       trigger = "hover")
+            ,bsTooltip(id = "calcRes7", 
+                       title = "Best course of action based on your criteria", 
+                       placement = "left", 
+                       trigger = "hover")
+            
             
           ),
           mainPanel(
@@ -593,6 +620,124 @@ ui <- dashboardPage(
                          "Go",
                          width = "15.5%")
             
+            # tooltips for all non-result calc fields
+            # General
+            # ,bsTooltip(id = "calcRes3", 
+            #             title = "Amount borrowed to fund deal", 
+            #             placement = "right", 
+            #             trigger = "hover")
+            # ,bsTooltip(id = "calcRes4", 
+            #            title = "Weekly net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes5", 
+            #            title = "Annual net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes6", 
+            #            title = "Return on investment", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            
+            # tooltips for all non-result calc fields
+            # Income (weekly)
+            # ,bsTooltip(id = "calcRes3", 
+            #             title = "Amount borrowed to fund deal", 
+            #             placement = "right", 
+            #             trigger = "hover")
+            # ,bsTooltip(id = "calcRes4", 
+            #            title = "Weekly net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes5", 
+            #            title = "Annual net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes6", 
+            #            title = "Return on investment", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            
+            # Expenses (weekly)
+            # ,bsTooltip(id = "calcRes3", 
+            #             title = "Amount borrowed to fund deal", 
+            #             placement = "right", 
+            #             trigger = "hover")
+            # ,bsTooltip(id = "calcRes4", 
+            #            title = "Weekly net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes5", 
+            #            title = "Annual net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes6", 
+            #            title = "Return on investment", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            
+            # Loan
+            # ,bsTooltip(id = "calcRes3", 
+            #             title = "Amount borrowed to fund deal", 
+            #             placement = "right", 
+            #             trigger = "hover")
+            # ,bsTooltip(id = "calcRes4", 
+            #            title = "Weekly net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes5", 
+            #            title = "Annual net profit/loss", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes6", 
+            #            title = "Return on investment", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            # ,bsTooltip(id = "calcRes7", 
+            #            title = "Best course of action based on your criteria", 
+            #            placement = "right", 
+            #            trigger = "hover")
+            
           ),
           
         )
@@ -602,8 +747,6 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-  # addTooltip(session, id = "calcRes1", title = "This is an input.",
-  #            placement = "left", trigger = "hover")
   
   ###################
   # tab 1 - dashboard
