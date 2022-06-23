@@ -460,7 +460,7 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            numericInput(
-                             "test1",
+                             "calcInputIncomeWeekUnits",
                              "Units",
                              1,
                              min = 1,
@@ -468,7 +468,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test2",
+                             "calcInputIncomeWeekUnitCostPW",
                              "Unit cost p.w ($)",
                              0,
                              min = 0,
@@ -476,7 +476,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test3",
+                             "calcInputIncomeWeekWeekTotal",
                              "Weekly total ($)",
                              0,
                              min = 0,
@@ -484,7 +484,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test3",
+                             "calcInputIncomeWeekYearTotal",
                              "Yearly total ($)",
                              0,
                              min = 0,
@@ -500,7 +500,7 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            numericInput(
-                             "test1",
+                             "calcInputExpensesWeekWaterSewer",
                              "Water/sewer ($)",
                              0,
                              min = 0,
@@ -508,7 +508,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputExpensesWeekVacancy",
                              "Vacancy ($)",
                              0,
                              min = 0,
@@ -516,7 +516,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputExpensesWeekTaxes",
                              "Taxes ($)",
                              0,
                              min = 0,
@@ -524,7 +524,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputExpensesWeekInsurance",
                              "Insurance ($)",
                              0,
                              min = 0,
@@ -535,7 +535,7 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            numericInput(
-                             "test2",
+                             "calcInputExpensesWeekElectricity",
                              "Electricity ($)",
                              0,
                              min = 0,
@@ -543,7 +543,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test5",
+                             "calcInputExpensesWeekManagement",
                              "Management ($)",
                              0,
                              min = 0,
@@ -551,7 +551,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputExpensesWeekMaintainance",
                              "Maintainance ($)",
                              0,
                              min = 0,
@@ -559,7 +559,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputExpensesWeekCapex",
                              "Capex ($)",
                              0,
                              min = 0,
@@ -575,7 +575,7 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            numericInput(
-                             "test1",
+                             "calcInputLoanTotalInvest",
                              "Total invest. ($)",
                              0,
                              min = 0,
@@ -583,7 +583,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test2",
+                             "calcInputLoanLoanAmount",
                              "Loan amt ($)",
                              0,
                              min = 0,
@@ -591,7 +591,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test4",
+                             "calcInputLoanLoanPercent",
                              "Loan (%)",
                              0,
                              min = 1,
@@ -599,7 +599,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test5",
+                             "calcInputLoanDurationYrs",
                              "Duration (years)",
                              0,
                              min = 0,
@@ -607,7 +607,7 @@ ui <- dashboardPage(
                              width = "70%"
                            ),
                            numericInput(
-                             "test3",
+                             "calcInputLoanWeeklyPayment",
                              "Weekly pay. ($)",
                              0,
                              min = 0,
@@ -665,79 +665,79 @@ ui <- dashboardPage(
                        trigger = "hover")
             
             ####Tooltips - Income (weekly)####
-            # ,bsTooltip(id = "calcInputIncomeWeekUnits", 
-            #             title = "Amount borrowed to fund deal", 
-            #             placement = "right", 
-            #             trigger = "hover")
-            # ,bsTooltip(id = "calcInputIncomeWeekUnitCostPW", 
-            #            title = "Weekly net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputIncomeWeekWeekTotal", 
-            #            title = "Annual net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputIncomeWeekYearTotal", 
-            #            title = "Return on investment", 
-            #            placement = "right", 
-            #            trigger = "hover")
+            ,bsTooltip(id = "calcInputIncomeWeekUnits",
+                        title = "Amount borrowed to fund deal",
+                        placement = "right",
+                        trigger = "hover")
+            ,bsTooltip(id = "calcInputIncomeWeekUnitCostPW",
+                       title = "Weekly net profit/loss",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputIncomeWeekWeekTotal",
+                       title = "Annual net profit/loss",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputIncomeWeekYearTotal",
+                       title = "Return on investment",
+                       placement = "right",
+                       trigger = "hover")
             
             ####Tooltips - Expenses (weekly)####
-            # ,bsTooltip(id = "calcInputExpensesWeekWaterSewer", 
-            #             title = "Amount borrowed to fund deal", 
-            #             placement = "right", 
-            #             trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekVacancy", 
-            #            title = "Weekly net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekTaxes", 
-            #            title = "Annual net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekInsurance", 
-            #            title = "Return on investment", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekElectricity", 
-            #            title = "", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekManagement", 
-            #            title = "", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekMaintainance", 
-            #            title = "", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekCapex", 
-            #            title = "", 
-            #            placement = "right", 
-            #            trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekWaterSewer",
+                        title = "Amount borrowed to fund deal",
+                        placement = "right",
+                        trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekVacancy",
+                       title = "Weekly net profit/loss",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekTaxes",
+                       title = "Annual net profit/loss",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekInsurance",
+                       title = "Return on investment",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekElectricity",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekManagement",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekMaintainance",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputExpensesWeekCapex",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
             
             ####Tooltips - Loan####
             # Loan
-            # ,bsTooltip(id = "calcInputLoanTotalInvest", 
-            #             title = "Amount borrowed to fund deal", 
-            #             placement = "right", 
-            #             trigger = "hover")
-            # ,bsTooltip(id = "calcInputLoanLoanAmount", 
-            #            title = "Weekly net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputLoanLoanPercent", 
-            #            title = "Annual net profit/loss", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputLoanDurationYrs", 
-            #            title = "Return on investment", 
-            #            placement = "right", 
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputLoanWeeklyPayment", 
-            #            title = "", 
-            #            placement = "right", 
-            #            trigger = "hover")
+            ,bsTooltip(id = "calcInputLoanTotalInvest",
+                        title = "Amount borrowed to fund deal",
+                        placement = "right",
+                        trigger = "hover")
+            ,bsTooltip(id = "calcInputLoanLoanAmount",
+                       title = "Weekly net profit/loss",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputLoanLoanPercent",
+                       title = "Annual net profit/loss",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputLoanDurationYrs",
+                       title = "Return on investment",
+                       placement = "right",
+                       trigger = "hover")
+            ,bsTooltip(id = "calcInputLoanWeeklyPayment",
+                       title = "",
+                       placement = "right",
+                       trigger = "hover")
             
           ),
           
