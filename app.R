@@ -509,7 +509,7 @@ ui <- dashboardPage(
                            ),
                            numericInput(
                              "calcInputExpensesWeekVacancy",
-                             "Vacancy ($)",
+                             "Vacancy (%)",
                              0,
                              min = 0,
                              step = 1,
@@ -688,15 +688,15 @@ ui <- dashboardPage(
             #             placement = "right",
             #             trigger = "hover")
             ,bsTooltip(id = "calcInputExpensesWeekVacancy",
-                       title = "",
+                       title = "% of income to reserve for vacant property periods",
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputExpensesWeekTaxes",
-                       title = "",
+                       title = "Property tax expense",
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputExpensesWeekInsurance",
-                       title = "",
+                       title = "Property insurance cost",
                        placement = "right",
                        trigger = "hover")
             # ,bsTooltip(id = "calcInputExpensesWeekElectricity",
@@ -708,34 +708,34 @@ ui <- dashboardPage(
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputExpensesWeekMaintainance",
-                       title = "",
+                       title = "Cost to maintain property",
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputExpensesWeekCapex",
-                       title = "",
+                       title = "Amount set aside to acquire or upgrade non-consumable assets",
                        placement = "right",
                        trigger = "hover")
             
             ####Tooltips - Loan####
             # Loan
             ,bsTooltip(id = "calcInputLoanTotalInvest",
-                        title = "",
+                        title = "Upfront Amount put into deal (read-only) (duplicate)",
                         placement = "right",
                         trigger = "hover")
             ,bsTooltip(id = "calcInputLoanLoanAmount",
-                       title = "",
+                       title = "Difference between total cost and total investment (read-only) (duplicate)",
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputLoanLoanPercent",
-                       title = "",
+                       title = "Loan interest percentage",
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputLoanDurationYrs",
-                       title = "",
+                       title = "Length of loan term",
                        placement = "right",
                        trigger = "hover")
             ,bsTooltip(id = "calcInputLoanWeeklyPayment",
-                       title = "",
+                       title = "Weekly payment towards loan",
                        placement = "right",
                        trigger = "hover")
             
