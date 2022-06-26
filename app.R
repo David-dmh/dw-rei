@@ -475,14 +475,16 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
-                           numericInput(
-                             "calcInputIncomeWeekWeekTotal",
-                             "Weekly total ($)",
-                             0,
-                             min = 0,
-                             step = 1,
-                             width = "70%"
-                           ),
+                           # need to add text, change font, resize
+                           verbatimTextOutput("IncomeWeekWeekTotal"),
+                           # numericInput(
+                           #   "calcInputIncomeWeekWeekTotal",
+                           #   "Weekly total ($)",
+                           #   0,
+                           #   min = 0,
+                           #   step = 1,
+                           #   width = "70%"
+                           # ),
                            numericInput(
                              "calcInputIncomeWeekYearTotal",
                              "Yearly total ($)",
@@ -887,7 +889,9 @@ server <- function(input, output, session) {
   output$leadsdf_test <- renderDataTable(iris)
   
   ####Tab 5 - Calculator####
-  
+  output$IncomeWeekWeekTotal <- renderText(
+    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+    )
   
 }
 
