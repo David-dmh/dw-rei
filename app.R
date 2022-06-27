@@ -209,6 +209,40 @@ ui <- dashboardPage(
   ),
   dashboardBody(
     shinyDashboardThemes(theme = "grey_light"),
+    
+    ####Inline CSS####
+    tags$head(tags$style(
+      HTML(
+        "#IncomeWeekWeekTotal {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#IncomeWeekYearTotal {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#InputGeneralTotalInvest {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#InputGeneralBorrowed {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+      )
+    )),
+    
     tabItems(
       ####Tab 1 - Dashboard####
       tabItem(
@@ -258,39 +292,30 @@ ui <- dashboardPage(
               leafletOutput("map", height = "89vh"))
       ,
       ####Tab 3 - Criteria####
-      tabItem(tabName = "3Criteria",
-              mainPanel(
-                fluidRow(h2("View & Edit")),
-                HTML("<br>"),
-                
-                tabsetPanel(
-                  type = "tabs",
-                  tabPanel(
-                    "Acceptance Criteria",
-                    HTML("<br>")
-                  ),
-                  tabPanel(
-                    "Expense Percentages",
-                    HTML("<br>")
-                  ),
-                  tabPanel(
-                    "Loan Terms",
-                    HTML("<br>")
-                  ),
-                  tabPanel(
-                    "Purchase Terms",
-                    HTML("<br>")
-                  )
-                ),
-                actionButton("goUpdate",
-                             "Update",
-                             width = "20.7%")
-                
-                
-                
-                
-                ,
-              ))
+      tabItem(
+        tabName = "3Criteria",
+        mainPanel(
+          fluidRow(h2("View & Edit")),
+          HTML("<br>"),
+          
+          tabsetPanel(
+            type = "tabs",
+            tabPanel("Acceptance Criteria",
+                     HTML("<br>")),
+            tabPanel("Expense Percentages",
+                     HTML("<br>")),
+            tabPanel("Loan Terms",
+                     HTML("<br>")),
+            tabPanel("Purchase Terms",
+                     HTML("<br>"))
+          ),
+          actionButton("goUpdate",
+                       "Update",
+                       width = "20.7%")
+          
+          ,
+        )
+      )
       ,
       ####Tab 4 - Leads####
       tabItem(
@@ -336,26 +361,41 @@ ui <- dashboardPage(
                       "Action")
             
             ####Tooltips - Results####
-            ,bsTooltip(id = "calcRes3", 
-                       title = "Amount borrowed to fund deal", 
-                       placement = "left", 
-                       trigger = "hover")
-            ,bsTooltip(id = "calcRes4", 
-                       title = "Weekly net profit/loss", 
-                       placement = "left", 
-                       trigger = "hover")
-            ,bsTooltip(id = "calcRes5", 
-                       title = "Annual net profit/loss", 
-                       placement = "left", 
-                       trigger = "hover")
-            ,bsTooltip(id = "calcRes6", 
-                       title = "Return on investment", 
-                       placement = "left", 
-                       trigger = "hover")
-            ,bsTooltip(id = "calcRes7", 
-                       title = "Best course of action based on your criteria", 
-                       placement = "left", 
-                       trigger = "hover")
+            ,
+            bsTooltip(
+              id = "calcRes3",
+              title = "Amount borrowed to fund deal",
+              placement = "left",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcRes4",
+              title = "Weekly net profit/loss",
+              placement = "left",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcRes5",
+              title = "Annual net profit/loss",
+              placement = "left",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcRes6",
+              title = "Return on investment",
+              placement = "left",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcRes7",
+              title = "Best course of action based on your criteria",
+              placement = "left",
+              trigger = "hover"
+            )
             
             
           ),
@@ -475,24 +515,20 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
-                           # need to add text, change font, resize
+                           HTML(
+                           "
+                           <br style=\"line-height: 0.1px;\">
+                           <b>Weekly total ($)</b>
+                            "
+                           ),
                            verbatimTextOutput("IncomeWeekWeekTotal"),
-                           # numericInput(
-                           #   "calcInputIncomeWeekWeekTotal",
-                           #   "Weekly total ($)",
-                           #   0,
-                           #   min = 0,
-                           #   step = 1,
-                           #   width = "70%"
-                           # ),
-                           numericInput(
-                             "calcInputIncomeWeekYearTotal",
-                             "Yearly total ($)",
-                             0,
-                             min = 0,
-                             step = 1,
-                             width = "70%"
-                           )
+                           HTML(
+                             "
+                           <br style=\"line-height: 0.1px;\">
+                           <b>Yearly total ($)</b>
+                            "
+                           ),
+                           verbatimTextOutput("IncomeWeekYearTotal")
                          )
                        )),
               ####Expenses (weekly)####
@@ -576,22 +612,43 @@ ui <- dashboardPage(
                        fluidRow(
                          column(
                            width = 3,
-                           numericInput(
-                             "calcInputLoanTotalInvest",
-                             "Total invest. ($)",
-                             0,
-                             min = 0,
-                             step = 1,
-                             width = "70%"
+                           
+                           
+                           
+                           verbatimTextOutput("InputGeneralTotalInvest"),
+                           HTML(
+                            "
+                           <br style=\"line-height: 0.1px;\">
+                           <b>Total invest. ($)</b>
+                            "
                            ),
-                           numericInput(
-                             "calcInputLoanLoanAmount",
-                             "Loan amt ($)",
-                             0,
-                             min = 0,
-                             step = 1,
-                             width = "70%"
+
+                           verbatimTextOutput("InputGeneralBorrowed"),
+                           HTML(
+                            "
+                           <br style=\"line-height: 0.1px;\">
+                           <b>Loan amt ($)</b>
+                            "
                            ),
+
+                           
+                           
+                           # numericInput(
+                           #   "calcInputLoanTotalInvest",
+                           #   "Total invest. ($)",
+                           #   0,
+                           #   min = 0,
+                           #   step = 1,
+                           #   width = "70%"
+                           # ),
+                           # numericInput(
+                           #   "calcInputLoanLoanAmount",
+                           #   "Loan amt ($)",
+                           #   0,
+                           #   min = 0,
+                           #   step = 1,
+                           #   width = "70%"
+                           # ),
                            numericInput(
                              "calcInputLoanLoanPercent",
                              "Loan (%)",
@@ -625,121 +682,172 @@ ui <- dashboardPage(
                          width = "15.5%")
             
             ####Tooltips - General####
-            ,bsTooltip(id = "calcInputGeneralAddress",
-                        title = "Address (not used in calculation)",
-                        placement = "right",
-                        trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralBed",
-                       title = "Number of bedrooms for property",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralBath",
-                       title = "Number of bathrooms for property",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralBuild",
-                       title = "Property building size",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralPurchase",
-                       title = "Property purchase price",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralClosing",
-                       title = "Fees paid at of the transaction",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralTotal",
-                       title = "Sum of purchase price and closing costs (read-only)",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralDown",
-                       title = "Amount paid upfront in the transaction",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralTotInvest",
-                       title = "Upfront Amount put into deal (read-only)",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputGeneralBorrowed",
-                       title = "Difference between total cost and total investment (read-only)",
-                       placement = "right",
-                       trigger = "hover")
+            ,
+            bsTooltip(
+              id = "calcInputGeneralAddress",
+              title = "Address (not used in calculation)",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralBed",
+              title = "Number of bedrooms for property",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralBath",
+              title = "Number of bathrooms for property",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralBuild",
+              title = "Property building size",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralPurchase",
+              title = "Property purchase price",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralClosing",
+              title = "Fees paid at of the transaction",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralTotal",
+              title = "Sum of purchase price and closing costs (read-only)",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralDown",
+              title = "Amount paid upfront in the transaction",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralTotInvest",
+              title = "Upfront Amount put into deal (read-only)",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputGeneralBorrowed",
+              title = "Difference between total cost and total investment (read-only)",
+              placement = "right",
+              trigger = "hover"
+            )
             
             ####Tooltips - Income (weekly)####
-            ,bsTooltip(id = "calcInputIncomeWeekUnits",
-                        title = "Number of income-generating units",
-                        placement = "right",
-                        trigger = "hover")
-            ,bsTooltip(id = "calcInputIncomeWeekUnitCostPW",
-                       title = "Weekly income per unit",
-                       placement = "right",
-                       trigger = "hover")
-            # ,bsTooltip(id = "calcInputIncomeWeekWeekTotal",
-            #            title = "",
-            #            placement = "right",
-            #            trigger = "hover")
-            # ,bsTooltip(id = "calcInputIncomeWeekYearTotal",
-            #            title = "",
-            #            placement = "right",
-            #            trigger = "hover")
-            
-            ####Tooltips - Expenses (weekly)####
-            # ,bsTooltip(id = "calcInputExpensesWeekWaterSewer",
-            #             title = "",
-            #             placement = "right",
-            #             trigger = "hover")
-            ,bsTooltip(id = "calcInputExpensesWeekVacancy",
-                       title = "% of income to reserve for vacant property periods",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputExpensesWeekTaxes",
-                       title = "Property tax expense",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputExpensesWeekInsurance",
-                       title = "Property insurance cost",
-                       placement = "right",
-                       trigger = "hover")
-            # ,bsTooltip(id = "calcInputExpensesWeekElectricity",
-            #            title = "",
-            #            placement = "right",
-            #            trigger = "hover")
-            ,bsTooltip(id = "calcInputExpensesWeekManagement",
-                       title = "Property manager fees if applicable",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputExpensesWeekMaintainance",
-                       title = "Cost to maintain property",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputExpensesWeekCapex",
-                       title = "Amount set aside to acquire or upgrade non-consumable assets",
-                       placement = "right",
-                       trigger = "hover")
+            ,
+            bsTooltip(
+              id = "calcInputIncomeWeekUnits",
+              title = "Number of income-generating units",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputIncomeWeekUnitCostPW",
+              title = "Weekly income per unit",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputExpensesWeekVacancy",
+              title = "% of income to reserve for vacant property periods",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputExpensesWeekTaxes",
+              title = "Property tax expense",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputExpensesWeekInsurance",
+              title = "Property insurance cost",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputExpensesWeekManagement",
+              title = "Property manager fees if applicable",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputExpensesWeekMaintainance",
+              title = "Cost to maintain property",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputExpensesWeekCapex",
+              title = "Amount set aside to acquire or upgrade non-consumable assets",
+              placement = "right",
+              trigger = "hover"
+            )
             
             ####Tooltips - Loan####
             # Loan
-            ,bsTooltip(id = "calcInputLoanTotalInvest",
-                        title = "Upfront Amount put into deal (read-only) (duplicate)",
-                        placement = "right",
-                        trigger = "hover")
-            ,bsTooltip(id = "calcInputLoanLoanAmount",
-                       title = "Difference between total cost and total investment (read-only) (duplicate)",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputLoanLoanPercent",
-                       title = "Loan interest percentage",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputLoanDurationYrs",
-                       title = "Length of loan term",
-                       placement = "right",
-                       trigger = "hover")
-            ,bsTooltip(id = "calcInputLoanWeeklyPayment",
-                       title = "Weekly payment towards loan",
-                       placement = "right",
-                       trigger = "hover")
+            ,
+            bsTooltip(
+              id = "calcInputLoanTotalInvest",
+              title = "Upfront Amount put into deal (read-only) (duplicate)",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputLoanLoanAmount",
+              title = "Difference between total cost and total investment (read-only) (duplicate)",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputLoanLoanPercent",
+              title = "Loan interest percentage",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputLoanDurationYrs",
+              title = "Length of loan term",
+              placement = "right",
+              trigger = "hover"
+            )
+            ,
+            bsTooltip(
+              id = "calcInputLoanWeeklyPayment",
+              title = "Weekly payment towards loan",
+              placement = "right",
+              trigger = "hover"
+            )
             
           ),
           
@@ -751,7 +859,6 @@ ui <- dashboardPage(
 
 ####SERVER####
 server <- function(input, output, session) {
-  
   ####Tab 1 - Dashboard####
   output$listingNumberBox <- renderValueBox({
     valueBox(
@@ -892,6 +999,12 @@ server <- function(input, output, session) {
   output$IncomeWeekWeekTotal <- renderText(
     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
     )
+  output$IncomeWeekYearTotal <- renderText(
+    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW * 12
+    )
+  # these should be changed from General to Loan? (output$ part)
+  output$InputGeneralTotalInvest <- renderText(input$calcInputGeneralTotalInvest)
+  output$InputGeneralBorrowed <- renderText(input$calcInputGeneralBorrowed)
   
 }
 
