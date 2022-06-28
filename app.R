@@ -144,6 +144,7 @@ dynamic_query <- function(con, state) {
       state_id
     ))
   )
+  
   return(query_results)
 }
 
@@ -227,14 +228,14 @@ ui <- dashboardPage(
        width: 70%;
         }"
         ,
-        "#InputGeneralTotalInvest {
+        "#InputLoanTotalInvest {
        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
        font-size: 15px;
        height: 43px;
        width: 70%;
         }"
         ,
-        "#InputGeneralBorrowed {
+        "#InputLoanBorrowed {
        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
        font-size: 15px;
        height: 43px;
@@ -345,57 +346,65 @@ ui <- dashboardPage(
           sidebarPanel(
             h3("Results"),
             HTML("<br>"),
-            textInput("calcRes1",
-                      "Weekly Income ($)"),
-            textInput("calcRes2",
-                      "Weekly Expense ($)"),
-            textInput("calcRes3",
-                      "Loan ($)"),
-            textInput("calcRes4",
-                      "Weekly Cashflow ($)"),
-            textInput("calcRes5",
-                      "Yearly Cashflow ($)"),
-            textInput("calcRes6",
-                      "ROI (%)"),
-            textInput("calcRes7",
-                      "Action")
+            verbatimTextOutput("calcRes1"),
+            verbatimTextOutput("calcRes2"),
+            verbatimTextOutput("calcRes3"),
+            verbatimTextOutput("calcRes4"),
+            verbatimTextOutput("calcRes5"),
+            verbatimTextOutput("calcRes6"),
+            verbatimTextOutput("calcRes7"),
+
+            # textInput("calcRes1",
+            #           "Weekly Income ($)"),
+            # textInput("calcRes2",
+            #           "Weekly Expense ($)"),
+            # textInput("calcRes3",
+            #           "Loan ($)"),
+            # textInput("calcRes4",
+            #           "Weekly Cashflow ($)"),
+            # textInput("calcRes5",
+            #           "Yearly Cashflow ($)"),
+            # textInput("calcRes6",
+            #           "ROI (%)"),
+            # textInput("calcRes7",
+            #           "Action")
             
             ####Tooltips - Results####
-            ,
-            bsTooltip(
-              id = "calcRes3",
-              title = "Amount borrowed to fund deal",
-              placement = "left",
-              trigger = "hover"
-            )
-            ,
-            bsTooltip(
-              id = "calcRes4",
-              title = "Weekly net profit/loss",
-              placement = "left",
-              trigger = "hover"
-            )
-            ,
-            bsTooltip(
-              id = "calcRes5",
-              title = "Annual net profit/loss",
-              placement = "left",
-              trigger = "hover"
-            )
-            ,
-            bsTooltip(
-              id = "calcRes6",
-              title = "Return on investment",
-              placement = "left",
-              trigger = "hover"
-            )
-            ,
-            bsTooltip(
-              id = "calcRes7",
-              title = "Best course of action based on your criteria",
-              placement = "left",
-              trigger = "hover"
-            )
+            # ,
+            # bsTooltip(
+            #   id = "calcRes3",
+            #   title = "Amount borrowed to fund deal",
+            #   placement = "left",
+            #   trigger = "hover"
+            # )
+            # ,
+            # bsTooltip(
+            #   id = "calcRes4",
+            #   title = "Weekly net profit/loss",
+            #   placement = "left",
+            #   trigger = "hover"
+            # )
+            # ,
+            # bsTooltip(
+            #   id = "calcRes5",
+            #   title = "Annual net profit/loss",
+            #   placement = "left",
+            #   trigger = "hover"
+            # )
+            # ,
+            # bsTooltip(
+            #   id = "calcRes6",
+            #   title = "Return on investment",
+            #   placement = "left",
+            #   trigger = "hover"
+            # )
+            # ,
+            # bsTooltip(
+            #   id = "calcRes7",
+            #   title = "Best course of action based on your criteria",
+            #   placement = "left",
+            #   trigger = "hover"
+            # )
             
             
           ),
@@ -612,43 +621,22 @@ ui <- dashboardPage(
                        fluidRow(
                          column(
                            width = 3,
-                           
-                           
-                           
-                           verbatimTextOutput("InputGeneralTotalInvest"),
+                           # <br style=\"line-height: 0.5px;\">
                            HTML(
                             "
-                           <br style=\"line-height: 0.1px;\">
                            <b>Total invest. ($)</b>
                             "
-                           ),
-
-                           verbatimTextOutput("InputGeneralBorrowed"),
+                           )
+                           ,
+                           verbatimTextOutput("InputLoanTotalInvest")
+                           ,
                            HTML(
                             "
-                           <br style=\"line-height: 0.1px;\">
                            <b>Loan amt ($)</b>
                             "
                            ),
-
-                           
-                           
-                           # numericInput(
-                           #   "calcInputLoanTotalInvest",
-                           #   "Total invest. ($)",
-                           #   0,
-                           #   min = 0,
-                           #   step = 1,
-                           #   width = "70%"
-                           # ),
-                           # numericInput(
-                           #   "calcInputLoanLoanAmount",
-                           #   "Loan amt ($)",
-                           #   0,
-                           #   min = 0,
-                           #   step = 1,
-                           #   width = "70%"
-                           # ),
+                           verbatimTextOutput("InputLoanBorrowed")
+                           ,
                            numericInput(
                              "calcInputLoanLoanPercent",
                              "Loan (%)",
@@ -1002,10 +990,17 @@ server <- function(input, output, session) {
   output$IncomeWeekYearTotal <- renderText(
     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW * 12
     )
-  # these should be changed from General to Loan? (output$ part)
-  output$InputGeneralTotalInvest <- renderText(input$calcInputGeneralTotalInvest)
-  output$InputGeneralBorrowed <- renderText(input$calcInputGeneralBorrowed)
+  output$InputLoanTotalInvest <- renderText(input$calcInputGeneralTotInvest)
+  output$InputLoanBorrowed <- renderText(input$calcInputGeneralBorrowed)
   
+  # Results
+  # output$calcRes1 <- renderText()
+  # output$calcRes2 <- renderText()
+  # output$calcRes3 <- renderText()
+  # output$calcRes4 <- renderText()
+  # output$calcRes5 <- renderText()
+  # output$calcRes6 <- renderText()
+  # output$calcRes7 <- renderText()
 }
 
 
