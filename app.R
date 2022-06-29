@@ -993,8 +993,12 @@ server <- function(input, output, session) {
   output$InputLoanTotalInvest <- renderText(input$calcInputGeneralTotInvest)
   output$InputLoanBorrowed <- renderText(input$calcInputGeneralBorrowed)
   
-  # Results
-  # output$calcRes1 <- renderText()
+  # Results - this should only be displayed after click 'Go'
+  # add validation: all fields mandatory
+  # Add placeholder text before Go click succeeded?
+  output$calcRes1 <- renderText(
+    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+  )
   # output$calcRes2 <- renderText()
   # output$calcRes3 <- renderText()
   # output$calcRes4 <- renderText()
