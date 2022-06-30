@@ -996,6 +996,7 @@ server <- function(input, output, session) {
   # Results - this should only be displayed after click 'Go'
   # add validation: all fields mandatory
   # Add placeholder text before Go click succeeded?
+  # or eliminate Go button for quick changes to be made?
   output$calcRes1 <- renderText(
     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
   )
