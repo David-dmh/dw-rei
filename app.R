@@ -505,6 +505,7 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
+                           # CHANGE TO READ oNLY
                            numericInput(
                              "calcInputGeneralTotal",
                              "Total cost ($)",
@@ -532,6 +533,7 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
+                           # CHANGE TO READ oNLY
                            numericInput(
                              "calcInputGeneralBorrowed",
                              "Amt borrowed ($)",
@@ -702,12 +704,6 @@ ui <- dashboardPage(
                          )
                        ))
             )
-            # ,
-            # HTML("<br>"),
-            # actionButton("goCalculate",
-            #              "Go",
-            #              width = "15.5%")
-            
             ####Tooltips - General####
             ,
             bsTooltip(
@@ -1057,22 +1053,97 @@ server <- function(input, output, session) {
     input$calcInputGeneralBorrowed 
   )
   # = weekly inc - " exp - " loan payment (formula for loan weekly payment)
-  output$calcRes4 <- renderText(     
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW   
+  output$calcRes4 <- renderText(
+    (
+      input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+    ) - (
+      input$calcInputExpensesWeekWaterSewer
+      + input$calcInputExpensesWeekVacancy
+      + input$calcInputExpensesWeekTaxes
+      + input$calcInputExpensesWeekInsurance
+      + input$calcInputExpensesWeekElectricity
+      + input$calcInputExpensesWeekManagement
+      + input$calcInputExpensesWeekMaintainance
+      + input$calcInputExpensesWeekCapex
+    )
+    - (
+      monthly_repayment(
+        input$calcInputGeneralBorrowed,
+        input$calcInputLoanLoanPercent / 100,
+        52 * input$calcInputLoanDurationYrs
+      )
+    )
   )
   # = yearly inc - " exp - " loan payment(formula for loan weekly payment)
-  output$calcRes5 <- renderText(     
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW   
+  output$calcRes5 <- renderText(
+    (
+      input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+    )*12 - (
+      input$calcInputExpensesWeekWaterSewer
+      + input$calcInputExpensesWeekVacancy
+      + input$calcInputExpensesWeekTaxes
+      + input$calcInputExpensesWeekInsurance
+      + input$calcInputExpensesWeekElectricity
+      + input$calcInputExpensesWeekManagement
+      + input$calcInputExpensesWeekMaintainance
+      + input$calcInputExpensesWeekCapex
+    )*12 - (
+      monthly_repayment(
+        input$calcInputGeneralBorrowed,
+        input$calcInputLoanLoanPercent / 100,
+        52 * input$calcInputLoanDurationYrs
+      )
+    )*12
   )
   # = yearly cashflow / total investment
-  output$calcRes6 <- renderText(     
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW   
+  output$calcRes6 <- renderText(((
+    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+  ) * 12 - (
+    input$calcInputExpensesWeekWaterSewer
+    + input$calcInputExpensesWeekVacancy
+    + input$calcInputExpensesWeekTaxes
+    + input$calcInputExpensesWeekInsurance
+    + input$calcInputExpensesWeekElectricity
+    + input$calcInputExpensesWeekManagement
+    + input$calcInputExpensesWeekMaintainance
+    + input$calcInputExpensesWeekCapex
+  ) * 12 - (
+    monthly_repayment(
+      input$calcInputGeneralBorrowed,
+      input$calcInputLoanLoanPercent / 100,
+      52 * input$calcInputLoanDurationYrs
+    )
+  ) * 12
+  ) - (input$calcInputGeneralTotInvest)
   )
   # if ROI > min ROI then BUY ELSE PASS
   output$calcRes7 <- renderText(     
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW   
+    ifelse(
+      ((
+        input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+      ) * 12 - (
+        input$calcInputExpensesWeekWaterSewer
+        + input$calcInputExpensesWeekVacancy
+        + input$calcInputExpensesWeekTaxes
+        + input$calcInputExpensesWeekInsurance
+        + input$calcInputExpensesWeekElectricity
+        + input$calcInputExpensesWeekManagement
+        + input$calcInputExpensesWeekMaintainance
+        + input$calcInputExpensesWeekCapex
+      ) * 12 - (
+        monthly_repayment(
+          input$calcInputGeneralBorrowed,
+          input$calcInputLoanLoanPercent / 100,
+          52 * input$calcInputLoanDurationYrs
+        )
+      ) * 12
+      ) - (input$calcInputGeneralTotInvest) > 0.25
+      ,
+      "BUY"
+      ,
+      "PASS"
+      )   
   )
 }
-
 
 shinyApp(ui, server)
