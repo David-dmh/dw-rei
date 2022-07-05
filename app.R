@@ -19,8 +19,8 @@ library(shinyBS)
 
 options(scipen = 999)
 
-monthly_repayment <- function(PV, r, n){
-  P <- (PV*r)/(1-(1+r)^-n)
+monthly_repayment <- function(PV, r, n) {
+  P <- (PV * r) / (1 - (1 + r) ^ -n)
   return(P)
 }
 
@@ -351,49 +351,35 @@ ui <- dashboardPage(
           sidebarPanel(
             h3("Results"),
             HTML("<br>"),
-            HTML(
-            "
+            HTML("
             <b>Weekly Income ($)</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes1"),
-            HTML(
-              "
+            HTML("
             <b>Weekly Expense ($)</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes2"),
-            HTML(
-              "
+            HTML("
             <b>Loan ($)</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes3"),
-            HTML(
-              "
+            HTML("
             <b>Weekly Cashflow ($)</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes4"),
-            HTML(
-              "
+            HTML("
             <b>Yearly Cashflow ($)</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes5"),
-            HTML(
-              "
+            HTML("
             <b>ROI (%)</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes6"),
-            HTML(
-              "
+            HTML("
             <b>Action</b>
-            "
-            ),
+            "),
             verbatimTextOutput("calcRes7"),
-
+            
             # textInput("calcRes1",
             #           "Weekly Income ($)"),
             # textInput("calcRes2",
@@ -566,19 +552,15 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
-                           HTML(
-                           "
+                           HTML("
                            <br style=\"line-height: 0.1px;\">
                            <b>Weekly total ($)</b>
-                            "
-                           ),
+                            "),
                            verbatimTextOutput("IncomeWeekWeekTotal"),
-                           HTML(
-                             "
+                           HTML("
                            <br style=\"line-height: 0.1px;\">
                            <b>Yearly total ($)</b>
-                            "
-                           ),
+                            "),
                            verbatimTextOutput("IncomeWeekYearTotal")
                          )
                        )),
@@ -664,19 +646,15 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            # <br style=\"line-height: 0.5px;\">
-                           HTML(
-                            "
+                           HTML("
                            <b>Total invest. ($)</b>
-                            "
-                           )
+                            ")
                            ,
                            verbatimTextOutput("InputLoanTotalInvest")
                            ,
-                           HTML(
-                            "
+                           HTML("
                            <b>Loan amt ($)</b>
-                            "
-                           ),
+                            "),
                            verbatimTextOutput("InputLoanBorrowed")
                            ,
                            numericInput(
@@ -695,11 +673,9 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
-                           HTML(
-                             "
+                           HTML("
                            <b>Weekly pay. ($)</b>
-                            "
-                           ),
+                            "),
                            verbatimTextOutput("LoanWeeklyPayment")
                          )
                        ))
@@ -1019,28 +995,26 @@ server <- function(input, output, session) {
   output$leadsdf_test <- renderDataTable(iris)
   
   ####Tab 5 - Calculator####
-  output$IncomeWeekWeekTotal <- renderText(
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+  output$IncomeWeekWeekTotal <- renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
+  output$IncomeWeekYearTotal <- renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW * 12)
+  output$InputLoanTotalInvest <-
+    renderText(input$calcInputGeneralTotInvest)
+  output$InputLoanBorrowed <-
+    renderText(input$calcInputGeneralBorrowed)
+  output$LoanWeeklyPayment <- renderText(
+    monthly_repayment(
+      input$calcInputGeneralBorrowed,
+      input$calcInputLoanLoanPercent / 100,
+      52 * input$calcInputLoanDurationYrs
     )
-  output$IncomeWeekYearTotal <- renderText(
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW * 12
-    )
-  output$InputLoanTotalInvest <- renderText(input$calcInputGeneralTotInvest)
-  output$InputLoanBorrowed <- renderText(input$calcInputGeneralBorrowed)
-  output$LoanWeeklyPayment <- renderText(monthly_repayment(
-    input$calcInputGeneralBorrowed, 
-    input$calcInputLoanLoanPercent/100, 
-    52*input$calcInputLoanDurationYrs
-  ))
+  )
   # Results - this should only be displayed after click 'Go'
   # add validation: all fields mandatory
   # Add placeholder text before Go click succeeded?
   # or eliminate Go button for quick changes to be made?
-  output$calcRes1 <- renderText(
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  )
+  output$calcRes1 <- renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
   output$calcRes2 <- renderText(
-      input$calcInputExpensesWeekWaterSewer 
+    input$calcInputExpensesWeekWaterSewer
     + input$calcInputExpensesWeekVacancy
     + input$calcInputExpensesWeekTaxes
     + input$calcInputExpensesWeekInsurance
@@ -1049,9 +1023,7 @@ server <- function(input, output, session) {
     + input$calcInputExpensesWeekMaintainance
     + input$calcInputExpensesWeekCapex
   )
-  output$calcRes3 <- renderText(     
-    input$calcInputGeneralBorrowed 
-  )
+  output$calcRes3 <- renderText(input$calcInputGeneralBorrowed)
   # = weekly inc - " exp - " loan payment (formula for loan weekly payment)
   output$calcRes4 <- renderText(
     (
@@ -1078,7 +1050,7 @@ server <- function(input, output, session) {
   output$calcRes5 <- renderText(
     (
       input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-    )*12 - (
+    ) * 12 - (
       input$calcInputExpensesWeekWaterSewer
       + input$calcInputExpensesWeekVacancy
       + input$calcInputExpensesWeekTaxes
@@ -1087,13 +1059,13 @@ server <- function(input, output, session) {
       + input$calcInputExpensesWeekManagement
       + input$calcInputExpensesWeekMaintainance
       + input$calcInputExpensesWeekCapex
-    )*12 - (
+    ) * 12 - (
       monthly_repayment(
         input$calcInputGeneralBorrowed,
         input$calcInputLoanLoanPercent / 100,
         52 * input$calcInputLoanDurationYrs
       )
-    )*12
+    ) * 12
   )
   # = yearly cashflow / total investment
   output$calcRes6 <- renderText(((
@@ -1114,36 +1086,34 @@ server <- function(input, output, session) {
       52 * input$calcInputLoanDurationYrs
     )
   ) * 12
-  ) - (input$calcInputGeneralTotInvest)
-  )
+  ) - (input$calcInputGeneralTotInvest))
   # if ROI > min ROI then BUY ELSE PASS
-  output$calcRes7 <- renderText(     
-    ifelse(
-      ((
-        input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-      ) * 12 - (
-        input$calcInputExpensesWeekWaterSewer
-        + input$calcInputExpensesWeekVacancy
-        + input$calcInputExpensesWeekTaxes
-        + input$calcInputExpensesWeekInsurance
-        + input$calcInputExpensesWeekElectricity
-        + input$calcInputExpensesWeekManagement
-        + input$calcInputExpensesWeekMaintainance
-        + input$calcInputExpensesWeekCapex
-      ) * 12 - (
-        monthly_repayment(
-          input$calcInputGeneralBorrowed,
-          input$calcInputLoanLoanPercent / 100,
-          52 * input$calcInputLoanDurationYrs
-        )
-      ) * 12
-      ) - (input$calcInputGeneralTotInvest) > 0.25
-      ,
-      "BUY"
-      ,
-      "PASS"
-      )   
-  )
+  output$calcRes7 <- renderText(ifelse(
+    ((
+      input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+    ) * 12 - (
+      input$calcInputExpensesWeekWaterSewer
+      + input$calcInputExpensesWeekVacancy
+      + input$calcInputExpensesWeekTaxes
+      + input$calcInputExpensesWeekInsurance
+      + input$calcInputExpensesWeekElectricity
+      + input$calcInputExpensesWeekManagement
+      + input$calcInputExpensesWeekMaintainance
+      + input$calcInputExpensesWeekCapex
+    ) * 12 - (
+      monthly_repayment(
+        input$calcInputGeneralBorrowed,
+        input$calcInputLoanLoanPercent / 100,
+        52 * input$calcInputLoanDurationYrs
+      )
+    ) * 12
+    ) - (input$calcInputGeneralTotInvest) 
+    > 0.25
+    ,
+    "BUY"
+    ,
+    "PASS"
+  ))
 }
 
 shinyApp(ui, server)
