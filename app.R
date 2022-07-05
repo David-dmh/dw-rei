@@ -246,6 +246,57 @@ ui <- dashboardPage(
        height: 43px;
        width: 70%;
         }"
+        ,
+        "#LoanWeeklyPayment {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcRes1 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcRes2 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }",
+        "#calcRes3 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }",
+        "#calcRes4 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }",
+        "#calcRes5 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }",
+        "#calcRes6 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }",
+        "#calcRes7 {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
       )
     )),
     
@@ -1068,9 +1119,14 @@ server <- function(input, output, session) {
     ) * 12
   )
   # = yearly cashflow / total investment
-  output$calcRes6 <- renderText(((
+  output$calcRes6 <- renderText(
+    (
+    # y income
+    (
     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  ) * 12 - (
+  )*12 
+  # less y expenses
+  - (
     input$calcInputExpensesWeekWaterSewer
     + input$calcInputExpensesWeekVacancy
     + input$calcInputExpensesWeekTaxes
@@ -1079,14 +1135,18 @@ server <- function(input, output, session) {
     + input$calcInputExpensesWeekManagement
     + input$calcInputExpensesWeekMaintainance
     + input$calcInputExpensesWeekCapex
-  ) * 12 - (
+  ) * 12 
+  # less y loan payment
+  - (
     monthly_repayment(
       input$calcInputGeneralBorrowed,
       input$calcInputLoanLoanPercent / 100,
       52 * input$calcInputLoanDurationYrs
     )
   ) * 12
-  ) - (input$calcInputGeneralTotInvest))
+  ) 
+  # above all divided by tot investment
+  / (input$calcInputGeneralTotInvest))
   # if ROI > min ROI then BUY ELSE PASS
   output$calcRes7 <- renderText(ifelse(
     ((
@@ -1107,8 +1167,8 @@ server <- function(input, output, session) {
         52 * input$calcInputLoanDurationYrs
       )
     ) * 12
-    ) - (input$calcInputGeneralTotInvest) 
-    > 0.25
+    ) / (input$calcInputGeneralTotInvest) 
+    > 25
     ,
     "BUY"
     ,
