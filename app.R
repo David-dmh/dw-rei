@@ -1046,8 +1046,10 @@ server <- function(input, output, session) {
   output$leadsdf_test <- renderDataTable(iris)
   
   ####Tab 5 - Calculator####
-  output$IncomeWeekWeekTotal <- renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
-  output$IncomeWeekYearTotal <- renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW * 12)
+  output$IncomeWeekWeekTotal <-
+    renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
+  output$IncomeWeekYearTotal <-
+    renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW * 12)
   output$InputLoanTotalInvest <-
     renderText(input$calcInputGeneralTotInvest)
   output$InputLoanBorrowed <-
@@ -1063,7 +1065,8 @@ server <- function(input, output, session) {
   # add validation: all fields mandatory
   # Add placeholder text before Go click succeeded?
   # or eliminate Go button for quick changes to be made?
-  output$calcRes1 <- renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
+  output$calcRes1 <-
+    renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
   output$calcRes2 <- renderText(
     input$calcInputExpensesWeekWaterSewer
     + input$calcInputExpensesWeekVacancy
@@ -1119,14 +1122,12 @@ server <- function(input, output, session) {
     ) * 12
   )
   # = yearly cashflow / total investment
-  output$calcRes6 <- renderText(
-    (
+  output$calcRes6 <- renderText((
     # y income
     (
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  )*12 
-  # less y expenses
-  - (
+      input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+    ) * 12
+    # less y expenses-(
     input$calcInputExpensesWeekWaterSewer
     + input$calcInputExpensesWeekVacancy
     + input$calcInputExpensesWeekTaxes
@@ -1135,45 +1136,44 @@ server <- function(input, output, session) {
     + input$calcInputExpensesWeekManagement
     + input$calcInputExpensesWeekMaintainance
     + input$calcInputExpensesWeekCapex
-  ) * 12 
-  # less y loan payment
-  - (
+  ) * 12
+  # less y loan payment-(
+  monthly_repayment(
+    input$calcInputGeneralBorrowed,
+    input$calcInputLoanLoanPercent / 100,
+    52 * input$calcInputLoanDurationYrs
+  )
+  ) * 12
+  )
+# above all divided by tot investment
+/ (input$calcInputGeneralTotInvest))
+# if ROI > min ROI then BUY ELSE PASS
+output$calcRes7 <- renderText(ifelse(
+  ((
+    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+  ) * 12 - (
+    input$calcInputExpensesWeekWaterSewer
+    + input$calcInputExpensesWeekVacancy
+    + input$calcInputExpensesWeekTaxes
+    + input$calcInputExpensesWeekInsurance
+    + input$calcInputExpensesWeekElectricity
+    + input$calcInputExpensesWeekManagement
+    + input$calcInputExpensesWeekMaintainance
+    + input$calcInputExpensesWeekCapex
+  ) * 12 - (
     monthly_repayment(
       input$calcInputGeneralBorrowed,
       input$calcInputLoanLoanPercent / 100,
       52 * input$calcInputLoanDurationYrs
     )
   ) * 12
-  ) 
-  # above all divided by tot investment
-  / (input$calcInputGeneralTotInvest))
-  # if ROI > min ROI then BUY ELSE PASS
-  output$calcRes7 <- renderText(ifelse(
-    ((
-      input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-    ) * 12 - (
-      input$calcInputExpensesWeekWaterSewer
-      + input$calcInputExpensesWeekVacancy
-      + input$calcInputExpensesWeekTaxes
-      + input$calcInputExpensesWeekInsurance
-      + input$calcInputExpensesWeekElectricity
-      + input$calcInputExpensesWeekManagement
-      + input$calcInputExpensesWeekMaintainance
-      + input$calcInputExpensesWeekCapex
-    ) * 12 - (
-      monthly_repayment(
-        input$calcInputGeneralBorrowed,
-        input$calcInputLoanLoanPercent / 100,
-        52 * input$calcInputLoanDurationYrs
-      )
-    ) * 12
-    ) / (input$calcInputGeneralTotInvest) 
-    > 25
-    ,
-    "BUY"
-    ,
-    "PASS"
-  ))
+  ) / (input$calcInputGeneralTotInvest)
+  > 25
+  ,
+  "BUY"
+  ,
+  "PASS"
+))
 }
 
 shinyApp(ui, server)
