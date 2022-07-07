@@ -1121,59 +1121,53 @@ server <- function(input, output, session) {
       )
     ) * 12
   )
-  # = yearly cashflow / total investment
-  output$calcRes6 <- renderText((
-    # y income
-    (
-      input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-    ) * 12
-    # less y expenses-(
-    input$calcInputExpensesWeekWaterSewer
-    + input$calcInputExpensesWeekVacancy
-    + input$calcInputExpensesWeekTaxes
-    + input$calcInputExpensesWeekInsurance
-    + input$calcInputExpensesWeekElectricity
-    + input$calcInputExpensesWeekManagement
-    + input$calcInputExpensesWeekMaintainance
-    + input$calcInputExpensesWeekCapex
-  ) * 12
-  # less y loan payment-(
-  monthly_repayment(
-    input$calcInputGeneralBorrowed,
-    input$calcInputLoanLoanPercent / 100,
-    52 * input$calcInputLoanDurationYrs
-  )
-  ) * 12
-  )
-# above all divided by tot investment
-/ (input$calcInputGeneralTotInvest))
-# if ROI > min ROI then BUY ELSE PASS
-output$calcRes7 <- renderText(ifelse(
-  ((
-    input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  ) * 12 - (
-    input$calcInputExpensesWeekWaterSewer
-    + input$calcInputExpensesWeekVacancy
-    + input$calcInputExpensesWeekTaxes
-    + input$calcInputExpensesWeekInsurance
-    + input$calcInputExpensesWeekElectricity
-    + input$calcInputExpensesWeekManagement
-    + input$calcInputExpensesWeekMaintainance
-    + input$calcInputExpensesWeekCapex
-  ) * 12 - (
-    monthly_repayment(
-      input$calcInputGeneralBorrowed,
-      input$calcInputLoanLoanPercent / 100,
-      52 * input$calcInputLoanDurationYrs
-    )
-  ) * 12
-  ) / (input$calcInputGeneralTotInvest)
-  > 25
-  ,
-  "BUY"
-  ,
-  "PASS"
-))
+  # # = yearly cashflow / total investment
+  # output$calcRes6 <- renderText((
+  #   input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+  # ) * 12 - (
+  #   input$calcInputExpensesWeekWaterSewer
+  #   + input$calcInputExpensesWeekVacancy
+  #   + input$calcInputExpensesWeekTaxes
+  #   + input$calcInputExpensesWeekInsurance
+  #   + input$calcInputExpensesWeekElectricity
+  #   + input$calcInputExpensesWeekManagement
+  #   + input$calcInputExpensesWeekMaintainance
+  #   + input$calcInputExpensesWeekCapex
+  # ) * 12 - (
+  #   monthly_repayment(
+  #     input$calcInputGeneralBorrowed,
+  #     input$calcInputLoanLoanPercent / 100,
+  #     52 * input$calcInputLoanDurationYrs
+  #   )
+  # ) * 12
+  # ) / (input$calcInputGeneralTotInvest)
+# # if ROI > min ROI then BUY ELSE PASS
+# output$calcRes7 <- renderText(ifelse(
+#   ((
+#     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
+#   ) * 12 - (
+#     input$calcInputExpensesWeekWaterSewer
+#     + input$calcInputExpensesWeekVacancy
+#     + input$calcInputExpensesWeekTaxes
+#     + input$calcInputExpensesWeekInsurance
+#     + input$calcInputExpensesWeekElectricity
+#     + input$calcInputExpensesWeekManagement
+#     + input$calcInputExpensesWeekMaintainance
+#     + input$calcInputExpensesWeekCapex
+#   ) * 12 - (
+#     monthly_repayment(
+#       input$calcInputGeneralBorrowed,
+#       input$calcInputLoanLoanPercent / 100,
+#       52 * input$calcInputLoanDurationYrs
+#     )
+#   ) * 12
+#   ) / (input$calcInputGeneralTotInvest)
+#   > 25
+#   ,
+#   "BUY"
+#   ,
+#   "PASS"
+# ))
 }
 
 shinyApp(ui, server)
