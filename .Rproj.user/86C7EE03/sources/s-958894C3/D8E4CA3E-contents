@@ -1,0 +1,6 @@
+monthly_repayment <- function(PV, r, n){
+  P <- (PV*r)/(1-(1+r)^-n)
+  return(P)
+}
+
+monthly_repayment(110500, 0.05, 52*20)
