@@ -262,7 +262,7 @@ ui <- dashboardPage(
        width: 70%;
         }"
         ,
-        "#InputLoanBorrowed {
+        "#calcOutputLoanBorrowed {
        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
        font-size: 15px;
        height: 43px;
@@ -736,12 +736,14 @@ ui <- dashboardPage(
                            <b>Total invest. ($)</b>
                             ")
                            ,
-                           verbatimTextOutput("InputLoanTotalInvest")
+                           # verbatimTextOutput("InputLoanTotalInvest")
+                           # same as general tot invest
+                           verbatimTextOutput("calcOutputLoanTotalInvest")
                            ,
                            HTML("
                            <b>Loan amt ($)</b>
                             "),
-                           verbatimTextOutput("InputLoanBorrowed")
+                           verbatimTextOutput("calcOutputLoanBorrowed")
                            ,
                            numericInput(
                              "calcInputLoanLoanPercent",
@@ -1110,15 +1112,33 @@ server <- function(input, output, session) {
   # Loan
   # output$InputLoanTotalInvest <-
   #   renderText(input$calcInputGeneralTotInvest)
+  # changed to Read-only
+  output$calcOutputLoanTotalInvest <- renderText(InputGeneralDown())
   # 
   # output$InputLoanBorrowed <-
   #   renderText(input$calcInputGeneralBorrowed)
-  # 
+  # rename below to calcOutput
+  output$calcOutputLoanBorrowed <- renderText(
+    (InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
+  )
+  # redone weekly payment
+  output$LoanWeeklyPayment <- renderText(
+    monthly_repayment(
+      ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()),
+      input$calcInputLoanLoanPercent/100,
+      52*input$calcInputLoanDurationYrs
+    )
+  )
   # output$LoanWeeklyPayment <- renderText(
   #   monthly_repayment(
   #     input$calcInputGeneralBorrowed,
-  #     input$calcInputLoanLoanPercent / 100,
-  #     52 * input$calcInputLoanDurationYrs
+  #     
+  #     input$calcInputLoanLoanPercent 
+  #     / 100,
+  #     
+  #     52 * 
+  #       input$calcInputLoanDurationYrs
+  #     
   #   )
   # )
   # 
