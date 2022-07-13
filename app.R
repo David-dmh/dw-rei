@@ -216,10 +216,17 @@ ui <- dashboardPage(
   dashboardBody(
     shinyDashboardThemes(theme = "grey_light"),
     
-    ####Inline CSS#### 
+    ####Inline CSS####
     # change heights to percentages?
     tags$head(tags$style(
-      HTML( 
+      HTML(
+        "#calcOutputLoanTotalInvest {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
         "#calcOutputGeneralTotal {
        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
        font-size: 15px;
@@ -575,7 +582,8 @@ ui <- dashboardPage(
                            HTML("
                            <b>Total cost ($)</b>
                             ")
-                           ,verbatimTextOutput("calcOutputGeneralTotal")
+                           ,
+                           verbatimTextOutput("calcOutputGeneralTotal")
                          ),
                          column(
                            width = 3,
@@ -613,7 +621,8 @@ ui <- dashboardPage(
                            HTML("
                            <b>Amt borrowed ($)</b>
                             ")
-                           ,verbatimTextOutput("calcOutputGeneralBorrowed")
+                           ,
+                           verbatimTextOutput("calcOutputGeneralBorrowed")
                          )
                        )),
               ####Income (weekly)####
@@ -1091,75 +1100,71 @@ server <- function(input, output, session) {
     InputGeneralPurchase() + InputGeneralClosing()
   )
   InputGeneralDown <- reactive(input$calcInputGeneralDown)
-  output$calcOutputGeneralTotInvest <- renderText(InputGeneralDown())
+  output$calcOutputGeneralTotInvest <-
+    renderText(InputGeneralDown())
   output$calcOutputGeneralBorrowed <- renderText(
     (InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
   )
   
   # Income
   InputIncomeWeekUnits <- reactive(input$calcInputIncomeWeekUnits)
-  InputIncomeWeekUnitCostPW <- reactive(input$calcInputIncomeWeekUnitCostPW)
-  output$IncomeWeekWeekTotal <-renderText(
+  InputIncomeWeekUnitCostPW <-
+    reactive(input$calcInputIncomeWeekUnitCostPW)
+  output$IncomeWeekWeekTotal <- renderText(
     InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
   )
   
   output$IncomeWeekYearTotal <- renderText(
     InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW() * 12
   )
+  
   # Expenses
   # N/A
+  # capture reactive expenses
+  InputExpensesWaterSewer <- reactive(input$calcInputExpensesWeekWaterSewer)
+  InputExpensesVacancy <- reactive(input$calcInputExpensesWeekVacancy)
+  InputExpensesTaxes <- reactive(input$calcInputExpensesWeekTaxes)
+  InputExpensesInsurance <- reactive(input$calcInputExpensesWeekInsurance)
+  InputExpensesElectricity <- reactive(input$calcInputExpensesWeekElectricity)
+  InputExpensesManagement <- reactive(input$calcInputExpensesWeekManagement)
+  InputExpensesMaintainance <- reactive(input$calcInputExpensesWeekMaintainance)
+  InputExpensesCapex <- reactive(input$calcInputExpensesWeekCapex)
   
   # Loan
-  # output$InputLoanTotalInvest <-
-  #   renderText(input$calcInputGeneralTotInvest)
-  # changed to Read-only
   output$calcOutputLoanTotalInvest <- renderText(InputGeneralDown())
-  # 
-  # output$InputLoanBorrowed <-
-  #   renderText(input$calcInputGeneralBorrowed)
-  # rename below to calcOutput
+  
   output$calcOutputLoanBorrowed <- renderText(
     (InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
   )
-  # redone weekly payment
+  
   output$LoanWeeklyPayment <- renderText(
     monthly_repayment(
-      ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()),
-      input$calcInputLoanLoanPercent/100,
-      52*input$calcInputLoanDurationYrs
+      ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
+      ),
+      input$calcInputLoanLoanPercent / 100,
+      52 * input$calcInputLoanDurationYrs
     )
   )
-  # output$LoanWeeklyPayment <- renderText(
-  #   monthly_repayment(
-  #     input$calcInputGeneralBorrowed,
-  #     
-  #     input$calcInputLoanLoanPercent 
-  #     / 100,
-  #     
-  #     52 * 
-  #       input$calcInputLoanDurationYrs
-  #     
-  #   )
-  # )
-  # 
-  # # Results - this should only be displayed after click 'Go'
-  # # add validation: all fields mandatory
-  # # Add placeholder text before Go click succeeded?
-  # # or eliminate Go button for quick changes to be made?
-  # output$calcRes1 <-
-  #   renderText(input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW)
-  # output$calcRes2 <- renderText(
-  #   input$calcInputExpensesWeekWaterSewer
-  #   + input$calcInputExpensesWeekVacancy
-  #   + input$calcInputExpensesWeekTaxes
-  #   + input$calcInputExpensesWeekInsurance
-  #   + input$calcInputExpensesWeekElectricity
-  #   + input$calcInputExpensesWeekManagement
-  #   + input$calcInputExpensesWeekMaintainance
-  #   + input$calcInputExpensesWeekCapex
-  # )
-  # 
+  
+  # Results
+  output$calcRes1 <-
+    renderText(
+      InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+    )
+  
+  output$calcRes2 <- renderText(
+    InputExpensesWaterSewer()
+    + InputExpensesVacancy()
+    + InputExpensesTaxes()
+    + InputExpensesInsurance()
+    + InputExpensesElectricity()
+    + InputExpensesManagement()
+    + InputExpensesMaintainance()
+    + InputExpensesCapex()
+  )
+  
   # output$calcRes3 <- renderText(input$calcInputGeneralBorrowed)
+  
   # # = weekly inc - " exp - " loan payment (formula for loan weekly payment)
   # output$calcRes4 <- renderText(
   #   (
@@ -1182,6 +1187,7 @@ server <- function(input, output, session) {
   #     )
   #   )
   # )
+  
   # # = yearly inc - " exp - " loan payment(formula for loan weekly payment)
   # output$calcRes5 <- renderText(
   #   (
@@ -1203,7 +1209,8 @@ server <- function(input, output, session) {
   #     )
   #   ) * 12
   # )
-  # # = yearly cashflow / total investment
+  
+  # ROI = yearly cashflow / total investment
   # output$calcRes6 <- renderText((
   #   input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
   # ) * 12 - (
@@ -1223,7 +1230,8 @@ server <- function(input, output, session) {
   #   )
   # ) * 12
   # ) / (input$calcInputGeneralTotInvest)
-  # # if ROI > min ROI then BUY ELSE PASS
+  
+  # Action: if ROI > min ROI then BUY ELSE PASS
   # output$calcRes7 <- renderText(ifelse(
   #   ((
   #     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
@@ -1250,6 +1258,7 @@ server <- function(input, output, session) {
   #   ,
   #   "PASS"
   # ))
+  
 }
 
 shinyApp(ui, server)
