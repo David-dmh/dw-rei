@@ -435,45 +435,36 @@ ui <- dashboardPage(
             <b>Weekly Income ($)</b>
             "),
             verbatimTextOutput("calcRes1"),
+            
             HTML("
             <b>Weekly Expense ($)</b>
             "),
             verbatimTextOutput("calcRes2"),
+            
             HTML("
             <b>Loan ($)</b>
             "),
             verbatimTextOutput("calcRes3"),
+            
             HTML("
             <b>Weekly Cashflow ($)</b>
             "),
             verbatimTextOutput("calcRes4"),
+            
             HTML("
             <b>Yearly Cashflow ($)</b>
             "),
             verbatimTextOutput("calcRes5"),
+            
             HTML("
             <b>ROI (%)</b>
             "),
             verbatimTextOutput("calcRes6"),
+            
             HTML("
             <b>Action</b>
             "),
             verbatimTextOutput("calcRes7"),
-            
-            # textInput("calcRes1",
-            #           "Weekly Income ($)"),
-            # textInput("calcRes2",
-            #           "Weekly Expense ($)"),
-            # textInput("calcRes3",
-            #           "Loan ($)"),
-            # textInput("calcRes4",
-            #           "Weekly Cashflow ($)"),
-            # textInput("calcRes5",
-            #           "Yearly Cashflow ($)"),
-            # textInput("calcRes6",
-            #           "ROI (%)"),
-            # textInput("calcRes7",
-            #           "Action")
             
             ####Tooltips - Results####
             # ,
@@ -570,15 +561,6 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
-                           # CHANGE TO READ oNLY
-                           # numericInput(
-                           #   "calcInputGeneralTotal",
-                           #   "Total cost ($)",
-                           #   0,
-                           #   min = 0,
-                           #   step = 1,
-                           #   width = "70%"
-                           # )
                            HTML("
                            <b>Total cost ($)</b>
                             ")
@@ -595,28 +577,11 @@ ui <- dashboardPage(
                              step = 1,
                              width = "70%"
                            ),
-                           # numericInput(
-                           #   "calcInputGeneralTotInvest",
-                           #   "Total invest. ($)",
-                           #   0,
-                           #   min = 0,
-                           #   step = 1,
-                           #   width = "70%"
-                           # ),
                            HTML("
                            <b>Total invest. ($)</b>
                             ")
                            ,
                            verbatimTextOutput("calcOutputGeneralTotInvest")
-                           # CHANGE TO READ oNLY
-                           # numericInput(
-                           #   "calcInputGeneralBorrowed",
-                           #   "Amt borrowed ($)",
-                           #   0,
-                           #   min = 0,
-                           #   step = 100,
-                           #   width = "70%"
-                           # )
                            ,
                            HTML("
                            <b>Amt borrowed ($)</b>
@@ -745,7 +710,6 @@ ui <- dashboardPage(
                            <b>Total invest. ($)</b>
                             ")
                            ,
-                           # verbatimTextOutput("InputLoanTotalInvest")
                            # same as general tot invest
                            verbatimTextOutput("calcOutputLoanTotalInvest")
                            ,
@@ -1137,6 +1101,10 @@ server <- function(input, output, session) {
     (InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
   )
   
+  # capture loan per and dur
+  InputLoanPercent <- reactive(input$calcInputLoanLoanPercent)
+  InputLoanDurationYrs <- reactive(input$calcInputLoanLoanDurationYrs)
+  
   output$LoanWeeklyPayment <- renderText(
     monthly_repayment(
       ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
@@ -1147,10 +1115,9 @@ server <- function(input, output, session) {
   )
   
   # Results
-  output$calcRes1 <-
-    renderText(
-      InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
-    )
+  output$calcRes1 <- renderText(
+    InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+  )
   
   output$calcRes2 <- renderText(
     InputExpensesWaterSewer()
@@ -1163,9 +1130,52 @@ server <- function(input, output, session) {
     + InputExpensesCapex()
   )
   
-  # output$calcRes3 <- renderText(input$calcInputGeneralBorrowed)
+  output$calcRes3 <- renderText(
+    (InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
+  )
   
   # # = weekly inc - " exp - " loan payment (formula for loan weekly payment)
+  
+  output$calcRes4 <- renderText(
+    (
+      InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+    ) - (
+      InputExpensesWaterSewer()
+      + InputExpensesVacancy()
+      + InputExpensesTaxes()
+      + InputExpensesInsurance()
+      + InputExpensesElectricity()
+      + InputExpensesManagement()
+      + InputExpensesMaintainance()
+      + InputExpensesCapex()
+    )
+    - (
+      1
+    )
+  )
+  
+  # output$calcRes4 <- renderText(
+  #   (
+  #     InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+  #   ) - (
+  #     InputExpensesWaterSewer()
+  #     + InputExpensesVacancy()
+  #     + InputExpensesTaxes()
+  #     + InputExpensesInsurance()
+  #     + InputExpensesElectricity()
+  #     + InputExpensesManagement()
+  #     + InputExpensesMaintainance()
+  #     + InputExpensesCapex()
+  #       )
+  #   - (
+  #     monthly_repayment(
+  #       ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()),
+  #       InputLoanPercent() / 100,
+  #       52 * InputLoanDurationYrs()
+  #     )
+  #   )
+  # )
+  
   # output$calcRes4 <- renderText(
   #   (
   #     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
