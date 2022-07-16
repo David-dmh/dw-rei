@@ -1150,124 +1150,107 @@ server <- function(input, output, session) {
       + InputExpensesCapex()
     )
     - (
-      1
+      monthly_repayment(
+        (input$calcInputGeneralPurchase + input$calcInputGeneralClosing) 
+        - input$calcInputGeneralDown
+        ,
+        input$calcInputLoanLoanPercent / 100,
+        52 * input$calcInputLoanDurationYrs
+      )
     )
   )
   
-  # output$calcRes4 <- renderText(
-  #   (
-  #     InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
-  #   ) - (
-  #     InputExpensesWaterSewer()
-  #     + InputExpensesVacancy()
-  #     + InputExpensesTaxes()
-  #     + InputExpensesInsurance()
-  #     + InputExpensesElectricity()
-  #     + InputExpensesManagement()
-  #     + InputExpensesMaintainance()
-  #     + InputExpensesCapex()
-  #       )
-  #   - (
-  #     monthly_repayment(
-  #       ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()),
-  #       InputLoanPercent() / 100,
-  #       52 * InputLoanDurationYrs()
-  #     )
-  #   )
-  # )
-  
-  # output$calcRes4 <- renderText(
-  #   (
-  #     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  #   ) - (
-  #     input$calcInputExpensesWeekWaterSewer
-  #     + input$calcInputExpensesWeekVacancy
-  #     + input$calcInputExpensesWeekTaxes
-  #     + input$calcInputExpensesWeekInsurance
-  #     + input$calcInputExpensesWeekElectricity
-  #     + input$calcInputExpensesWeekManagement
-  #     + input$calcInputExpensesWeekMaintainance
-  #     + input$calcInputExpensesWeekCapex
-  #   )
-  #   - (
-  #     monthly_repayment(
-  #       input$calcInputGeneralBorrowed,
-  #       input$calcInputLoanLoanPercent / 100,
-  #       52 * input$calcInputLoanDurationYrs
-  #     )
-  #   )
-  # )
-  
   # # = yearly inc - " exp - " loan payment(formula for loan weekly payment)
-  # output$calcRes5 <- renderText(
-  #   (
-  #     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  #   ) * 12 - (
-  #     input$calcInputExpensesWeekWaterSewer
-  #     + input$calcInputExpensesWeekVacancy
-  #     + input$calcInputExpensesWeekTaxes
-  #     + input$calcInputExpensesWeekInsurance
-  #     + input$calcInputExpensesWeekElectricity
-  #     + input$calcInputExpensesWeekManagement
-  #     + input$calcInputExpensesWeekMaintainance
-  #     + input$calcInputExpensesWeekCapex
-  #   ) * 12 - (
-  #     monthly_repayment(
-  #       input$calcInputGeneralBorrowed,
-  #       input$calcInputLoanLoanPercent / 100,
-  #       52 * input$calcInputLoanDurationYrs
-  #     )
-  #   ) * 12
-  # )
+  output$calcRes5 <- renderText(
+    ((
+      InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+    ) - (
+      InputExpensesWaterSewer()
+      + InputExpensesVacancy()
+      + InputExpensesTaxes()
+      + InputExpensesInsurance()
+      + InputExpensesElectricity()
+      + InputExpensesManagement()
+      + InputExpensesMaintainance()
+      + InputExpensesCapex()
+    )
+    - (
+      monthly_repayment(
+        (input$calcInputGeneralPurchase + input$calcInputGeneralClosing) 
+        - input$calcInputGeneralDown
+        ,
+        input$calcInputLoanLoanPercent / 100,
+        52 * input$calcInputLoanDurationYrs
+      )
+    )) * 12
+  )
   
   # ROI = yearly cashflow / total investment
-  # output$calcRes6 <- renderText((
-  #   input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  # ) * 12 - (
-  #   input$calcInputExpensesWeekWaterSewer
-  #   + input$calcInputExpensesWeekVacancy
-  #   + input$calcInputExpensesWeekTaxes
-  #   + input$calcInputExpensesWeekInsurance
-  #   + input$calcInputExpensesWeekElectricity
-  #   + input$calcInputExpensesWeekManagement
-  #   + input$calcInputExpensesWeekMaintainance
-  #   + input$calcInputExpensesWeekCapex
-  # ) * 12 - (
-  #   monthly_repayment(
-  #     input$calcInputGeneralBorrowed,
-  #     input$calcInputLoanLoanPercent / 100,
-  #     52 * input$calcInputLoanDurationYrs
-  #   )
-  # ) * 12
-  # ) / (input$calcInputGeneralTotInvest)
+  output$calcRes6 <- renderText(
+    (
+      
+      ((
+        InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+      ) - (
+        InputExpensesWaterSewer()
+        + InputExpensesVacancy()
+        + InputExpensesTaxes()
+        + InputExpensesInsurance()
+        + InputExpensesElectricity()
+        + InputExpensesManagement()
+        + InputExpensesMaintainance()
+        + InputExpensesCapex()
+      )
+      - (
+        monthly_repayment(
+          (input$calcInputGeneralPurchase + input$calcInputGeneralClosing) 
+          - input$calcInputGeneralDown
+          ,
+          input$calcInputLoanLoanPercent / 100,
+          52 * input$calcInputLoanDurationYrs
+        )
+      )) * 12
+      
+    )
+    
+    / InputGeneralDown() 
+  )
   
   # Action: if ROI > min ROI then BUY ELSE PASS
-  # output$calcRes7 <- renderText(ifelse(
-  #   ((
-  #     input$calcInputIncomeWeekUnits * input$calcInputIncomeWeekUnitCostPW
-  #   ) * 12 - (
-  #     input$calcInputExpensesWeekWaterSewer
-  #     + input$calcInputExpensesWeekVacancy
-  #     + input$calcInputExpensesWeekTaxes
-  #     + input$calcInputExpensesWeekInsurance
-  #     + input$calcInputExpensesWeekElectricity
-  #     + input$calcInputExpensesWeekManagement
-  #     + input$calcInputExpensesWeekMaintainance
-  #     + input$calcInputExpensesWeekCapex
-  #   ) * 12 - (
-  #     monthly_repayment(
-  #       input$calcInputGeneralBorrowed,
-  #       input$calcInputLoanLoanPercent / 100,
-  #       52 * input$calcInputLoanDurationYrs
-  #     )
-  #   ) * 12
-  #   ) / (input$calcInputGeneralTotInvest)
-  #   > 25
-  #   ,
-  #   "BUY"
-  #   ,
-  #   "PASS"
-  # ))
+  output$calcRes7 <- renderText(ifelse(
+    (
+      
+      ((
+        InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+      ) - (
+        InputExpensesWaterSewer()
+        + InputExpensesVacancy()
+        + InputExpensesTaxes()
+        + InputExpensesInsurance()
+        + InputExpensesElectricity()
+        + InputExpensesManagement()
+        + InputExpensesMaintainance()
+        + InputExpensesCapex()
+      )
+      - (
+        monthly_repayment(
+          (input$calcInputGeneralPurchase + input$calcInputGeneralClosing) 
+          - input$calcInputGeneralDown
+          ,
+          input$calcInputLoanLoanPercent / 100,
+          52 * input$calcInputLoanDurationYrs
+        )
+      )) * 12
+      
+    )
+    
+    / InputGeneralDown()
+    > 25
+    ,
+    "BUY"
+    ,
+    "PASS"
+  ))
   
 }
 
