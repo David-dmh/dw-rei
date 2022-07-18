@@ -16,6 +16,7 @@ library(ggthemes)
 library(ggplot2)
 library(formattable)
 library(shinyBS)
+library(capture)
 
 options(scipen = 999)
 
@@ -514,6 +515,13 @@ ui <- dashboardPage(
             #   trigger = "hover"
             # )
             
+            ####non-working capture####
+            # capture_pdf(
+            #   selector = "1",
+            #   filename = "all-calc-page.pdf",
+            #   icon("camera"), "Take screenshot of page"
+            # )
+            
           ),
           mainPanel(
             h2("Deal Analysis"),
@@ -751,6 +759,9 @@ ui <- dashboardPage(
                            verbatimTextOutput("LoanWeeklyPayment")
                          )
                        ))
+              # actionButton("btn", "myBtn")
+             
+              
             )
             ####Tooltips - General####
             ,
