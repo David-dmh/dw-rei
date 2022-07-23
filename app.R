@@ -16,7 +16,7 @@ library(ggthemes)
 library(ggplot2)
 library(formattable)
 library(shinyBS)
-library(capture)
+library(shinyscreenshot)
 
 options(scipen = 999)
 
@@ -515,13 +515,6 @@ ui <- dashboardPage(
             #   trigger = "hover"
             # )
             
-            ####non-working capture####
-            # capture_pdf(
-            #   selector = "1",
-            #   filename = "all-calc-page.pdf",
-            #   icon("camera"), "Take screenshot of page"
-            # )
-            
           ),
           mainPanel(
             h2("Deal Analysis"),
@@ -608,7 +601,19 @@ ui <- dashboardPage(
                            ,
                            verbatimTextOutput("calcOutputGeneralBorrowed")
                          )
-                       )),
+                       )
+                       
+                       #####Screenshot - Calc tab General####
+                       ,
+                       HTML("<br>")
+                       ,
+                       screenshotButton(
+                         selector = "body",
+                         filename = "AU_Property_App_DIY_calculator",
+                         scale = 1
+                       )
+                       
+              ),
               ####Income (weekly)####
               tabPanel("Income (weekly)",
                        HTML("<br>"),
@@ -642,7 +647,19 @@ ui <- dashboardPage(
                             "),
                            verbatimTextOutput("IncomeWeekYearTotal")
                          )
-                       )),
+                       )
+                       
+                       #####Screenshot - Calc tab Income (weekly)####
+                       ,
+                       HTML("<br>")
+                       ,
+                       screenshotButton(
+                         selector = "body",
+                         filename = "AU_Property_App_DIY_calculator",
+                         scale = 1
+                       )
+                       
+              ),
               ####Expenses (weekly)####
               tabPanel("Expenses (weekly)",
                        HTML("<br>"),
@@ -717,7 +734,17 @@ ui <- dashboardPage(
                              width = "70%"
                            )
                          )
-                       )),
+                       )
+                       #####Screenshot - Calc tab Expenses (weekly)####
+                       ,
+                       HTML("<br>")
+                       ,
+                       screenshotButton(
+                         selector = "body",
+                         filename = "AU_Property_App_DIY_calculator",
+                         scale = 1
+                       )
+              ),
               ####Loan####
               tabPanel("Loan",
                        HTML("<br>"),
@@ -758,9 +785,19 @@ ui <- dashboardPage(
                             "),
                            verbatimTextOutput("LoanWeeklyPayment")
                          )
-                       ))
+                       )
+                       #####Screenshot - Calc tab Loan####
+                       ,
+                       HTML("<br>")
+                       ,
+                       screenshotButton(
+                         selector = "body",
+                         filename = "AU_Property_App_DIY_calculator",
+                         scale = 1
+                       )
+              )
               # actionButton("btn", "myBtn")
-             
+              
               
             )
             ####Tooltips - General####
@@ -934,6 +971,14 @@ ui <- dashboardPage(
           ),
           
         )
+        
+        # ,
+        # #####take screenshot####
+        # screenshotButton(
+        #   selector = "body",
+        #   filename = "AU_Property_App_DIY_calculator",
+        #   scale = 1
+        # )
       )
     )
   )
@@ -1250,7 +1295,6 @@ server <- function(input, output, session) {
     "PASS"
   )
   )
-  
 }
 
 shinyApp(ui, server)
