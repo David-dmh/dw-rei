@@ -232,6 +232,139 @@ ui <- dashboardPage(
     # change heights to percentages?
     tags$head(tags$style(
       HTML(
+        "#calcInputLoanLoanPercent {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputLoanDurationYrs {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputExpensesWeekWaterSewer {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekVacancy {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekTaxes {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekInsurance {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekElectricity {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekManagement {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekMaintainance {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputExpensesWeekCapex {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 100%;
+        }"
+        ,
+        "#calcInputIncomeWeekUnits {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputIncomeWeekUnitCostPW {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralDown {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralBuild {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralPurchase {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralClosing {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralBath {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralBed {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
+        "#calcInputGeneralAddress {
+       font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+       font-size: 15px;
+       height: 43px;
+       width: 70%;
+        }"
+        ,
         "#calcOutputLoanTotalInvest {
        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
        font-size: 15px;
@@ -528,31 +661,27 @@ ui <- dashboardPage(
                          column(
                            width = 3,
                            textInput("calcInputGeneralAddress",
-                                     "Address",
-                                     width = "70%"),
+                                     "Address"),
                            numericInput(
                              "calcInputGeneralBed",
                              "Bedrooms",
                              1,
                              min = 0.5,
-                             step = 0.5,
-                             width = "70%"
+                             step = 0.5
                            ),
                            numericInput(
                              "calcInputGeneralBath",
                              "Bathrooms",
                              1,
                              min = 0.5,
-                             step = 0.5,
-                             width = "70%"
+                             step = 0.5
                            ),
                            numericInput(
                              "calcInputGeneralBuild",
                              "Build. size (m²)",
                              0,
                              min = 0,
-                             step = 1,
-                             width = "70%"
+                             step = 1
                            )
                          ),
                          column(
@@ -562,16 +691,14 @@ ui <- dashboardPage(
                              "Pch. price ($)",
                              0,
                              min = 0,
-                             step = 1,
-                             width = "70%"
+                             step = 1
                            ),
                            numericInput(
                              "calcInputGeneralClosing",
                              "Closing costs ($)",
                              0,
                              min = 0,
-                             step = 1,
-                             width = "70%"
+                             step = 1
                            ),
                            HTML("
                            <b>Total cost ($)</b>
@@ -586,8 +713,7 @@ ui <- dashboardPage(
                              "Down pmt. ($)",
                              0,
                              min = 0.5,
-                             step = 1,
-                             width = "70%"
+                             step = 1
                            ),
                            HTML("
                            <b>Total invest. ($)</b>
@@ -625,24 +751,20 @@ ui <- dashboardPage(
                              "Units",
                              1,
                              min = 1,
-                             step = 0.5,
-                             width = "70%"
+                             step = 0.5
                            ),
                            numericInput(
                              "calcInputIncomeWeekUnitCostPW",
                              "Unit cost p.w ($)",
                              0,
                              min = 0,
-                             step = 1,
-                             width = "70%"
+                             step = 1
                            ),
                            HTML("
-                           <br style=\"line-height: 0.1px;\">
                            <b>Weekly total ($)</b>
                             "),
                            verbatimTextOutput("IncomeWeekWeekTotal"),
                            HTML("
-                           <br style=\"line-height: 0.1px;\">
                            <b>Yearly total ($)</b>
                             "),
                            verbatimTextOutput("IncomeWeekYearTotal")
@@ -769,16 +891,14 @@ ui <- dashboardPage(
                              "Loan (%)",
                              0,
                              min = 1,
-                             step = 0,
-                             width = "70%"
+                             step = 0
                            ),
                            numericInput(
                              "calcInputLoanDurationYrs",
                              "Duration (years)",
                              0,
                              min = 0,
-                             step = 1,
-                             width = "70%"
+                             step = 1
                            ),
                            HTML("
                            <b>Weekly pay. ($)</b>
