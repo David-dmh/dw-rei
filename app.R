@@ -1259,7 +1259,7 @@ server <- function(input, output, session) {
     reactive(input$calcInputIncomeWeekUnitCostPW)
   output$IncomeWeekWeekTotal <- renderText(InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW())
   
-  output$IncomeWeekYearTotal <- renderText(InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW() * 12)
+  output$IncomeWeekYearTotal <- renderText(InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW() * 52)
   
   # Expenses
   # N/A
@@ -1299,7 +1299,9 @@ server <- function(input, output, session) {
   )
   
   # Results
-  output$calcRes1 <- renderText(InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW())
+  output$calcRes1 <- renderText(
+    InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()
+  )
   
   output$calcRes2 <- renderText(
     InputExpensesWaterSewer()
@@ -1316,7 +1318,10 @@ server <- function(input, output, session) {
   
   # = weekly inc - " exp - " loan payment (formula for loan weekly payment)
   output$calcRes4 <- renderText(
-    (InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()) - (
+    # weekly income
+    (InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()) 
+    # weekly expenses
+    - (
       InputExpensesWaterSewer()
       + InputExpensesVacancy()
       + InputExpensesTaxes()
@@ -1326,6 +1331,7 @@ server <- function(input, output, session) {
       + InputExpensesMaintainance()
       + InputExpensesCapex()
     )
+    # minus weekly loan payment
     - (
       weekly_repayment(
         (
@@ -1338,25 +1344,27 @@ server <- function(input, output, session) {
   )
   
   # = yearly inc - " exp - " loan payment(formula for loan weekly payment)
-  output$calcRes5 <- renderText(((InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()) - (
-    InputExpensesWaterSewer()
-    + InputExpensesVacancy()
-    + InputExpensesTaxes()
-    + InputExpensesInsurance()
-    + InputExpensesElectricity()
-    + InputExpensesManagement()
-    + InputExpensesMaintainance()
-    + InputExpensesCapex()
-  )
-  - (
-    weekly_repayment(
-      ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
-      ),
-      input$calcInputLoanLoanPercent / 100,
-      input$calcInputLoanDurationYrs * 12 * 4
+  output$calcRes5 <- renderText(
+    ((InputIncomeWeekUnits() * InputIncomeWeekUnitCostPW()) - (
+      InputExpensesWaterSewer()
+      + InputExpensesVacancy()
+      + InputExpensesTaxes()
+      + InputExpensesInsurance()
+      + InputExpensesElectricity()
+      + InputExpensesManagement()
+      + InputExpensesMaintainance()
+      + InputExpensesCapex()
     )
+    - (
+      weekly_repayment(
+        ((InputGeneralPurchase() + InputGeneralClosing()) - InputGeneralDown()
+        ),
+        input$calcInputLoanLoanPercent / 100,
+        input$calcInputLoanDurationYrs * 12 * 4
+      )
+    )
+    ) * 12
   )
-  ) * 12)
   
   # ROI = yearly cashflow / total investment
   output$calcRes6 <- renderText(((
