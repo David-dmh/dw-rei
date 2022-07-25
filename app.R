@@ -20,6 +20,8 @@ library(shinyscreenshot)
 
 options(scipen = 999)
 
+deliver_df <- function(){}
+
 weekly_repayment <- function(PV, r, n) {
   # PV: loan amount (principal)
   # r: rate divided by 100 (decimal)
@@ -563,7 +565,11 @@ ui <- dashboardPage(
           mainPanel(
             h2("Investment Leads"),
             HTML("<br>"),
+            ####
             dataTableOutput("leadsdf_test")
+            ####
+            
+            ####
           )
         )
       )
@@ -729,7 +735,6 @@ ui <- dashboardPage(
                          )
                        )
                        
-                       #####Screenshot - Calc tab General####
                        ,
                        HTML("<br>")
                        ,
@@ -771,7 +776,6 @@ ui <- dashboardPage(
                          )
                        )
                        
-                       #####Screenshot - Calc tab Income (weekly)####
                        ,
                        HTML("<br>")
                        ,
@@ -857,7 +861,6 @@ ui <- dashboardPage(
                            )
                          )
                        )
-                       #####Screenshot - Calc tab Expenses (weekly)####
                        ,
                        HTML("<br>")
                        ,
@@ -1091,14 +1094,6 @@ ui <- dashboardPage(
           ),
           
         )
-        
-        # ,
-        # #####take screenshot####
-        # screenshotButton(
-        #   selector = "body",
-        #   filename = "AU_Property_App_DIY_calculator",
-        #   scale = 1
-        # )
       )
     )
   )
