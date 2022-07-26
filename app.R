@@ -534,13 +534,29 @@ ui <- dashboardPage(
           tabsetPanel(
             type = "tabs",
             tabPanel("Acceptance Criteria",
-                     HTML("<br>")),
+                     HTML("<br>")
+                     ,
+                     # place df here
+                     dataTableOutput("acceptance_criteria_df")
+            ),
             tabPanel("Expense Percentages",
-                     HTML("<br>")),
+                     HTML("<br>")
+                     ,
+                     # place df here
+                     dataTableOutput("expense_percentages_df")
+            ),
             tabPanel("Loan Terms",
-                     HTML("<br>")),
+                     HTML("<br>")
+                     ,
+                     # place df here 
+                     dataTableOutput("loan_terms_df")
+            ),
             tabPanel("Purchase Terms",
-                     HTML("<br>"))
+                     HTML("<br>")
+                     ,
+                     # place df here
+                     dataTableOutput("purchase_terms_df")
+            )
           ),
           actionButton("goUpdate",
                        "Update",
@@ -1232,7 +1248,44 @@ server <- function(input, output, session) {
   })
   
   ####Tab 3 - Criteria####
+  # get dfs
+  acceptance_criteria_df <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"AcceptanceCriteria\"
+  ;
+  ")
   
+  expense_percentages_df <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"ExpensePercentages\"
+  ;
+  ")
+  
+  loan_terms_df <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"LoanTerms\"
+  ;
+  ")
+  
+  purchase_terms_df <- dbGetQuery(con, "
+  SELECT
+  *
+  FROM
+  public.\"PurchaseTerms\"
+  ;
+  ")
+  
+  # display dfs
+  output$acceptance_criteria_df <- renderDataTable(acceptance_criteria_df)
+  output$expense_percentages_df <- renderDataTable(expense_percentages_df)
+  output$loan_terms_df <- renderDataTable(loan_terms_df)
+  output$purchase_terms_df <- renderDataTable(purchase_terms_df)
   
   ####Tab 4 - Leads####
   output$leadsdf_test <- renderDataTable(iris)
