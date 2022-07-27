@@ -569,25 +569,38 @@ ui <- dashboardPage(
       ####Tab 4 - Leads####
       tabItem(
         tabName = "4Leads",
-        sidebarLayout(
-          position = "right",
-          sidebarPanel(
-            h3("Options"),
-            checkboxInput("enableML",
-                          "Enable market value predictions",
-                          FALSE,
-                          width = "100%")
-          ),
-          mainPanel(
-            h2("Investment Leads"),
-            HTML("<br>"),
-            ####
-            dataTableOutput("leadsdf_test")
-            ####
-            
-            ####
+        
+        h2("Investment Leads"),
+        HTML("<br>"),
+        # HTML("<br>"),
+        # HTML("<br>"),
+        ####
+        fluidRow(
+          column(12,
+                 dataTableOutput("leads_df")
           )
         )
+        ####
+        
+        # sidebarLayout(
+        #   position = "right",
+        #   sidebarPanel(
+        #     h3("Options"),
+        #     checkboxInput("enableML",
+        #                   "Enable market value predictions",
+        #                   FALSE,
+        #                   width = "100%")
+        #   ),
+        #   mainPanel(
+        #     h2("Investment Leads"),
+        #     HTML("<br>"),
+        #     HTML("<br>"),
+        #     HTML("<br>"),
+        #     ####
+        #     dataTableOutput("leads_df")
+        #     ####
+        #   )
+        # )
       )
       ,
       ####Tab 5 - Calculator####
@@ -1288,7 +1301,50 @@ server <- function(input, output, session) {
   output$purchase_terms_df <- renderDataTable(purchase_terms_df)
   
   ####Tab 4 - Leads####
-  output$leadsdf_test <- renderDataTable(iris)
+  #get data
+  leads_df <- dbGetQuery(con, "
+  SELECT
+  -- fl.property_id
+ 
+  -- ,dp.state_id
+  ds.state_name
+  ,dp.suburb
+  ,dp.postcode
+  ,dp.full_address
+  
+  ,fl.price
+  ,fl.bedrooms
+  ,fl.bathrooms
+  ,fl.parking_spaces
+  ,fl.building_size
+  ,fl.building_size_unit
+  ,fl.land_size
+  ,fl.land_size_unit
+  -- ,fl.sold_date
+  ,fl.listing_company_name
+  -- ,fl.description
+  
+  ,fl.listing_download_date
+
+  FROM
+  public.\"factListings\" fl
+  LEFT OUTER JOIN
+  public.\"dimProperty\" dp
+  ON
+  fl.property_id = dp.property_id
+  LEFT OUTER JOIN
+  public.\"dimState\" ds
+  ON
+  dp.state_id = ds.state_id
+  ;
+  ")
+  #
+  
+  output$leads_df <- renderDataTable(leads_df, 
+                                     options=list(
+                                       pageLength=5,
+                                       scrollX=TRUE)
+  )
   
   ####Tab 5 - Calculator####
   
