@@ -38,6 +38,86 @@ weekly_repayment <- function(PV, r, n) {
   return(P)
 }
 
+get_lead_results <- function(df, con) {
+  df_PURCHASE_TERMS <- dbGetQuery(
+    con,
+    "
+  SELECT
+  closing_cost_percent
+  ,downpayment_percent
+  FROM
+  public.\"PurchaseTerms\"
+  ;
+  "
+  )
+  df_EXPENSES <- dbGetQuery(con,
+                            "
+  SELECT
+  return_on_investment
+  FROM
+  public.\"AcceptanceCriteria\"
+  ;
+  ")
+  df_LOAN_INFO <- dbGetQuery(con,
+                             "
+  SELECT
+  loan_interest_rate
+  ,loan_period
+  FROM
+  public.\"LoanTerms\"
+  ;
+  ")
+  df_ROI <- dbGetQuery(
+    con,
+    "
+  SELECT
+  vacancy
+  ,management
+  ,maintainance
+  ,capital_expenditure
+  FROM
+  public.\"ExpensePercentages\"
+  ;
+  "
+  )
+  
+  lead_results <- c()
+  for (i in 1:nrow(df)) {
+    res <- (
+      (
+        (
+          (500) - (300) - (
+            weekly_repayment(((
+              df[i, "price"] + ((df_PURCHASE_TERMS[1, "closing_cost_percent"]/100) *
+                                  df[i, "price"])
+            ) - (
+              (df_PURCHASE_TERMS[1, "downpayment_percent"]/100) * df[i, "price"]
+            )),
+            df_LOAN_INFO[1, "loan_interest_rate"]/100,
+            df_LOAN_INFO[1, "loan_period"] * 12 * 4)
+            
+          )
+        ) 
+        * 12)
+      /
+        (
+          (df_PURCHASE_TERMS[1, "downpayment_percent"] / 100) * df[i, "price"]
+        ))*100
+    if (
+      res
+      >
+      25) {
+      result <- "Buy"
+    } else{
+      result <- "Pass"
+    }
+    lead_results <- c(lead_results, result)
+    
+    
+  }
+  return(lead_results)
+}
+
 dynamic_query <- function(con, state) {
   state_id <- base::switch(
     state,
@@ -1338,8 +1418,10 @@ server <- function(input, output, session) {
   dp.state_id = ds.state_id
   ;
   ")
-  #
   
+  lead_results <- get_lead_results(leads_df, con)
+  leads_df["Result"] <- lead_results
+
   output$leads_df <- renderDataTable(leads_df, 
                                      options=list(
                                        pageLength=5,
