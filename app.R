@@ -618,31 +618,114 @@ ui <- dashboardPage(
                      ,
                      # place df here
                      dataTableOutput("acceptance_criteria_df")
+                     ,
+                     numericInput(
+                       "criteriaUpdateAcceptanceCriteriaCashflow",
+                       "cashflow",
+                       1,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
+                     numericInput(
+                       "criteriaUpdateAcceptanceCriteriaROI",
+                       "return_on_investment",
+                       25,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
             ),
             tabPanel("Expense Percentages",
                      HTML("<br>")
                      ,
                      # place df here
                      dataTableOutput("expense_percentages_df")
+                     ,
+                     numericInput(
+                       "criteriaExpensePercentagesVacancy",
+                       "vacancy",
+                       5,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
+                     numericInput(
+                       "criteriaUpdateExpensePercentagesManagement",
+                       "management",
+                       10,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
+                     numericInput(
+                       "criteriaUpdateExpensePercentagesMaintainance",
+                       "maintainance",
+                       5,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
+                     numericInput(
+                       "criteriaUpdateExpensePercentagesCapex",
+                       "capital_expenditure",
+                       5,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
             ),
             tabPanel("Loan Terms",
                      HTML("<br>")
                      ,
                      # place df here 
                      dataTableOutput("loan_terms_df")
+                     ,
+                     numericInput(
+                       "criteriaUpdateLoanTermsInterestRate",
+                       "loan_interest_rate",
+                       5,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
+                     numericInput(
+                       "criteriaUpdateLoanTermsPeriod",
+                       "loan_period",
+                       30,
+                       min = 0.5,
+                       step = 0.5
+                     )
             ),
             tabPanel("Purchase Terms",
                      HTML("<br>")
                      ,
                      # place df here
                      dataTableOutput("purchase_terms_df")
+                     ,
+                     numericInput(
+                       "criteriaPurchaseTermsClosing",
+                       "closing_cost_percent",
+                       5,
+                       min = 0.5,
+                       step = 0.5
+                     )
+                     ,
+                     numericInput(
+                       "criteriaUpdatePurchaseTermsDown",
+                       "downpayment_percent",
+                       20,
+                       min = 0.5,
+                       step = 0.5
+                     )
             )
           ),
+          
           actionButton("goUpdate",
                        "Update",
                        width = "20.7%")
           
-          ,
+          
         )
       )
       ,
@@ -1421,7 +1504,7 @@ server <- function(input, output, session) {
   
   lead_results <- get_lead_results(leads_df, con)
   leads_df["Result"] <- lead_results
-
+  
   output$leads_df <- renderDataTable(leads_df, 
                                      options=list(
                                        pageLength=5,
