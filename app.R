@@ -288,12 +288,12 @@ ui <- dashboardPage(
                tabName = "2Map",
                icon = icon("map-pin"))
       ,
-      menuItem(
-        "Criteria",
-        tabName = "3Criteria",
-        icon = icon("filter", lib = "glyphicon")
-      )
-      ,
+      # menuItem(
+      #   "Criteria",
+      #   tabName = "3Criteria",
+      #   icon = icon("filter", lib = "glyphicon")
+      # )
+      # ,
       menuItem(
         "Leads",
         tabName = "4Leads",
@@ -604,131 +604,131 @@ ui <- dashboardPage(
       tabItem(tabName = "2Map",
               leafletOutput("map", height = "89vh"))
       ,
-      ####Tab 3 - Criteria####
-      tabItem(
-        tabName = "3Criteria",
-        mainPanel(
-          fluidRow(h2("View & Edit")),
-          HTML("<br>"),
-          
-          tabsetPanel(
-            type = "tabs",
-            tabPanel("Acceptance Criteria",
-                     HTML("<br>")
-                     ,
-                     # place df here
-                     dataTableOutput("acceptance_criteria_df")
-                     ,
-                     numericInput(
-                       "criteriaUpdateAcceptanceCriteriaCashflow",
-                       "cashflow",
-                       1,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-                     numericInput(
-                       "criteriaUpdateAcceptanceCriteriaROI",
-                       "return_on_investment",
-                       25,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-            ),
-            tabPanel("Expense Percentages",
-                     HTML("<br>")
-                     ,
-                     # place df here
-                     dataTableOutput("expense_percentages_df")
-                     ,
-                     numericInput(
-                       "criteriaExpensePercentagesVacancy",
-                       "vacancy",
-                       5,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-                     numericInput(
-                       "criteriaUpdateExpensePercentagesManagement",
-                       "management",
-                       10,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-                     numericInput(
-                       "criteriaUpdateExpensePercentagesMaintainance",
-                       "maintainance",
-                       5,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-                     numericInput(
-                       "criteriaUpdateExpensePercentagesCapex",
-                       "capital_expenditure",
-                       5,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-            ),
-            tabPanel("Loan Terms",
-                     HTML("<br>")
-                     ,
-                     # place df here 
-                     dataTableOutput("loan_terms_df")
-                     ,
-                     numericInput(
-                       "criteriaUpdateLoanTermsInterestRate",
-                       "loan_interest_rate",
-                       5,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-                     numericInput(
-                       "criteriaUpdateLoanTermsPeriod",
-                       "loan_period",
-                       30,
-                       min = 0.5,
-                       step = 0.5
-                     )
-            ),
-            tabPanel("Purchase Terms",
-                     HTML("<br>")
-                     ,
-                     # place df here
-                     dataTableOutput("purchase_terms_df")
-                     ,
-                     numericInput(
-                       "criteriaPurchaseTermsClosing",
-                       "closing_cost_percent",
-                       5,
-                       min = 0.5,
-                       step = 0.5
-                     )
-                     ,
-                     numericInput(
-                       "criteriaUpdatePurchaseTermsDown",
-                       "downpayment_percent",
-                       20,
-                       min = 0.5,
-                       step = 0.5
-                     )
-            )
-          ),
-          
-          actionButton("goUpdate",
-                       "Update",
-                       width = "20.7%")
-          
-          
-        )
-      )
-      ,
+      # ####Tab 3 - Criteria####
+      # tabItem(
+      #   tabName = "3Criteria",
+      #   mainPanel(
+      #     fluidRow(h2("View & Edit")),
+      #     HTML("<br>"),
+      #     
+      #     tabsetPanel(
+      #       type = "tabs",
+      #       tabPanel("Acceptance Criteria",
+      #                HTML("<br>")
+      #                ,
+      #                # place df here
+      #                dataTableOutput("acceptance_criteria_df")
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateAcceptanceCriteriaCashflow",
+      #                  "cashflow",
+      #                  1,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateAcceptanceCriteriaROI",
+      #                  "return_on_investment",
+      #                  25,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #       ),
+      #       tabPanel("Expense Percentages",
+      #                HTML("<br>")
+      #                ,
+      #                # place df here
+      #                dataTableOutput("expense_percentages_df")
+      #                ,
+      #                numericInput(
+      #                  "criteriaExpensePercentagesVacancy",
+      #                  "vacancy",
+      #                  5,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateExpensePercentagesManagement",
+      #                  "management",
+      #                  10,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateExpensePercentagesMaintainance",
+      #                  "maintainance",
+      #                  5,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateExpensePercentagesCapex",
+      #                  "capital_expenditure",
+      #                  5,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #       ),
+      #       tabPanel("Loan Terms",
+      #                HTML("<br>")
+      #                ,
+      #                # place df here 
+      #                dataTableOutput("loan_terms_df")
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateLoanTermsInterestRate",
+      #                  "loan_interest_rate",
+      #                  5,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdateLoanTermsPeriod",
+      #                  "loan_period",
+      #                  30,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #       ),
+      #       tabPanel("Purchase Terms",
+      #                HTML("<br>")
+      #                ,
+      #                # place df here
+      #                dataTableOutput("purchase_terms_df")
+      #                ,
+      #                numericInput(
+      #                  "criteriaPurchaseTermsClosing",
+      #                  "closing_cost_percent",
+      #                  5,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #                ,
+      #                numericInput(
+      #                  "criteriaUpdatePurchaseTermsDown",
+      #                  "downpayment_percent",
+      #                  20,
+      #                  min = 0.5,
+      #                  step = 0.5
+      #                )
+      #       )
+      #     ),
+      #     
+      #     actionButton("goUpdate",
+      #                  "Update",
+      #                  width = "20.7%")
+      #     
+      #     
+      #   )
+      # )
+      # ,
       ####Tab 4 - Leads####
       tabItem(
         tabName = "4Leads",
@@ -1423,45 +1423,45 @@ server <- function(input, output, session) {
             alpha.regions = 0.2)@map
   })
   
-  ####Tab 3 - Criteria####
-  # get dfs
-  acceptance_criteria_df <- dbGetQuery(con, "
-  SELECT
-  *
-  FROM
-  public.\"AcceptanceCriteria\"
-  ;
-  ")
-  
-  expense_percentages_df <- dbGetQuery(con, "
-  SELECT
-  *
-  FROM
-  public.\"ExpensePercentages\"
-  ;
-  ")
-  
-  loan_terms_df <- dbGetQuery(con, "
-  SELECT
-  *
-  FROM
-  public.\"LoanTerms\"
-  ;
-  ")
-  
-  purchase_terms_df <- dbGetQuery(con, "
-  SELECT
-  *
-  FROM
-  public.\"PurchaseTerms\"
-  ;
-  ")
-  
-  # display dfs
-  output$acceptance_criteria_df <- renderDataTable(acceptance_criteria_df)
-  output$expense_percentages_df <- renderDataTable(expense_percentages_df)
-  output$loan_terms_df <- renderDataTable(loan_terms_df)
-  output$purchase_terms_df <- renderDataTable(purchase_terms_df)
+  # ####Tab 3 - Criteria####
+  # # get dfs
+  # acceptance_criteria_df <- dbGetQuery(con, "
+  # SELECT
+  # *
+  # FROM
+  # public.\"AcceptanceCriteria\"
+  # ;
+  # ")
+  # 
+  # expense_percentages_df <- dbGetQuery(con, "
+  # SELECT
+  # *
+  # FROM
+  # public.\"ExpensePercentages\"
+  # ;
+  # ")
+  # 
+  # loan_terms_df <- dbGetQuery(con, "
+  # SELECT
+  # *
+  # FROM
+  # public.\"LoanTerms\"
+  # ;
+  # ")
+  # 
+  # purchase_terms_df <- dbGetQuery(con, "
+  # SELECT
+  # *
+  # FROM
+  # public.\"PurchaseTerms\"
+  # ;
+  # ")
+  # 
+  # # display dfs
+  # output$acceptance_criteria_df <- renderDataTable(acceptance_criteria_df)
+  # output$expense_percentages_df <- renderDataTable(expense_percentages_df)
+  # output$loan_terms_df <- renderDataTable(loan_terms_df)
+  # output$purchase_terms_df <- renderDataTable(purchase_terms_df)
   
   ####Tab 4 - Leads####
   #get data
